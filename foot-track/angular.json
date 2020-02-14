@@ -28,7 +28,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.less"
+              "src/styles.less",
+              "node_modules/font-awesome/less/font-awesome.less"
             ],
             "scripts": []
           },
