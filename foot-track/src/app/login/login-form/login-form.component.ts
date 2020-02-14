@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
+import { UserData } from 'src/app/models/user-data.model';
 
 @Component({
   selector: 'app-login-form',
@@ -7,10 +8,7 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./login-form.component.less']
 })
 export class LoginFormComponent {
-
-  constructor() { }
-
+  userData = new UserData('', '');
   onSubmit(form: NgForm) {
   }
-
 }

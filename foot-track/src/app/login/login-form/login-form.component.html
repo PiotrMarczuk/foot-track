@@ -1,15 +1,22 @@
 <form #form="ngForm" (ngSubmit)="onSubmit(form)">
-    <div class="input-group form-group input-group-wrap">
-        <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fa fa-user"></i></span>
+    <div class="input-group-wrap">
+        <div class="input-group form-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-user"></i></span>
+            </div>
+            <input type="email" #email="ngModel" [class.is-invalid]="email.invalid && email.touched" name="email"
+                required pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" placeholder="e-mail"
+                [(ngModel)]="userData.email" />
         </div>
-        <input name="email" ngModel required #email="ngModel" type="text" class="form-control" placeholder="e-mail" />
     </div>
-    <div class="input-group form-group input-group-wrap">
-        <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fa fa-key"></i></span>
+    <div class="input-group-wrap">
+        <div class="input-group form-group">
+            <div class=" input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-key"></i></span>
+            </div>
+            <input name="password" #password="ngModel" [class.is-invalid]="password.invalid && password.touched"
+                required type="password" class="form-control" placeholder="password" [(ngModel)]="userData.password" />
         </div>
-        <input name="password" ngModel required #password="ngModel" type="password" class="form-control" placeholder="password" />
     </div>
     <div class="form-group">
         <button type="submit" class="btn float-right login-btn">
