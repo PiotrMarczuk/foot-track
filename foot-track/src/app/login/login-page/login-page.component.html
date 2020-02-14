@@ -1,50 +1,20 @@
-<div class="container">
-  <div class="d-flex justify-content-center h-100">
-    <div class="card">
-      <div class="card-header">
-        <h3>Sign In</h3>
-        <div class="d-flex justify-content-end social-icon">
-          <span><i class="fa fa-google-plus-square"></i></span>
-        </div>
+<div class="d-flex justify-content-center h-100">
+  <div class="card">
+    <div class="card-header">
+      <h3>Sign In</h3>
+      <div class="d-flex justify-content-end social-icon">
+        <span><i class="fa fa-google-plus-square"></i></span>
       </div>
-      <div class="card-body">
-        <form (ngSubmit)="onSubmit($event)">
-          <div class="input-group form-group input-group-wrap">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fa fa-user"></i></span>
-            </div>
-            <input
-              #email
-              type="text"
-              class="form-control"
-              placeholder="e-mail"
-            />
-          </div>
-          <div class="input-group form-group input-group-wrap">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fa fa-key"></i></span>
-            </div>
-            <input
-              #password
-              type="password"
-              class="form-control"
-              placeholder="password"
-            />
-          </div>
-          <div class="form-group">
-            <button type="submit" class="btn float-right login_btn">
-              Login
-            </button>
-          </div>
-        </form>
+    </div>
+    <div class="card-body">
+      <app-login-form></app-login-form>
+    </div>
+    <div class="card-footer">
+      <div class="d-flex justify-content-center links">
+        Don't have an account?<a href="#">Sign Up</a>
       </div>
-      <div class="card-footer">
-        <div class="d-flex justify-content-center links">
-          Don't have an account?<a href="#">Sign Up</a>
-        </div>
-        <div class="d-flex justify-content-center">
-          <a href="#">Forgot your password?</a>
-        </div>
+      <div class="d-flex justify-content-center">
+        <a href="#">Forgot your password?</a>
       </div>
     </div>
   </div>
