@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { first } from 'rxjs/operators';
+import { User } from '../_models/user.model';
 import { Router } from '@angular/router';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { UserService } from 'src/app/_services/user.service';
-import { AlertService } from 'src/app/_services/alert.service';
-import { User } from 'src/app/_models/user.model';
+import { AuthenticationService } from '../_services/authentication.service';
+import { UserService } from '../_services/user.service';
+import { AlertService } from '../_services/alert.service';
 import { NgForm } from '@angular/forms';
+import { first } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-register-form',
-  templateUrl: './register-form.component.html',
-  styleUrls: ['./register-form.component.less']
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.less']
 })
-export class RegisterFormComponent {
+export class RegisterComponent {
 
   loading = false;
   submitted = false;

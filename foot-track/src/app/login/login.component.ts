@@ -1,17 +1,17 @@
-import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { User } from 'src/app/_models/user.model';
-import { AlertService } from 'src/app/_services/alert.service';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { first } from 'rxjs/operators';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthenticationService } from '../_services/authentication.service';
+import { AlertService } from '../_services/alert.service';
+import { User } from '../_models/user.model';
 
 @Component({
-  selector: 'app-login-form',
-  templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.less']
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.less']
 })
-export class LoginFormComponent {
+export class LoginComponent {
   private returnUrl = '/';
   userData = new User();
 
@@ -43,4 +43,5 @@ export class LoginFormComponent {
         }
       );
   }
+
 }
