@@ -8,12 +8,14 @@ import { LoginFormComponent } from './login/login-form/login-form.component';
 import { FormsModule } from '@angular/forms';
 import { AlertComponent } from './_components/alert/alert.component';
 import { HomeComponent } from './home/home.component';
-import { RegisterComponent } from './register/register.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { fakeBackendProvider } from './_helpers/fake-backend.interceptor';
-import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { RegisterFormComponent } from './register/register-form/register-form.component';
+import { RegisterPageComponent } from './register/register-page/register-page.component';
+import { ForgotPasswordPageComponent } from './forgot-password/forgot-password-page/forgot-password-page.component';
+import { ForgotPasswordFormComponent } from './forgot-password/forgot-password-form/forgot-password-form.component';
 
 @NgModule({
   declarations: [
@@ -22,8 +24,10 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
     LoginFormComponent,
     AlertComponent,
     HomeComponent,
-    RegisterComponent,
-    ForgotPasswordComponent,
+    RegisterPageComponent,
+    RegisterFormComponent,
+    ForgotPasswordPageComponent,
+    ForgotPasswordFormComponent
   ],
   imports: [
     BrowserModule,
