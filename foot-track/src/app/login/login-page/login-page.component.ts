@@ -9,12 +9,5 @@ import { AlertService } from 'src/app/_services/alert.service';
   styleUrls: ['./login-page.component.less']
 })
 export class LoginPageComponent {
-  constructor(
-    private router: Router,
-    private authenticationService: AuthenticationService,
-  ) {
-    if (this.authenticationService.currentUserValue) {
-      this.router.navigate(['/']);
-    }
-  }
+  constructor() { }
 }

@@ -19,7 +19,11 @@ export class LoginFormComponent {
     private alertService: AlertService,
     private authenticationService: AuthenticationService,
     private router: Router,
-  ) { }
+  ) {
+    if (this.authenticationService.currentUserValue) {
+      this.router.navigate(['/']);
+    }
+  }
 
   onSubmit(form: NgForm) {
     this.alertService.clear();

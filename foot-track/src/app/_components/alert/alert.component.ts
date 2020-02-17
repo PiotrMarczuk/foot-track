@@ -14,6 +14,7 @@ export class AlertComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.alertService.getAlert().subscribe(message => {
+      this.scrollToTop();
       switch (message && message.type) {
         case 'success':
           message.cssClass = 'alert alert-success alert-dismissible fade show';
@@ -32,6 +33,17 @@ export class AlertComponent implements OnInit, OnDestroy {
 
   closeAlert() {
     this.message = null;
+  }
+
+  scrollToTop() {
+    const scrollToTop = window.setInterval(() => {
+      const pos = window.pageYOffset;
+      if (pos > 0) {
+        window.scrollTo(0, pos - 5);
+      } else {
+        window.clearInterval(scrollToTop);
+      }
+    }, 16);
   }
 
 }
