@@ -17,4 +17,8 @@ export class HomeComponent implements OnInit {
     this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
   }
 
+  logout() {
+    this.authenticationService.logout();
+  }
+
 }
