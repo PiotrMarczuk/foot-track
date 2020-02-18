@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../_models/user.model';
 import { Router } from '@angular/router';
-import { AuthenticationService } from '../_services/authentication.service';
-import { UserService } from '../_services/user.service';
-import { AlertService } from '../_services/alert.service';
 import { NgForm } from '@angular/forms';
 import { first } from 'rxjs/operators';
+import { User } from 'src/app/core/models/user.model';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { UserService } from 'src/app/core/services/user.service';
+import { AlertService } from 'src/app/core/services/alert.service';
 
 @Component({
   selector: 'app-register',
@@ -50,7 +50,7 @@ export class RegisterComponent {
       .subscribe(
         data => {
           this.alertService.success('Registration successful', true);
-          this.router.navigate(['/login']);
+          this.router.navigate(['identify/login']);
         },
         error => {
           this.alertService.error(error);

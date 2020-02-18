@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthenticationService } from '../_services/authentication.service';
-import { User } from '../_models/user.model';
 import { Router } from '@angular/router';
+import { AuthenticationService } from '../core/services/authentication.service';
+import { User } from '../core/models/user.model';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
 
   logout() {
     this.authenticationService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/identify/login']);
   }
 
 }
