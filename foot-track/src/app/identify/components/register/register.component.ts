@@ -13,12 +13,8 @@ import { AlertService } from 'src/app/core/services/alert.service';
   styleUrls: ['./register.component.less']
 })
 export class RegisterComponent {
-
-  loading = false;
-  submitted = false;
-
   userData = new User();
-  public passwordRetype: string;
+  model: any = {};
 
   constructor(
     private router: Router,
@@ -32,7 +28,6 @@ export class RegisterComponent {
   }
 
   onSubmit(form: NgForm) {
-    this.submitted = true;
 
     // reset alerts on submit
     this.alertService.clear();
@@ -42,9 +37,13 @@ export class RegisterComponent {
       return;
     }
 
-    console.log(form.value);
+    if (this.userData.firstName === null) {
+      this.userData.firstName = '';
+    }
+    if (this.userData.lastName === null) {
+      this.userData.lastName = '';
+    }
 
-    this.loading = true;
     this.userService.register(form.value)
       .pipe(first())
       .subscribe(
@@ -54,7 +53,6 @@ export class RegisterComponent {
         },
         error => {
           this.alertService.error(error);
-          this.loading = false;
         });
   }
 

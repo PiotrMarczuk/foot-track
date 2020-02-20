@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 })
 export class FooterComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
-  public isHidden: boolean;
+  public isHidden = true;
 
   constructor(private hidingService: HidingService) { }
 

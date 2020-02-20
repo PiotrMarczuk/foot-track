@@ -10,7 +10,7 @@ import { HidingService } from 'src/app/core/services/hiding.service';
 export class NavbarComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
-  public isHidden: boolean;
+  public isHidden = true;
 
   constructor(private hidingService: HidingService) { }
 

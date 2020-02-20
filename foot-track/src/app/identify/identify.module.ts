@@ -4,10 +4,11 @@ import { CoreModule } from '../core/core.module';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
-import { FormControl, FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormTemplateComponent } from './components/form-template/form-template.component';
 import { AlertComponent } from '../core/components/alert/alert.component';
 import { IdentifyRoutingModule } from './identify-routing.module';
+import { MustMatchDirective } from './directives/must-match.directive';
 
 
 
@@ -17,13 +18,16 @@ import { IdentifyRoutingModule } from './identify-routing.module';
     LoginComponent,
     RegisterComponent,
     FormTemplateComponent,
-    AlertComponent
+    AlertComponent,
+    MustMatchDirective
   ],
   imports: [
     CommonModule,
     CoreModule,
     FormsModule,
-    IdentifyRoutingModule
-  ]
+    IdentifyRoutingModule,
+    ReactiveFormsModule
+  ],
+  exports: [MustMatchDirective]
 })
 export class IdentifyModule { }
