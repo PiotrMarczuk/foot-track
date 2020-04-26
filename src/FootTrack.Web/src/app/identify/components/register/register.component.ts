@@ -28,11 +28,8 @@ export class RegisterComponent {
   }
 
   onSubmit(form: NgForm) {
-
-    // reset alerts on submit
     this.alertService.clear();
 
-    // stop here if form is invalid
     if (form.invalid) {
       return;
     }
@@ -47,7 +44,7 @@ export class RegisterComponent {
     this.userService.register(form.value)
       .pipe(first())
       .subscribe(
-        data => {
+        () => {
           this.alertService.success('Registration successful', true);
           this.router.navigate(['identify/login']);
         },

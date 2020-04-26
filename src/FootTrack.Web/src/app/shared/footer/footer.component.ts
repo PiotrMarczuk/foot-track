@@ -15,7 +15,7 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.hidingService.getAlert()
-      .subscribe(arg => this.isHidden = arg);
+      .subscribe((arg: boolean) => this.isHidden = arg);
   }
 
   ngOnDestroy() {
