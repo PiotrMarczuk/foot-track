@@ -5,8 +5,6 @@ import { fakeBackendProvider } from './helpers/fake-backend.interceptor';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
-
-
 @NgModule({
   declarations: [],
   imports: [
