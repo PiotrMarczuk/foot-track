@@ -5,8 +5,7 @@ import { first } from 'rxjs/operators';
 import { User } from 'src/app/core/models/user.model';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UserService } from 'src/app/core/services/user.service';
-import { AlertService } from 'src/app/core/services/alert.service';
-
+import { AlertService } from 'src/app/alert/services/alert.service';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -45,8 +44,9 @@ export class RegisterComponent {
       .pipe(first())
       .subscribe(
         () => {
+          //TODO: Alert is not going with routechange.
           this.alertService.success('Registration successful', true);
-          this.router.navigate(['identify/login']);
+          this.router.navigate(['/']);
         },
         error => {
           this.alertService.error(error);

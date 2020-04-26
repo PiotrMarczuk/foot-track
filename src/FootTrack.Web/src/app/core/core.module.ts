@@ -6,10 +6,9 @@ import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-  declarations: [],
   imports: [
     CommonModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

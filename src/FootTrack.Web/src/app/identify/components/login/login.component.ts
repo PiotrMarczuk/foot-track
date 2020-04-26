@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from 'src/app/core/models/user.model';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { AlertService } from 'src/app/core/services/alert.service';
+import { AlertService } from 'src/app/alert/services/alert.service';
 
 @Component({
   selector: 'app-login',

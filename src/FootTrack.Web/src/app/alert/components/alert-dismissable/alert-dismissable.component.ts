@@ -3,38 +3,28 @@ import { Subscription } from 'rxjs';
 import { AlertService } from '../../services/alert.service';
 
 @Component({
-  selector: 'app-alert',
-  templateUrl: './alert.component.html',
+  selector: 'app-alert-dismissable',
+  templateUrl: './alert-dismissable.component.html',
 })
-export class AlertComponent implements OnInit, OnDestroy {
+export class AlertDismissableComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   message: any;
+  dissmissible = true;
+  timeout = 3000;
 
-  constructor(private alertService: AlertService) { }
-
+  constructor(private alertService: AlertService) {}
   ngOnInit(): void {
-    this.subscription = this.alertService.getAlert().subscribe(message => {
+    this.subscription = this.alertService.getAlert().subscribe((message) => {
       this.scrollToTop();
-      switch (message && message.type) {
-        case 'success':
-          message.cssClass = 'alert alert-success alert-dismissible fade show';
-          break;
-        case 'error':
-          message.cssClass = 'alert alert-danger alert-dismissible fade show';
-          break;
-      }
       this.message = message;
     });
   }
-
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
-
   closeAlert() {
     this.message = null;
   }
-
   scrollToTop() {
     const scrollToTop = window.setInterval(() => {
       const pos = window.pageYOffset;
@@ -45,5 +35,4 @@ export class AlertComponent implements OnInit, OnDestroy {
       }
     }, 16);
   }
-
 }
