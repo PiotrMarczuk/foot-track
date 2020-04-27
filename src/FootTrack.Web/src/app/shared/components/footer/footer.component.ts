@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HidingService } from 'src/app/core/services/hiding.service';
 import { Subscription } from 'rxjs';
+import {HidingService} from '../../../core/services/hiding.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'app-footer',

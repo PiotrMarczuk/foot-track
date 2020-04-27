@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { HidingService } from 'src/app/core/services/hiding.service';
 
 @Component({
   selector: "app-main-page",
@@ -6,5 +7,8 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./main-page.component.less"],
 })
 export class MainPageComponent implements OnInit {
-  ngOnInit(): void {}
+  constructor(private hidingService: HidingService) {}
+  ngOnInit(): void {
+      this.hidingService.hideComponents(false);
+  }
 }
