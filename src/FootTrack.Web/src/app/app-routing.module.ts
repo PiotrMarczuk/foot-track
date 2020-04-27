@@ -8,9 +8,9 @@ const routes: Routes = [
     path: 'identify',
     loadChildren: () => import('./identify/identify.module').then(m => m.IdentifyModule),
   },
-  { path: '', component: MainPageComponent, canActivate: [AuthGuard] },
-
-  { path: '**', redirectTo: '' },
+  { path: '', redirectTo: '/home', pathMatch: 'full'},
+  { path: 'home', component: MainPageComponent, canActivate: [AuthGuard]},
+  { path: '**', component: MainPageComponent },
 ];
 
 @NgModule({
