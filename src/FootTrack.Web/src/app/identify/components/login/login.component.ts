@@ -21,7 +21,7 @@ export class LoginComponent {
     private router: Router,
   ) {
     if (this.authenticationService.currentUserValue) {
-      this.router.navigate(['/']);
+      this.router.navigate([this.returnUrl]);
     }
   }
 

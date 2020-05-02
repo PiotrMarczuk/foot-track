@@ -11,8 +11,8 @@ import { Router, NavigationStart } from '@angular/router';
 export class AlertDismissableComponent implements OnInit, OnDestroy {
   @Input() id = 'default-alert';
   alerts: Alert[] = [];
-  alertSubscription: Subscription;
-  routeSubscription: Subscription;
+  alertSubscription: Subscription = Subscription.EMPTY;
+  routeSubscription: Subscription = Subscription.EMPTY;
 
   dissmissible = true;
 
