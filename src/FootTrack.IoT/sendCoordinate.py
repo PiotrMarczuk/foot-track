@@ -1,44 +1,46 @@
-from sys import argv
-from azure.iot.device import IoTHubDeviceClient, Message
-
-import gpsd
-import requests
+import threading
 import time
+import gpsd
+from azure.iot.device import IoTHubDeviceClient, Message, MethodResponse
+from datetime import datetime
 
-# az iot hub device-identity show-connection-string --hub-name {YourIoTHubName} --device-id MyNodeDevice --output table
-CONNECTION_STRING = "connectionString"
+CONNECTION_STRING = "connString"
 
-# Define the JSON message to send to IoT Hub.
-MSG_TXT = '{{"lat": {lat},"lon": {lon}}}'
+MSG_TXT = '{{"latitude": {lat},"longitude": {lon}, "speed": {speed}, "timestamp":{timestamp}}}'
 
-def iothub_client_init():
-    # Create an IoT Hub client
-    client = IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)
-    return client
+SEND_GPS = False
+
+def message_listener(client):
+    global SEND_GPS
+    while True:
+        method_request = client.receive_method_request("changeMeasurementState")
+        SEND_GPS = not SEND_GPS
+        resp_status = 200
+        method_response = MethodResponse(method_request.request_id, resp_status)
+        client.send_method_response(method_response)
 
 def iothub_client_run():
-
-    gpsd.connect()
-
     try:
-        client = iothub_client_init()
-        print ( "IoT Hub device sending periodic messages, press Ctrl-C to exit" )
-
+        client = IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)
+        message_listener_thread = threading.Thread(target=message_listener, args=(client,))
+        message_listener_thread.daemon = True
+        message_listener_thread.start()
+        gpsd.connect()
         while True:
-            try :
-                packet = gpsd.get_current()
-                msg_txt_formatted = MSG_TXT.format(lat = packet.lat, lon = packet.lon)
-                message = Message(msg_txt_formatted)
-                print( "Sending message: {}".format(message) )
-                client.send_message(message)
-                print ( "Message successfully sent" )
-                time.sleep(1)
-            except Exception as e :
-              print("Got exception " + str(e))
+            if SEND_GPS:
+                try :
+                    packet = gpsd.get_current()
+                    msg_txt_formatted = MSG_TXT.format(lat = packet.lat,lon = packet.lon, speed = packet.speed(), timestamp = datetime.utcnow())
+                    message = Message(msg_txt_formatted)
+                    print( "Sending message: {}".format(message) )
+                    client.send_message(message)
+                    print ( "Message successfully sent." )
+                    time.sleep(1)
+                except Exception as e :
+                    print("Got exception " + str(e))
     except KeyboardInterrupt:
-        print ( "IoTHubClient stopped" )
+        print ( "Messaging device stopped." )
 
 if __name__ == '__main__':
-    print ( "IoTHubClient running" )
-    print ( "Press Ctrl-C to exit" )
+    print ( "Starting messaging device..." )
     iothub_client_run()
