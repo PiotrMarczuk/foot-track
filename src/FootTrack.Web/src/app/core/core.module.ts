@@ -6,16 +6,13 @@ import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-  ],
+  imports: [CommonModule, HttpClientModule],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 
     //  provider used to create fake backend - remove it later
-    fakeBackendProvider
-  ]
+    fakeBackendProvider,
+  ],
 })
-export class CoreModule { }
+export class CoreModule {}

@@ -1,41 +1,41 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { NavigationStart, Router } from '@angular/router';
+import { Observable, Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { Alert } from '../models/alert';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlertService {
-  private subject = new Subject<any>();
-  private keepAfterRouteChange = false;
+  private subject = new Subject<Alert>();
+  private defaultId = 'default-alert';
 
-  constructor(router: Router) {
-    router.events.subscribe(event => {
-        if (event instanceof NavigationStart) {
-            if (this.keepAfterRouteChange) {
-                this.keepAfterRouteChange = false;
-            } else {
-                this.clear();
-            }
-        }
-    });
-}
-
-  getAlert(): Observable<any> {
-    return this.subject.asObservable();
+  onAlert(id = this.defaultId): Observable<Alert> {
+    return this.subject.asObservable().pipe(filter((x) => x && x.id === id));
   }
 
-  success(message: string, keepAfterRouteChange = false) {
-    this.keepAfterRouteChange = keepAfterRouteChange;
-    this.subject.next({ type: 'success', text: message });
+  success(message: string, options?: any) {
+    this.alert(new Alert({ ...options, type: 'success', message }));
   }
 
-  error(message: string, keepAfterRouteChange = false) {
-    this.keepAfterRouteChange = keepAfterRouteChange;
-    this.subject.next({ type: 'danger', text: message });
+  error(message: string, options?: any) {
+    this.alert(new Alert({ ...options, type: 'danger', message }));
   }
 
-  clear() {
-    this.subject.next();
+  info(message: string, options?: any) {
+    this.alert(new Alert({ ...options, type: 'info', message }));
+  }
+
+  warn(message: string, options?: any) {
+    this.alert(new Alert({ ...options, type: 'warning', message }));
+  }
+
+  alert(alert: Alert) {
+    alert.id = alert.id || this.defaultId;
+    this.subject.next(alert);
+  }
+
+  clear(id = this.defaultId) {
+    this.subject.next(new Alert({ id }));
   }
 }

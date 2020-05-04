@@ -9,9 +9,13 @@ import { AlertService } from 'src/app/alert/services/alert.service';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.less']
+  styleUrls: ['./register.component.less'],
 })
 export class RegisterComponent {
+  options = {
+    keepAfterRouteChange: true,
+  };
+
   userData = new User();
   model: any = {};
 
@@ -40,17 +44,17 @@ export class RegisterComponent {
       this.userData.lastName = '';
     }
 
-    this.userService.register(form.value)
+    this.userService
+      .register(form.value)
       .pipe(first())
       .subscribe(
         () => {
-          //TODO: Alert is not going with routechange.
-          this.alertService.success('Registration successful', true);
-          this.router.navigate(['/']);
+          this.router.navigate(['/identify/login']);
+          this.alertService.success('Registration successful', this.options);
         },
-        error => {
+        (error) => {
           this.alertService.error(error);
-        });
+        }
+      );
   }
-
 }

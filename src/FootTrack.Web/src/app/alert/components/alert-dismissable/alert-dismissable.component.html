@@ -1,3 +1,10 @@
-<div *ngIf="message">
-  <alert [type]="message.type" [dismissible]="dissmissible" [dismissOnTimeout]="timeout" (onClosed)="closeAlert()">{{ message.text }}</alert>
-</div>
+<ng-container *ngFor="let alert of alerts">
+  <div *ngIf="alert">
+    <alert
+      [type]="alert.type"
+      [dismissible]="dissmissible"
+      (onClosed)="removeAlert(alert)"
+      >{{ alert.message }}</alert
+    >
+  </div>
+</ng-container>

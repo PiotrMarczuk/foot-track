@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HidingService {
   private subject = new Subject<any>();
 
-  constructor() { }
+  constructor() {}
 
   getAlert(): Observable<any> {
     return this.subject.asObservable();
