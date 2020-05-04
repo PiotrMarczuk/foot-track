@@ -9,7 +9,7 @@ import { AlertService } from 'src/app/alert/services/alert.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.less']
+  styleUrls: ['./login.component.less'],
 })
 export class LoginComponent {
   private returnUrl = '/';
@@ -18,7 +18,7 @@ export class LoginComponent {
   constructor(
     private alertService: AlertService,
     private authenticationService: AuthenticationService,
-    private router: Router,
+    private router: Router
   ) {
     if (this.authenticationService.currentUserValue) {
       this.router.navigate([this.returnUrl]);
@@ -32,16 +32,16 @@ export class LoginComponent {
       return;
     }
 
-    this.authenticationService.login(this.userData.email, this.userData.password)
+    this.authenticationService
+      .login(this.userData.email, this.userData.password)
       .pipe(first())
       .subscribe(
         () => {
           this.router.navigate([this.returnUrl]);
         },
-        error => {
+        (error) => {
           this.alertService.error(error);
         }
       );
   }
-
 }

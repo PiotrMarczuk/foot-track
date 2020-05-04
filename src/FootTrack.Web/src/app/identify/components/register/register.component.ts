@@ -9,11 +9,11 @@ import { AlertService } from 'src/app/alert/services/alert.service';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.less']
+  styleUrls: ['./register.component.less'],
 })
 export class RegisterComponent {
   options = {
-    keepAfterRouteChange: true
+    keepAfterRouteChange: true,
   };
 
   userData = new User();
@@ -44,16 +44,17 @@ export class RegisterComponent {
       this.userData.lastName = '';
     }
 
-    this.userService.register(form.value)
+    this.userService
+      .register(form.value)
       .pipe(first())
       .subscribe(
         () => {
           this.router.navigate(['/identify/login']);
           this.alertService.success('Registration successful', this.options);
         },
-        error => {
+        (error) => {
           this.alertService.error(error);
-        });
+        }
+      );
   }
-
 }

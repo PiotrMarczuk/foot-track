@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { HidingService } from '../../../core/services/hiding.service';
 import { User } from '../../../core/models/user.model';
-import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 
 @Component({
@@ -19,8 +18,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   constructor(
     private hidingService: HidingService,
-    private authenticationService: AuthenticationService,
-    private router: Router
+    private authenticationService: AuthenticationService
   ) {}
 
   logout() {

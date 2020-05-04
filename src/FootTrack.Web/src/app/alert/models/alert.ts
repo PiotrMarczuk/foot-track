@@ -5,6 +5,6 @@ export class Alert {
   keepAfterRouteChange: boolean;
 
   constructor(init?: Partial<Alert>) {
-      Object.assign(this, init);
+    Object.assign(this, init);
   }
 }

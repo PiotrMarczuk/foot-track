@@ -44,7 +44,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     function authenticate() {
       const { email, password } = body;
       const user = users.find(
-        (x: { email: any; password: any; }) => x.email === email && x.password === password
+        (x: { email: any; password: any }) =>
+          x.email === email && x.password === password
       );
       if (!user) {
         return error('Email or password is incorrect');
@@ -61,11 +62,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     function register() {
       const user = body;
 
-      if (users.find((x: { email: any; }) => x.email === user.email)) {
+      if (users.find((x: { email: any }) => x.email === user.email)) {
         return error('User with email ' + user.email + ' already exists');
       }
 
-      user.id = users.length ? Math.max(...users.map((x: { id: any; }) => x.id)) + 1 : 1;
+      user.id = users.length
+        ? Math.max(...users.map((x: { id: any }) => x.id)) + 1
+        : 1;
       users.push(user);
       localStorage.setItem('users', JSON.stringify(users));
 
@@ -84,12 +87,18 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return unauthorized();
       }
 
-      users = users.filter((x: { id: number; }) => x.id !== idFromUrl());
+      users = users.filter((x: { id: number }) => x.id !== idFromUrl());
       localStorage.setItem('users', JSON.stringify(users));
       return ok();
     }
 
-    function ok(body?: { id: any; email: any; firstName: any; lastName: any; token: string; }) {
+    function ok(body?: {
+      id: any;
+      email: any;
+      firstName: any;
+      lastName: any;
+      token: string;
+    }) {
       return of(new HttpResponse({ status: 200, body }));
     }
 

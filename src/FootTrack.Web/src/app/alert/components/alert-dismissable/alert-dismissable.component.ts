@@ -18,22 +18,23 @@ export class AlertDismissableComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router, private alertService: AlertService) {}
   ngOnInit(): void {
-    this.alertSubscription = this.alertService.onAlert(this.id)
-      .subscribe(alert => {
+    this.alertSubscription = this.alertService
+      .onAlert(this.id)
+      .subscribe((alert) => {
         if (!alert.message) {
-          this.alerts = this.alerts.filter(x => x.keepAfterRouteChange);
+          this.alerts = this.alerts.filter((x) => x.keepAfterRouteChange);
 
-          this.alerts.forEach(x => delete x.keepAfterRouteChange);
+          this.alerts.forEach((x) => delete x.keepAfterRouteChange);
           return;
         }
 
         this.alerts.push(alert);
       });
 
-    this.routeSubscription = this.router.events.subscribe(event => {
-        if (event instanceof NavigationStart) {
-            this.alertService.clear(this.id);
-        }
+    this.routeSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.alertService.clear(this.id);
+      }
     });
   }
 
@@ -43,7 +44,9 @@ export class AlertDismissableComponent implements OnInit, OnDestroy {
   }
 
   removeAlert(alert: Alert) {
-    if (!this.alerts.includes(alert)) { return; }
+    if (!this.alerts.includes(alert)) {
+      return;
+    }
   }
 
   scrollToTop() {

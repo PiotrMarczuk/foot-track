@@ -10,14 +10,13 @@ import { IdentifyRoutingModule } from './identify-routing.module';
 import { MustMatchDirective } from './directives/must-match.directive';
 import { AlertingModule } from '../alert/alerting.module';
 
-
 @NgModule({
   declarations: [
     ForgotPasswordComponent,
     LoginComponent,
     RegisterComponent,
     FormTemplateComponent,
-    MustMatchDirective
+    MustMatchDirective,
   ],
   imports: [
     CommonModule,
@@ -25,8 +24,8 @@ import { AlertingModule } from '../alert/alerting.module';
     FormsModule,
     IdentifyRoutingModule,
     ReactiveFormsModule,
-    AlertingModule
+    AlertingModule,
   ],
-  exports: [MustMatchDirective]
+  exports: [MustMatchDirective],
 })
-export class IdentifyModule { }
+export class IdentifyModule {}

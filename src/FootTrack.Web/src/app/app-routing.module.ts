@@ -6,15 +6,16 @@ import { AuthGuard } from './core/helpers/auth.guard';
 const routes: Routes = [
   {
     path: 'identify',
-    loadChildren: () => import('./identify/identify.module').then(m => m.IdentifyModule),
+    loadChildren: () =>
+      import('./identify/identify.module').then((m) => m.IdentifyModule),
   },
-  { path: '', redirectTo: '/home', pathMatch: 'full'},
-  { path: 'home', component: MainPageComponent, canActivate: [AuthGuard]},
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'home', component: MainPageComponent, canActivate: [AuthGuard] },
   { path: '**', component: MainPageComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
