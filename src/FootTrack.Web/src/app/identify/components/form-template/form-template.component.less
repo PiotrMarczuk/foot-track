@@ -1,21 +1,28 @@
+@import '../../../utilities/common-variables.less';
+
 .vertical-center {
-    min-height: 100%;
-    display: flex;
-    align-items: center;
-  }
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+}
 
-  h1 {
-    .logo {
-      height: 200px;
-    }
+h1 {
+  .logo {
+    height: @logo-height;
   }
+}
 
-  .form-layout {
-    padding: 1rem;
-    width: 100%;
-    background-color: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 1.1rem;
-    outline: none;
-    max-width: 500px;
-  }
+.form-layout {
+  padding: 1rem;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 1.1rem;
+  outline: none;
+  max-width: @form-width;
+}
+
+body .foottrack-body {
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+}
