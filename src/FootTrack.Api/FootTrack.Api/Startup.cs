@@ -22,6 +22,8 @@ namespace FootTrack.Api
         {
             services.ConfigureDatabase(Configuration);
 
+            services.ServicesConfiguration();
+
             services.AddControllers();
         }
 
