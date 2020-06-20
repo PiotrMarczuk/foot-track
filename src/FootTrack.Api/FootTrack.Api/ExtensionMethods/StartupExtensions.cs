@@ -1,5 +1,4 @@
-﻿using FootTrack.Api.Settings;
-using FootTrack.Api.Settings.MongoDb;
+﻿using FootTrack.Api.Settings.MongoDb;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
