@@ -225,7 +225,7 @@ namespace FootTrack.Api.Tests.Services
                 LastName = _notExistingUserForRegister.LastName,
             });
 
-            mapper.Map<UserViewModel>(Arg.Any<User>()).Returns(new UserViewModel());
+            mapper.Map<AuthenticatedUserViewModel>(Arg.Any<User>()).Returns(new AuthenticatedUserViewModel());
 
             return mapper;
         }

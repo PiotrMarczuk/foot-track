@@ -31,7 +31,7 @@ namespace FootTrack.Api.Services.Implementations
             _usersRepository = usersRepository;
         }
 
-        public async Task<UserViewModel> AuthenticateAsync(UserLoginViewModel loginViewModel)
+        public async Task<AuthenticatedUserViewModel> AuthenticateAsync(UserLoginViewModel loginViewModel)
         {
             Guard.Argument(loginViewModel, nameof(loginViewModel)).NotNull();
             Guard.Argument(loginViewModel.Email, nameof(loginViewModel.Email))
@@ -59,7 +59,7 @@ namespace FootTrack.Api.Services.Implementations
                 throw new ArgumentException("Wrong password.");
             }
 
-            var userViewModel = _mapper.Map<UserViewModel>(user);
+            var userViewModel = _mapper.Map<AuthenticatedUserViewModel>(user);
             userViewModel.Token = _jwtTokenService.GenerateToken(user);
 
             return userViewModel;
