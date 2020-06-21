@@ -12,6 +12,7 @@ namespace FootTrack.Api.Mappings
             CreateMap<UserViewModel, User>();
             CreateMap<UserRegisterViewModel, User>();
             CreateMap<User, UserRegisterViewModel>();
+            CreateMap<User, UserViewModel>();
         }
     }
 }
