@@ -151,14 +151,14 @@ namespace FootTrack.Api.Tests.Services
         [TestCase("   ")]
         public void When_getting_user_with_empty_or_whitespace_should_throw_ArgumentException(string id)
         {
-            Assert.ThrowsAsync<ArgumentException>(() => _sut.GetAsync(id));
+            Assert.ThrowsAsync<ArgumentException>(() => _sut.GetByIdAsync(id));
         }
 
         [Test]
         [TestCase(null)]
         public void When_getting_user_with_null_should_throw_ArgumentNullException(string id)
         {
-            Assert.ThrowsAsync<ArgumentNullException>(() => _sut.GetAsync(id));
+            Assert.ThrowsAsync<ArgumentNullException>(() => _sut.GetByIdAsync(id));
         }
 
         [Test]
@@ -167,7 +167,7 @@ namespace FootTrack.Api.Tests.Services
         {
             _usersRepository.FindByIdAsync("1234").Returns(Task.FromResult(new User()));
 
-            Assert.ThrowsAsync<NotFoundException>(() => _sut.GetAsync(id));
+            Assert.ThrowsAsync<NotFoundException>(() => _sut.GetByIdAsync(id));
         }
 
         [Test]
@@ -176,7 +176,7 @@ namespace FootTrack.Api.Tests.Services
             const string existingId = "1234";
             _usersRepository.FindByIdAsync(existingId).Returns(Task.FromResult(new User()));
 
-            var result = _sut.GetAsync(existingId);
+            var result = _sut.GetByIdAsync(existingId);
 
             Assert.That(result, Is.Not.Null);
         }

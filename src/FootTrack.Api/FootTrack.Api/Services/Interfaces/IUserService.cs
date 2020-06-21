@@ -9,7 +9,7 @@ namespace FootTrack.Api.Services.Interfaces
     {
         Task<UserViewModel> AuthenticateAsync(UserLoginViewModel loginViewModel);
 
-        Task<User> GetAsync(string id);
+        Task<User> GetByIdAsync(string id);
 
         Task<User> CreateAsync(UserRegisterViewModel registerViewModel);
     }
