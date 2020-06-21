@@ -170,6 +170,17 @@ namespace FootTrack.Api.Tests.Services
             Assert.ThrowsAsync<NotFoundException>(() => _sut.GetAsync(id));
         }
 
+        [Test]
+        public void When_getting_existing_user_with_correct_id_should_return_not_null_object()
+        {
+            const string existingId = "1234";
+            _usersRepository.FindByIdAsync(existingId).Returns(Task.FromResult(new User()));
+
+            var result = _sut.GetAsync(existingId);
+
+            Assert.That(result, Is.Not.Null);
+        }
+
         private User SetupExistingUser()
         {
             var user = new User
