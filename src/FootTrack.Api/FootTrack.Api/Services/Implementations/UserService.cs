@@ -90,14 +90,16 @@ namespace FootTrack.Api.Services.Implementations
             return user;
         }
 
-        public Task<User> GetAsync(string id)
+        public async Task<User> GetAsync(string id)
         {
             Guard.Argument(id, nameof(id))
                 .NotEmpty()
                 .NotWhiteSpace()
                 .NotNull();
 
-            return _usersRepository.FindByIdAsync(id);
+            var user = await _usersRepository.FindByIdAsync(id);
+
+            return user ?? throw new NotFoundException("User not found.");
         }
     }
 }

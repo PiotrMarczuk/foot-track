@@ -163,13 +163,11 @@ namespace FootTrack.Api.Tests.Services
 
         [Test]
         [TestCase("12345")]
-        public async Task When_getting_existing_user_with_incorrect_id_should_return_null(string id)
+        public void When_getting_existing_user_with_incorrect_id_should_throw_NotFoundException(string id)
         {
             _usersRepository.FindByIdAsync("1234").Returns(Task.FromResult(new User()));
 
-            var result = await _sut.GetAsync(id);
-
-            Assert.That(result, Is.EqualTo(null));
+            Assert.ThrowsAsync<NotFoundException>(() => _sut.GetAsync(id));
         }
 
         private User SetupExistingUser()
