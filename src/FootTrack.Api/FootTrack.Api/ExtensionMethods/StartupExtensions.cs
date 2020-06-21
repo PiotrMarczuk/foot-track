@@ -69,32 +69,42 @@ namespace FootTrack.Api.ExtensionMethods
                 })
                 .AddJwtBearer(x =>
                 {
-                    x.Events = new JwtBearerEvents
-                    {
-                        OnTokenValidated = async context =>
-                        {
-                            var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                            var userId = context.Principal.Identity.Name;
-                            try
-                            {
-                                await userService.GetByIdAsync(userId);
-                            }
-                            catch (NotFoundException)
-                            {
-                                context.Fail("Unauthorized");
-                            }
-                        }
-                    };
+                    x.Events = SetupJwtBearerEvent();
                     x.RequireHttpsMetadata = false;
                     x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
+                    x.TokenValidationParameters = SetupTokenValidationParameters(key);
                 });
+        }
+
+        private static TokenValidationParameters SetupTokenValidationParameters(byte[] key)
+        {
+            return new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+        }
+
+        private static JwtBearerEvents SetupJwtBearerEvent()
+        {
+            return new JwtBearerEvents
+            {
+                OnTokenValidated = async context =>
+                {
+                    var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
+                    var userId = context.Principal.Identity.Name;
+                    try
+                    {
+                        await userService.GetByIdAsync(userId);
+                    }
+                    catch (NotFoundException)
+                    {
+                        context.Fail("Unauthorized");
+                    }
+                }
+            };
         }
     }
 }
