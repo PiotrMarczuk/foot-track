@@ -28,6 +28,8 @@ namespace FootTrack.Api
 
             services.ServicesConfiguration();
 
+            services.ConfigureJwt(Configuration);
+
             services.AddControllers();
         }
 
@@ -40,6 +42,8 @@ namespace FootTrack.Api
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseRouting();
 
