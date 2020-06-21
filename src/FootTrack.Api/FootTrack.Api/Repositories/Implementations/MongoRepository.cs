@@ -94,16 +94,16 @@ namespace FootTrack.Api.Repositories.Implementations
             });
         }
 
-        public virtual void ReplaceOne(TDocument document)
+        public virtual TDocument ReplaceOne(TDocument document)
         {
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
-            _collection.FindOneAndReplace(filter, document);
+            return _collection.FindOneAndReplace(filter, document);
         }
 
-        public virtual async Task ReplaceOneAsync(TDocument document)
+        public virtual async Task<TDocument> ReplaceOneAsync(TDocument document)
         {
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
-            await _collection.FindOneAndReplaceAsync(filter, document);
+            return await _collection.FindOneAndReplaceAsync(filter, document);
         }
 
         public virtual void DeleteOne(Expression<Func<TDocument, bool>> filterExpression)

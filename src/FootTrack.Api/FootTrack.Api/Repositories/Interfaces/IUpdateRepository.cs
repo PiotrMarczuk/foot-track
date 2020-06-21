@@ -4,10 +4,10 @@ using FootTrack.Api.Models.Document;
 
 namespace FootTrack.Api.Repositories.Interfaces
 {
-    public interface IUpdateRepository<in TDocument> where TDocument : IDocument
+    public interface IUpdateRepository<TDocument> where TDocument : IDocument
     {
-        void ReplaceOne(TDocument document);
+        TDocument ReplaceOne(TDocument document);
 
-        Task ReplaceOneAsync(TDocument document);
+        Task<TDocument> ReplaceOneAsync(TDocument document);
     }
 }
