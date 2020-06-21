@@ -17,7 +17,9 @@ namespace FootTrack.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
 
-        public UsersController(IMapper mapper, IUserService userService)
+        public UsersController(
+            IMapper mapper, 
+            IUserService userService)
         {
             _mapper = mapper;
             _userService = userService;
@@ -29,7 +31,8 @@ namespace FootTrack.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginViewModel loginViewModel)
         {
-            return Ok(await _userService.AuthenticateAsync(loginViewModel));
+            return Ok(await _userService
+                .AuthenticateAsync(loginViewModel));
         }
 
         // POST api/users/register
@@ -38,7 +41,8 @@ namespace FootTrack.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterViewModel registerViewModel)
         {
-            var user = await _userService.CreateAsync(registerViewModel);
+            var user = await _userService
+                .CreateAsync(registerViewModel);
 
             return CreatedAtAction(
                 nameof(GetById),
@@ -51,7 +55,8 @@ namespace FootTrack.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var user = await _userService.GetByIdAsync(id);
+            var user = await _userService
+                .GetByIdAsync(id);
 
             return Ok(_mapper.Map<UserViewModel>(user));
         }

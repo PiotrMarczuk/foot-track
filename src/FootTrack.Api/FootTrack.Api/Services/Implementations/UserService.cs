@@ -43,7 +43,8 @@ namespace FootTrack.Api.Services.Implementations
                 .NotEmpty()
                 .NotWhiteSpace();
 
-            var user = await _usersRepository.FindOneAsync(u => u.Email == loginViewModel.Email);
+            var user = await _usersRepository
+                .FindOneAsync(u => u.Email == loginViewModel.Email);
 
             if (user == null)
             {
@@ -60,7 +61,8 @@ namespace FootTrack.Api.Services.Implementations
             }
 
             var userViewModel = _mapper.Map<AuthenticatedUserViewModel>(user);
-            userViewModel.Token = _jwtTokenService.GenerateToken(user);
+            userViewModel.Token = _jwtTokenService
+                .GenerateToken(user);
 
             return userViewModel;
         }
@@ -77,13 +79,16 @@ namespace FootTrack.Api.Services.Implementations
                 .NotEmpty()
                 .NotWhiteSpace();
 
-            if (await _usersRepository.FindOneAsync(u => u.Email == registerViewModel.Email) != null)
+            if (await _usersRepository
+                    .FindOneAsync(
+                        u => u.Email == registerViewModel.Email) != null)
             {
                 throw new AlreadyExistsException($"There's already an account with email {registerViewModel.Email}");
             }
 
             var user = _mapper.Map<User>(registerViewModel);
-            user.PasswordHash = _passwordHasher.HashPassword(user, registerViewModel.Password);
+            user.PasswordHash = _passwordHasher
+                .HashPassword(user, registerViewModel.Password);
 
             await _usersRepository.InsertOneAsync(user);
 
@@ -97,7 +102,8 @@ namespace FootTrack.Api.Services.Implementations
                 .NotWhiteSpace()
                 .NotNull();
 
-            var user = await _usersRepository.FindByIdAsync(id);
+            var user = await _usersRepository
+                .FindByIdAsync(id);
 
             return user ?? throw new NotFoundException("User not found.");
         }

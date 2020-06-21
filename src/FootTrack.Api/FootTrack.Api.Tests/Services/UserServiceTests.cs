@@ -47,7 +47,11 @@ namespace FootTrack.Api.Tests.Services
             _tokenService = SetupTokenService();
             _usersRepository = SetupMongoRepository();
 
-            _sut = new UserService(_passwordHasher, _mapper, _tokenService, _usersRepository);
+            _sut = new UserService(
+                _passwordHasher,
+                _mapper,
+                _tokenService,
+                _usersRepository);
         }
 
         [Test]
@@ -114,7 +118,8 @@ namespace FootTrack.Api.Tests.Services
         {
             SetUserRepositoryToReturnNullWhenFinding();
 
-            var result = await _sut.CreateAsync(_notExistingUserForRegister);
+            var result = await _sut
+                .CreateAsync(_notExistingUserForRegister);
 
             Assert.That(result, Is.Not.EqualTo(null));
             Assert.That(result.PasswordHash, Is.Not.Empty);
@@ -141,7 +146,8 @@ namespace FootTrack.Api.Tests.Services
                 Password = CorrectPassword
             };
 
-            var result = await _sut.AuthenticateAsync(loginViewModel);
+            var result = await _sut
+                .AuthenticateAsync(loginViewModel);
 
             Assert.That(result.Token, Is.Not.Empty);
         }
@@ -165,7 +171,8 @@ namespace FootTrack.Api.Tests.Services
         [TestCase("12345")]
         public void When_getting_existing_user_with_incorrect_id_should_throw_NotFoundException(string id)
         {
-            _usersRepository.FindByIdAsync("1234").Returns(Task.FromResult(new User()));
+            _usersRepository.FindByIdAsync("1234")
+                .Returns(Task.FromResult(new User()));
 
             Assert.ThrowsAsync<NotFoundException>(() => _sut.GetByIdAsync(id));
         }
@@ -174,9 +181,11 @@ namespace FootTrack.Api.Tests.Services
         public void When_getting_existing_user_with_correct_id_should_return_not_null_object()
         {
             const string existingId = "1234";
-            _usersRepository.FindByIdAsync(existingId).Returns(Task.FromResult(new User()));
+            _usersRepository.FindByIdAsync(existingId)
+                .Returns(Task.FromResult(new User()));
 
-            var result = _sut.GetByIdAsync(existingId);
+            var result = _sut
+                .GetByIdAsync(existingId);
 
             Assert.That(result, Is.Not.Null);
         }
@@ -188,20 +197,24 @@ namespace FootTrack.Api.Tests.Services
                 Email = ExistingEmail
             };
 
-            user.PasswordHash = _passwordHasher.HashPassword(user, CorrectPassword);
+            user.PasswordHash = _passwordHasher
+                .HashPassword(user, CorrectPassword);
 
             return user;
         }
 
         private void SetUserRepositoryToReturnNullWhenFinding()
         {
-            _usersRepository.FindOneAsync(Arg.Any<Expression<Func<User, bool>>>()).ReturnsNullForAnyArgs();
+            _usersRepository
+                .FindOneAsync(Arg.Any<Expression<Func<User, bool>>>())
+                .ReturnsNullForAnyArgs();
         }
 
         private static IJwtTokenService SetupTokenService()
         {
             var settings = Substitute.For<IJwtTokenSettings>();
-            settings.Secret.Returns("testesttesttesttestesttesttesttestesttesttesttestesttesttest");
+            settings.Secret
+                .Returns("testesttesttesttestesttesttesttestesttesttesttestesttesttest");
 
             return new JwtTokenService(settings);
         }
@@ -209,7 +222,9 @@ namespace FootTrack.Api.Tests.Services
         private IMongoRepository<User> SetupMongoRepository()
         {
             var repository = Substitute.For<IMongoRepository<User>>();
-            repository.FindOneAsync(Arg.Any<Expression<Func<User, bool>>>()).ReturnsForAnyArgs(Task.FromResult(_existingUser));
+            repository
+                .FindOneAsync(Arg.Any<Expression<Func<User, bool>>>())
+                .ReturnsForAnyArgs(Task.FromResult(_existingUser));
 
             return repository;
         }
@@ -218,14 +233,17 @@ namespace FootTrack.Api.Tests.Services
         {
             var mapper = Substitute.For<IMapper>();
 
-            mapper.Map<User>(Arg.Any<UserRegisterViewModel>()).Returns(new User
-            {
-                Email = _notExistingUserForRegister.Email,
-                FirstName = _notExistingUserForRegister.FirstName,
-                LastName = _notExistingUserForRegister.LastName,
-            });
+            mapper.Map<User>(Arg.Any<UserRegisterViewModel>())
+                .Returns(
+                    new User
+                    {
+                        Email = _notExistingUserForRegister.Email,
+                        FirstName = _notExistingUserForRegister.FirstName,
+                        LastName = _notExistingUserForRegister.LastName,
+                    });
 
-            mapper.Map<AuthenticatedUserViewModel>(Arg.Any<User>()).Returns(new AuthenticatedUserViewModel());
+            mapper.Map<AuthenticatedUserViewModel>(Arg.Any<User>())
+                .Returns(new AuthenticatedUserViewModel());
 
             return mapper;
         }

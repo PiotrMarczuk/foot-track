@@ -25,25 +25,38 @@ namespace FootTrack.Api.ExtensionMethods
         public static void LoadConfigs(this IServiceCollection services)
         {
             services.AddSingleton<IMongoDbSettings>(serviceProvider =>
-                serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
+                serviceProvider
+                    .GetRequiredService<IOptions<MongoDbSettings>>()
+                    .Value);
 
             services.AddSingleton<IJwtTokenSettings>(serviceProvider =>
-                serviceProvider.GetRequiredService<IOptions<JwtTokenSettings>>().Value);
+                serviceProvider
+                    .GetRequiredService<IOptions<JwtTokenSettings>>()
+                    .Value);
         }
 
         public static void ConfigureSettings(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<MongoDbSettings>(configuration.GetSection("MongoDbSettings"));
-            services.Configure<JwtTokenSettings>(configuration.GetSection("JwtTokenSettings"));
+            services
+                .Configure<MongoDbSettings>(configuration
+                    .GetSection("MongoDbSettings"));
+            services
+                .Configure<JwtTokenSettings>(configuration
+                    .GetSection("JwtTokenSettings"));
         }
 
         public static void ServicesConfiguration(this IServiceCollection services)
         {
-            services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
-            services.AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IJwtTokenService, JwtTokenService>();
-            services.AddTransient<ModelValidationFilterAttribute>();
+            services
+                .AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
+            services
+                .AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
+            services
+                .AddTransient<IUserService, UserService>();
+            services
+                .AddTransient<IJwtTokenService, JwtTokenService>();
+            services
+                .AddTransient<ModelValidationFilterAttribute>();
         }
 
         public static void ConfigureMapper(this IServiceCollection services)
@@ -56,7 +69,9 @@ namespace FootTrack.Api.ExtensionMethods
             services.AddSingleton(mapper);
         }
 
-        public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
+        public static void ConfigureJwt(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             var secret = configuration.GetSection("JwtTokenSettings")["Secret"];
 
@@ -93,11 +108,13 @@ namespace FootTrack.Api.ExtensionMethods
             {
                 OnTokenValidated = async context =>
                 {
-                    var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
+                    var userService = context.HttpContext.RequestServices
+                        .GetRequiredService<IUserService>();
                     var userId = context.Principal.Identity.Name;
                     try
                     {
-                        await userService.GetByIdAsync(userId);
+                        await userService
+                            .GetByIdAsync(userId);
                     }
                     catch (NotFoundException)
                     {

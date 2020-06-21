@@ -34,7 +34,8 @@ namespace FootTrack.Api.Tests.Services
         {
             var user = new User();
 
-            var result = _sut.GenerateToken(user);
+            var result = _sut
+                .GenerateToken(user);
 
             Assert.That(result, Is.Not.Empty);
         }

@@ -26,7 +26,8 @@ namespace FootTrack.Api.Services.Implementations
         {
             Guard.Argument(user, nameof(user)).NotNull();
 
-            var key = Encoding.ASCII.GetBytes(_tokenSettings.Secret);
+            var key = Encoding.ASCII
+                .GetBytes(_tokenSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -34,14 +35,16 @@ namespace FootTrack.Api.Services.Implementations
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
                 }),
                 Expires = _tokenExpirationDate,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha512Signature)
-
             };
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            var token = tokenHandler
+                .CreateToken(tokenDescriptor);
+            return tokenHandler
+                .WriteToken(token);
         }
     }
 }

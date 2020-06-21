@@ -29,7 +29,9 @@ namespace FootTrack.Api.Middleware
             }
         }
 
-        public Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private static Task HandleExceptionAsync(
+            HttpContext context, 
+            Exception exception)
         {
             var code = exception switch
             {
@@ -47,7 +49,8 @@ namespace FootTrack.Api.Middleware
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int) code;
 
-            return context.Response.WriteAsync(result);
+            return context.Response
+                .WriteAsync(result);
         }
     }
 }
