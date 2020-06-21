@@ -77,7 +77,7 @@ namespace FootTrack.Api.Repositories.Implementations
 
         public virtual TDocument FindById(string id)
         {
-            var objectId = new ObjectId(id);
+            var objectId = GenerateObjectId(id);
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
 
             return _collection.Find(filter).SingleOrDefault();
@@ -87,7 +87,7 @@ namespace FootTrack.Api.Repositories.Implementations
         {
             return Task.Run(() =>
             {
-                var objectId = new ObjectId(id);
+                var objectId = GenerateObjectId(id);
                 var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
 
                 return _collection.Find(filter).SingleOrDefaultAsync();
@@ -118,7 +118,7 @@ namespace FootTrack.Api.Repositories.Implementations
 
         public virtual void DeleteById(string id)
         {
-            var objectId = new ObjectId(id);
+            var objectId = GenerateObjectId(id);
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
             _collection.FindOneAndDelete(filter);
         }
@@ -127,7 +127,7 @@ namespace FootTrack.Api.Repositories.Implementations
         {
             return Task.Run(() =>
             {
-                var objectId = new ObjectId(id);
+                var objectId = GenerateObjectId(id);
                 var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
                 _collection.FindOneAndDeleteAsync(filter);
             });
@@ -146,6 +146,16 @@ namespace FootTrack.Api.Repositories.Implementations
         public virtual IQueryable<TDocument> AsQueryable()
         {
             return _collection.AsQueryable();
+        }
+
+        private ObjectId GenerateObjectId(string id)
+        {
+            if (!ObjectId.TryParse(id, out var objectId))
+            {
+                throw new ArgumentException($"Please provide correct {nameof(id)}.");
+            }
+
+            return objectId;
         }
     }
 }
