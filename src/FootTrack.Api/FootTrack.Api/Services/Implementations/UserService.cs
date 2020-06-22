@@ -47,7 +47,7 @@ namespace FootTrack.Api.Services.Implementations
 
             if (user == null)
             {
-                throw new NotFoundException("Username or password is incorrect.");
+                throw new WrongCredentialsException("Username or password is incorrect.");
             }
 
             if (_passwordHasher
@@ -56,7 +56,7 @@ namespace FootTrack.Api.Services.Implementations
                         user.PasswordHash,
                         loginViewModel.Password) == PasswordVerificationResult.Failed)
             {
-                throw new NotFoundException("Username or password is incorrect");
+                throw new WrongCredentialsException("Username or password is incorrect");
             }
 
             var userViewModel = _mapper.Map<AuthenticatedUserViewModel>(user);

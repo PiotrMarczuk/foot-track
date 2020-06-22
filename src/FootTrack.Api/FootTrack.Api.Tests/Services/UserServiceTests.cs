@@ -100,7 +100,7 @@ namespace FootTrack.Api.Tests.Services
         }
 
         [Test]
-        public void When_provided_not_existing_email_should_throw_NotFoundException()
+        public void When_provided_not_existing_email_should_throw_WrongCredentialsException()
         {
             var viewModel = new UserLoginViewModel
             {
@@ -110,7 +110,7 @@ namespace FootTrack.Api.Tests.Services
 
             SetUserRepositoryToReturnNullWhenFinding();
 
-            Assert.ThrowsAsync<NotFoundException>(() => _sut.AuthenticateAsync(viewModel));
+            Assert.ThrowsAsync<WrongCredentialsException>(() => _sut.AuthenticateAsync(viewModel));
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace FootTrack.Api.Tests.Services
         }
 
         [Test]
-        public void When_provided_wrong_password_on_existing_should_throw_not_found_exception()
+        public void When_provided_wrong_password_on_existing_should_throw_WrongCredentialsException()
         {
             var loginViewModel = new UserLoginViewModel
             {
@@ -134,7 +134,7 @@ namespace FootTrack.Api.Tests.Services
                 Password = WrongPassword
             };
 
-            Assert.ThrowsAsync<NotFoundException>(() => _sut.AuthenticateAsync(loginViewModel));
+            Assert.ThrowsAsync<WrongCredentialsException>(() => _sut.AuthenticateAsync(loginViewModel));
         }
 
         [Test]

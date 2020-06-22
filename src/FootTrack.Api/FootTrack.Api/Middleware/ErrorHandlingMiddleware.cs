@@ -37,6 +37,7 @@ namespace FootTrack.Api.Middleware
             {
                 NotFoundException _ => HttpStatusCode.NotFound,
                 ArgumentException _ => HttpStatusCode.BadRequest,
+                WrongCredentialsException _ => HttpStatusCode.Unauthorized,
                 AlreadyExistsException _ => HttpStatusCode.Conflict,
                 _ => HttpStatusCode.InternalServerError
             };
