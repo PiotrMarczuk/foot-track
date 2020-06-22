@@ -351,3 +351,4 @@ MigrationBackup/
 foot-track/.vscode/launch.json
 /src/FootTrack.Api/FootTrack.Api.v3.ncrunchsolution
 /src/FootTrack.Api/FootTrack.Api.Tests/FootTrack.Api.Tests.v3.ncrunchproject
+/src/FootTrack.Api/FootTrack.Api.Tests/FootTrack.Api.UnitTests.v3.ncrunchproject
