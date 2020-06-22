@@ -1,6 +1,7 @@
 using FootTrack.Api.ExtensionMethods;
-using FootTrack.Api.Middleware;
 using FootTrack.Api.Settings;
+
+using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -38,9 +39,9 @@ namespace FootTrack.Api
                 app.UseHsts();
             }
 
-            app.UseAuthentication();
+            app.UseProblemDetails();
 
-            app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseAuthentication();
 
             app.UseCors(MyAllowSpecificOrigins);
 
