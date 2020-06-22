@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
@@ -23,16 +24,28 @@ namespace FootTrack.Api.Installers
 
                 x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
+                    Description = "JWT Authorization header using the Bearer scheme",
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme",
-                    Reference = new OpenApiReference
+                    Scheme = "Bearer",
+                });
+
+                x.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
                     {
-                        Id = "Bearer",
-                        Type = ReferenceType.SecurityScheme
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+                        },
+                        new List<string>()
                     }
                 });
 
