@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using FootTrack.Api.Attributes;
+using FootTrack.Api.Contracts.V1;
 using FootTrack.Api.Services.Interfaces;
 using FootTrack.Api.ViewModels;
 
-namespace FootTrack.Api.Controllers
+namespace FootTrack.Api.Controllers.V1
 {
     [ApiController]
     [Authorize]
-    [Route("api/users")]
     public class UsersController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -25,20 +25,18 @@ namespace FootTrack.Api.Controllers
             _userService = userService;
         }
 
-        // POST api/users/login
         [AllowAnonymous]
         [ServiceFilter(typeof(ModelValidationFilterAttribute))]
-        [HttpPost("login")]
+        [HttpPost(ApiRoutes.Users.Login)]
         public async Task<IActionResult> Login([FromBody] UserLoginViewModel loginViewModel)
         {
             return Ok(await _userService
                 .AuthenticateAsync(loginViewModel));
         }
 
-        // POST api/users/register
         [AllowAnonymous]
         [ServiceFilter(typeof(ModelValidationFilterAttribute))]
-        [HttpPost("register")]
+        [HttpPost(ApiRoutes.Users.Register)]
         public async Task<IActionResult> Register([FromBody] UserRegisterViewModel registerViewModel)
         {
             var user = await _userService
@@ -50,9 +48,8 @@ namespace FootTrack.Api.Controllers
                 _mapper.Map<UserViewModel>(user));
         }
 
-        // GET api/users/{id}
         [Authorize]
-        [HttpGet("{id}")]
+        [HttpGet(ApiRoutes.Users.GetById)]
         public async Task<IActionResult> GetById(string id)
         {
             var user = await _userService
