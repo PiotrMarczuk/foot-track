@@ -126,7 +126,7 @@ namespace FootTrack.Api.Tests.Services
         }
 
         [Test]
-        public void When_provided_wrong_password_on_existing_should_throw_argument_exception()
+        public void When_provided_wrong_password_on_existing_should_throw_not_found_exception()
         {
             var loginViewModel = new UserLoginViewModel
             {
@@ -134,7 +134,7 @@ namespace FootTrack.Api.Tests.Services
                 Password = WrongPassword
             };
 
-            Assert.ThrowsAsync<ArgumentException>(() => _sut.AuthenticateAsync(loginViewModel));
+            Assert.ThrowsAsync<NotFoundException>(() => _sut.AuthenticateAsync(loginViewModel));
         }
 
         [Test]
