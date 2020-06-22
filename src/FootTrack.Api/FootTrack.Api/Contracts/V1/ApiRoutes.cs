@@ -16,7 +16,7 @@
 
             public const string Login = ControllerEndpoint + "/login";
 
-            public const string GetById = ControllerEndpoint + "/{id}";
+            public const string GetById = ControllerEndpoint + "/{id:string}";
         }
     }
 }
