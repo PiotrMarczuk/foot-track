@@ -14,12 +14,10 @@ namespace FootTrack.Api.Services.Implementations
     public class JwtTokenService : IJwtTokenService
     {
         private readonly IJwtTokenSettings _tokenSettings;
-        private readonly DateTime _tokenExpirationDate;
 
         public JwtTokenService(IJwtTokenSettings tokenSettings)
         {
             _tokenSettings = tokenSettings;
-            _tokenExpirationDate = DateTime.UtcNow.AddDays(7);
         }
 
         public string GenerateToken(User user)
@@ -34,7 +32,7 @@ namespace FootTrack.Api.Services.Implementations
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
                 }),
-                Expires = _tokenExpirationDate,
+                Expires = DateTime.UtcNow.Add(_tokenSettings.TokenLifetime),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha512Signature)

@@ -19,6 +19,7 @@ namespace FootTrack.Api.Tests.Services
         {
             var settings = Substitute.For<IJwtTokenSettings>();
             settings.Secret.Returns("testesttesttesttestesttesttesttestesttesttesttestesttesttest");
+            settings.TokenLifetime.Returns(new TimeSpan(0, 5, 0, 0));
 
             _sut = new JwtTokenService(settings);
         }
