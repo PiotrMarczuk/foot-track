@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace FootTrack.Api.Installers
 {
@@ -21,6 +22,8 @@ namespace FootTrack.Api.Installers
                         Title = "FootTrack API",
                         Version = "v1"
                     });
+
+                x.ExampleFilters();
 
                 x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -53,6 +56,8 @@ namespace FootTrack.Api.Installers
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 x.IncludeXmlComments(xmlPath);
             });
+
+            services.AddSwaggerExamplesFromAssemblyOf<Startup>();
         }
     }
 }

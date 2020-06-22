@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Mime;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,8 +40,9 @@ namespace FootTrack.Api.Controllers.V1
         /// <response code="401">When credentials are wrong.</response>
         [AllowAnonymous]
         [ServiceFilter(typeof(ModelValidationFilterAttribute))]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthenticatedUserViewModel),StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Consumes(MediaTypeNames.Application.Json)]
         [HttpPost(ApiRoutes.Users.Login)]
         public async Task<IActionResult> Login([FromBody] UserLoginViewModel loginViewModel)
         {
@@ -58,9 +60,10 @@ namespace FootTrack.Api.Controllers.V1
         /// <response code="409">If user with provided email already exists.</response>
         [AllowAnonymous]
         [ServiceFilter(typeof(ModelValidationFilterAttribute))]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(UserViewModel),StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [Consumes(MediaTypeNames.Application.Json)]
         [HttpPost(ApiRoutes.Users.Register)]
         public async Task<IActionResult> Register([FromBody] UserRegisterViewModel registerViewModel)
         {
@@ -83,7 +86,7 @@ namespace FootTrack.Api.Controllers.V1
         /// <response code="401">If there was no auth token provided.</response>
         /// <response code="404">If user with provided id was not found.</response>
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserViewModel),StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
