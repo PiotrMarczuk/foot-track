@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using Dawn;
 using Microsoft.AspNetCore.Identity;
@@ -48,7 +47,7 @@ namespace FootTrack.Api.Services.Implementations
 
             if (user == null)
             {
-                throw new NotFoundException("User not found");
+                throw new NotFoundException("Username or password is incorrect.");
             }
 
             if (_passwordHasher
@@ -57,7 +56,7 @@ namespace FootTrack.Api.Services.Implementations
                         user.PasswordHash,
                         loginViewModel.Password) == PasswordVerificationResult.Failed)
             {
-                throw new ArgumentException("Wrong password.");
+                throw new NotFoundException("Username or password is incorrect");
             }
 
             var userViewModel = _mapper.Map<AuthenticatedUserViewModel>(user);
