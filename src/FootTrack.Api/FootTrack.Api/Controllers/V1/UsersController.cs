@@ -50,6 +50,7 @@ namespace FootTrack.Api.Controllers.V1
 
         [Authorize]
         [HttpGet(ApiRoutes.Users.GetById)]
+        [Cached(300)]
         public async Task<IActionResult> GetById(string id)
         {
             var user = await _userService
