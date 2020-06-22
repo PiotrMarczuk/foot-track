@@ -43,6 +43,7 @@ namespace FootTrack.Api.Controllers.V1
         [ProducesResponseType(typeof(AuthenticatedUserViewModel),StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
         [HttpPost(ApiRoutes.Users.Login)]
         public async Task<IActionResult> Login([FromBody] UserLoginViewModel loginViewModel)
         {
@@ -64,6 +65,7 @@ namespace FootTrack.Api.Controllers.V1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
         [HttpPost(ApiRoutes.Users.Register)]
         public async Task<IActionResult> Register([FromBody] UserRegisterViewModel registerViewModel)
         {
@@ -90,6 +92,7 @@ namespace FootTrack.Api.Controllers.V1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Produces("application/json")]
         [HttpGet(ApiRoutes.Users.GetById)]
         [Cached(300)]
         public async Task<IActionResult> GetById(string id)
