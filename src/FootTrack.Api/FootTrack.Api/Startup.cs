@@ -38,22 +38,9 @@ namespace FootTrack.Api
                 app.UseHsts();
             }
 
-            var swaggerSettings = new SwaggerSettings();
-            Configuration.GetSection(nameof(SwaggerSettings)).Bind(swaggerSettings);
-
-            app.UseSwagger(option =>
-            {
-                option.RouteTemplate = swaggerSettings.JsonRoute;
-            });
-
-            app.UseSwaggerUI(option =>
-            {
-                option.SwaggerEndpoint(swaggerSettings.UIEndpoint, swaggerSettings.Description);
-            });
+            app.UseAuthentication();
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
-
-            app.UseAuthentication();
 
             app.UseCors(MyAllowSpecificOrigins);
 
@@ -66,6 +53,19 @@ namespace FootTrack.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            var swaggerSettings = new SwaggerSettings();
+            Configuration.GetSection(nameof(SwaggerSettings)).Bind(swaggerSettings);
+
+            app.UseSwagger(option =>
+            {
+                option.RouteTemplate = swaggerSettings.JsonRoute;
+            });
+
+            app.UseSwaggerUI(option =>
+            {
+                option.SwaggerEndpoint(swaggerSettings.UIEndpoint, swaggerSettings.Description);
             });
         }
     }
