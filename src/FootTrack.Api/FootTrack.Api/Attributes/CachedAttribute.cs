@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -16,10 +17,12 @@ namespace FootTrack.Api.Attributes
     public class CachedAttribute : Attribute, IAsyncActionFilter
     {
         private readonly int _timeToLiveSeconds;
+        private readonly HttpStatusCode _statusCode;
 
-        public CachedAttribute(int timeToLiveSeconds)
+        public CachedAttribute(int timeToLiveSeconds, HttpStatusCode statusCode = HttpStatusCode.OK)
         {
             _timeToLiveSeconds = timeToLiveSeconds;
+            _statusCode = statusCode;
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -41,14 +44,13 @@ namespace FootTrack.Api.Attributes
             var cachedResponse = await cacheService
                 .GetCachedResponseAsync(cacheKey);
 
-            // CACHING ONLY 200 RESPONSE
             if (!string.IsNullOrEmpty(cachedResponse))
             {
                 var contentResult = new ContentResult
                 {
                     Content = cachedResponse,
                     ContentType = "application/json",
-                    StatusCode = 200
+                    StatusCode = (int) _statusCode
                 };
 
                 context.Result = contentResult;
