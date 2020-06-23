@@ -12,9 +12,11 @@ namespace FootTrack.Api.ExtensionMethods
             IConfiguration configuration,
             string policyName)
         {
-            var urlSettings = configuration.GetSection("UrlSettings");
-            services.Configure<UrlSettings>(urlSettings);
-            var clientUrl = urlSettings.Get<UrlSettings>().ClientUrl;
+            var urlSettings = new UrlSettings();
+
+            configuration
+                .GetSection(nameof(UrlSettings))
+                .Bind(urlSettings);
 
             services.AddCors(options =>
             {
@@ -23,10 +25,9 @@ namespace FootTrack.Api.ExtensionMethods
                     builder=>
                     {
                         builder
-                            .WithOrigins(clientUrl)
-                            .AllowAnyHeader()
+                            .WithOrigins(urlSettings.ClientUrl)
                             .AllowAnyMethod()
-                            .AllowCredentials();
+                            .AllowAnyHeader();
                     });
             });
         }
