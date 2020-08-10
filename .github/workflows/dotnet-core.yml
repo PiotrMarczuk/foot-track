@@ -19,7 +19,7 @@ jobs:
         dotnet-version: 3.1.101
     - name: Install dependencies
       run: dotnet restore
-      working-directory: src/FootTrack.Api
+      working-directory: /src/FootTrack.Api
     - name: Build with dotnet
       run: dotnet build --configuration Release --no-restore
     - name: Test with dotnet
