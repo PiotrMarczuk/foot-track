@@ -1,6 +1,5 @@
-﻿using FootTrack.Api.Settings.JwtToken;
-using FootTrack.Api.Settings.MongoDb;
-
+﻿using FootTrack.Settings.JwtToken;
+using FootTrack.Settings.MongoDb;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

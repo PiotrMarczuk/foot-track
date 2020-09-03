@@ -1,4 +1,4 @@
-﻿using FootTrack.Api.Settings;
+﻿using FootTrack.Settings;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

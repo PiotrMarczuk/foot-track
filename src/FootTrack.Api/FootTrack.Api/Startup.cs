@@ -1,7 +1,7 @@
 using FootTrack.Api.ExtensionMethods;
-using FootTrack.Api.Settings;
 
 using Hellang.Middleware.ProblemDetails;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -54,19 +54,6 @@ namespace FootTrack.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });
-
-            var swaggerSettings = new SwaggerSettings();
-            Configuration.GetSection(nameof(SwaggerSettings)).Bind(swaggerSettings);
-
-            app.UseSwagger(option =>
-            {
-                option.RouteTemplate = swaggerSettings.JsonRoute;
-            });
-
-            app.UseSwaggerUI(option =>
-            {
-                option.SwaggerEndpoint(swaggerSettings.UIEndpoint, swaggerSettings.Description);
             });
         }
     }

@@ -1,6 +1,6 @@
-﻿using FootTrack.Api.Services.Implementations;
-using FootTrack.Api.Services.Interfaces;
-using FootTrack.Api.Settings;
+﻿using FootTrack.Api.Services.Interfaces;
+using FootTrack.BusinessLogic.Services.Implementations;
+using FootTrack.Settings;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

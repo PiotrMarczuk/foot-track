@@ -1,20 +1,19 @@
-﻿using System.Net.Mime;
+﻿using AutoMapper;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-
 using FootTrack.Api.Attributes;
 using FootTrack.Api.Contracts.V1;
-using FootTrack.Api.Services.Interfaces;
-using FootTrack.Api.ViewModels;
+using FootTrack.Api.Dtos;
+using FootTrack.Api.Dtos.Requests;
+using FootTrack.Api.Dtos.Responses;
+using FootTrack.BusinessLogic.Models;
+using FootTrack.BusinessLogic.Models.ValueObjects;
+using FootTrack.BusinessLogic.Services.Interfaces;
+using FootTrack.Shared.Common;
 
 namespace FootTrack.Api.Controllers.V1
 {
-    /// <summary>
-    /// Operations about user.
-    /// </summary>
     [ApiController]
     [Authorize]
     public class UsersController : ControllerBase
@@ -23,84 +22,90 @@ namespace FootTrack.Api.Controllers.V1
         private readonly IUserService _userService;
 
         public UsersController(
-            IMapper mapper, 
+            IMapper mapper,
             IUserService userService)
         {
             _mapper = mapper;
             _userService = userService;
         }
 
-        /// <summary>
-        /// Logs in a user.
-        /// </summary>
-        /// <param name="loginViewModel">Model with email and password.</param>
-        /// <returns>A logged in user with token.</returns>
-        /// <response code="200">Returns logged in user with token.</response>
-        /// <response code="400">If loginViewModel is not valid.</response>
-        /// <response code="401">When credentials are wrong.</response>
         [AllowAnonymous]
-        [ServiceFilter(typeof(ModelValidationFilterAttribute))]
-        [ProducesResponseType(typeof(AuthenticatedUserViewModel),StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [Produces(MediaTypeNames.Application.Json)]
         [HttpPost(ApiRoutes.Users.Login)]
-        public async Task<IActionResult> Login([FromBody] UserLoginViewModel loginViewModel)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto loginDto)
         {
-            return Ok(await _userService
-                .AuthenticateAsync(loginViewModel));
+            var email = Email.Create(loginDto.Email);
+            var password = Password.Create(loginDto.Password);
+
+            Result result = Result.Combine(email, password);
+
+            if (result.IsFailure)
+            {
+                // TODO
+                return BadRequest();
+            }
+
+            var authenticatedUser = await _userService
+                .AuthenticateAsync(new UserCredentials(email.Value, password.Value));
+
+            if (authenticatedUser.IsFailure)
+            {
+                // TODO
+                return BadRequest();
+            }
+
+            return Ok(_mapper.Map<AuthenticatedUserDto>(authenticatedUser.Value));
         }
 
-        /// <summary>
-        /// Registers a user.
-        /// </summary>
-        /// <param name="registerViewModel">Model for creating new user.</param>
-        /// <returns>Newly created user.</returns>
-        /// <response code="201">Returns newly created user.</response>
-        /// <response code="400">If registerViewModel is not valid.</response>
-        /// <response code="409">If user with provided email already exists.</response>
         [AllowAnonymous]
-        [ServiceFilter(typeof(ModelValidationFilterAttribute))]
-        [ProducesResponseType(typeof(UserViewModel),StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [Produces(MediaTypeNames.Application.Json)]
         [HttpPost(ApiRoutes.Users.Register)]
-        public async Task<IActionResult> Register([FromBody] UserRegisterViewModel registerViewModel)
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto registerDto)
         {
-            var user = await _userService
-                .CreateAsync(registerViewModel);
+            var email = Email.Create(registerDto.Email);
+            var password = Password.Create(registerDto.Password);
+
+            if (Result.Combine(email, password).IsFailure)
+            {
+                // TODO
+                return BadRequest();
+            }
+
+            var userResult = await _userService.RegisterAsync(new UserToBeRegistered(email.Value, registerDto.FirstName,
+                registerDto.LastName, password.Value));
+
+            if (userResult.IsFailure)
+            {
+                return BadRequest();
+            }
 
             return CreatedAtAction(
                 nameof(GetById),
-                new { id = user.Id },
-                _mapper.Map<UserViewModel>(user));
+                new {id = userResult.Value.Id},
+                _mapper.Map<AuthenticatedUserDto>(userResult.Value));
         }
 
-        /// <summary>
-        /// Method for getting user data by id.
-        /// </summary>
-        /// <param name="id">User id.</param>
-        /// <returns>User data.</returns>
-        /// <response code="200">Returns user data.</response>
-        /// <response code="400">If provided id is not valid.</response>
-        /// <response code="401">If there was no auth token provided.</response>
-        /// <response code="404">If user with provided id was not found.</response>
         [Authorize]
-        [ProducesResponseType(typeof(UserViewModel),StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Produces("application/json")]
         [HttpGet(ApiRoutes.Users.GetById)]
         [Cached(300)]
         public async Task<IActionResult> GetById(string id)
         {
-            var user = await _userService
-                .GetByIdAsync(id);
+            var idResult = Id.Create(id);
 
-            return Ok(_mapper.Map<UserViewModel>(user));
+            if (idResult.IsFailure)
+            {
+                // TODO
+                return BadRequest();
+            }
+
+            var userResult = await _userService
+                .GetByIdAsync(idResult.Value);
+
+            if (userResult.IsFailure)
+            {
+                // TODO
+                return BadRequest();
+            }
+
+            return Ok(_mapper.Map<UserDto>(userResult.Value));
         }
     }
 }

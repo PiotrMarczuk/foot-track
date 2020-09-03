@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,9 +11,9 @@ namespace FootTrack.Api.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            var mapper = new MapperConfiguration(mc =>
+            IMapper mapper = new MapperConfiguration(mc =>
             {
-                mc.AddProfile(new MappingProfile());
+                mc.AddProfile(new UserMappingProfile());
             }).CreateMapper();
 
             services.AddSingleton(mapper);

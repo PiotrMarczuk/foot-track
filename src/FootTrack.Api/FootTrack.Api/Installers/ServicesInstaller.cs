@@ -1,8 +1,6 @@
-﻿using FootTrack.Api.Attributes;
-using FootTrack.Api.Repositories.Implementations;
-using FootTrack.Api.Repositories.Interfaces;
-using FootTrack.Api.Services.Implementations;
-using FootTrack.Api.Services.Interfaces;
+﻿using FootTrack.BusinessLogic.Services.Implementations;
+using FootTrack.BusinessLogic.Services.Interfaces;
+using FootTrack.Repository;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -15,15 +13,13 @@ namespace FootTrack.Api.Installers
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             services
-                .AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
+                .AddScoped<IUserRepository, UserRepository>();
             services
                 .AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
             services
                 .AddTransient<IUserService, UserService>();
             services
                 .AddTransient<IJwtTokenService, JwtTokenService>();
-            services
-                .AddTransient<ModelValidationFilterAttribute>();
         }
     }
 }
