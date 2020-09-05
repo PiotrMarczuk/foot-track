@@ -1,4 +1,4 @@
-﻿using FootTrack.Api.Settings;
+﻿using FootTrack.Settings;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,8 +21,8 @@ namespace FootTrack.Api.ExtensionMethods
             services.AddCors(options =>
             {
                 options.AddPolicy(
-                    policyName, 
-                    builder=>
+                    policyName,
+                    builder =>
                     {
                         builder
                             .WithOrigins(urlSettings.ClientUrl)

@@ -3,13 +3,13 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using FootTrack.BusinessLogic.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-
-using FootTrack.Api.Services.Interfaces;
-using FootTrack.Api.Settings;
+using FootTrack.Settings;
+using Microsoft.Extensions.Primitives;
 
 namespace FootTrack.Api.Attributes
 {
@@ -39,9 +39,9 @@ namespace FootTrack.Api.Attributes
             var cacheService = context.HttpContext.RequestServices
                 .GetRequiredService<IResponseCacheService>();
 
-            var cacheKey = GenerateCacheKeyFromRequest(context.HttpContext.Request);
+            string cacheKey = GenerateCacheKeyFromRequest(context.HttpContext.Request);
 
-            var cachedResponse = await cacheService
+            string cachedResponse = await cacheService
                 .GetCachedResponseAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedResponse))
@@ -50,14 +50,14 @@ namespace FootTrack.Api.Attributes
                 {
                     Content = cachedResponse,
                     ContentType = "application/json",
-                    StatusCode = (int) _statusCode
+                    StatusCode = (int) _statusCode,
                 };
 
                 context.Result = contentResult;
                 return;
             }
 
-            var executedContext = await next();
+            ActionExecutedContext executedContext = await next();
 
             if (executedContext.Result is OkObjectResult okObjectResult)
             {
@@ -76,7 +76,7 @@ namespace FootTrack.Api.Attributes
             keyBuilder
                 .Append($"{request.Path}");
 
-            foreach (var (key, value) in request.Query.OrderBy(x => x.Key))
+            foreach ((string key, StringValues value) in request.Query.OrderBy(x => x.Key))
             {
                 keyBuilder
                     .Append($"|{key}-{value}");

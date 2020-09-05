@@ -1,20 +1,26 @@
 ﻿using System.Text;
+using System.Threading.Tasks;
+
+using FootTrack.BusinessLogic.Models.ValueObjects;
+using FootTrack.BusinessLogic.Services;
+using FootTrack.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-using FootTrack.Api.Exceptions;
-using FootTrack.Api.Services.Interfaces;
+
 
 namespace FootTrack.Api.Installers
 {
+    // ReSharper disable once UnusedType.Global
+    // ReSharper disable once UnusedMember.Global
     public class JwtInstaller : IInstaller
 
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            var secret = configuration.GetSection("JwtTokenSettings")["Secret"];
+            string secret = configuration.GetSection("JwtTokenSettings")["Secret"];
 
             var key = Encoding.ASCII.GetBytes(secret);
 
@@ -42,7 +48,7 @@ namespace FootTrack.Api.Installers
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 RequireExpirationTime = false,
-                ValidateLifetime = true
+                ValidateLifetime = true,
             };
         }
 
@@ -51,22 +57,19 @@ namespace FootTrack.Api.Installers
             return new JwtBearerEvents
             {
                 OnTokenValidated = async context =>
+                await Task.Run(() =>
                 {
                     var userService = context.HttpContext.RequestServices
                         .GetRequiredService<IUserService>();
-                    var userId = context.Principal.Identity.Name;
-                    try
+                    Maybe<string> userIdOrNothing = context.Principal.Identity.Name;
+                    var result = userIdOrNothing.ToResult(Errors.General.Empty(nameof(Id)))
+                        .OnSuccess(async userId => await userService.GetByIdAsync(Id.Create(userId).Value));
+                    if (result.IsFailure)
                     {
-                        await userService
-                            .GetByIdAsync(userId);
-                    }
-                    catch (NotFoundException)
-                    {
-                        context.Fail("Unauthorized");
-                    }
-                }
+                        context.Fail(result.Error.Message);
+                    } 
+                })
             };
         }
     }
 }
-

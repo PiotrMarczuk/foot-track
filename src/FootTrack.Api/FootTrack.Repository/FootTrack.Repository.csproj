@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FootTrack.BusinessLogic.Models\FootTrack.BusinessLogic.Models.csproj" />
+      <ProjectReference Include="..\FootTrack.Database\FootTrack.Database.csproj" />
+      <ProjectReference Include="..\FootTrack.Settings\FootTrack.Settings.csproj" />
+      <ProjectReference Include="..\FootTrack.Shared\FootTrack.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MongoDB.Driver" Version="2.10.4" />
+      <PackageReference Include="NullGuard.Fody" Version="3.0.0" />
+    </ItemGroup>
+
+</Project>
