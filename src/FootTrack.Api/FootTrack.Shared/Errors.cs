@@ -4,7 +4,7 @@
     {
         public static class User
         {
-            public static Error EmailIsTaken(string email) =>
+            public static Error EmailIsTaken(string email = default) =>
                 new Error("user.email.is.taken", $"User email '{email}' is taken.");
 
             public static Error IncorrectEmailOrPassword() =>
@@ -13,7 +13,7 @@
 
         public static class General
         {
-            public static Error NotFound(string entityName = "Record", string id = null) =>
+            public static Error NotFound(string entityName = "Record", string id = default) =>
                 new Error("record.not.found", $"'{entityName}' not found for Id '{id}'.");
 
             public static Error Empty(string entityName = "Record") =>

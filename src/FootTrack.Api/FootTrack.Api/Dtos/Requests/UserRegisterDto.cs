@@ -7,7 +7,7 @@ namespace FootTrack.Api.Dtos.Requests
     {
         [Email, Required]
         public string Email { get; set; }
-        
+
         [Password, Required]
         public string Password { get; set; }
 

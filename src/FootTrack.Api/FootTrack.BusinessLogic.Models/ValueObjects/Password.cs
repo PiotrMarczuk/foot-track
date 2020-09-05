@@ -24,10 +24,6 @@ namespace FootTrack.BusinessLogic.Models.ValueObjects
                 .Ensure(password => password.Length >= MinLength, Errors.Password.TooShort(MinLength, nameof(Password)))
                 .Map(password => new Password(password));
         }
-        public static explicit operator Password(string password)
-        {
-            return Create(password).Value;
-        }
 
         public static implicit operator string(Password password)
         {

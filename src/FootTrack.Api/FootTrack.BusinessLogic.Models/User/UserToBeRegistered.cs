@@ -25,7 +25,10 @@ namespace FootTrack.BusinessLogic.Models.User
             Password = password;
         }
 
-        public static Result<UserToBeRegistered> Create(string email, string firstName, string lastName,
+        public static Result<UserToBeRegistered> Create(
+            string email,
+            string firstName,
+            string lastName,
             string password)
         {
             var emailResult = Email.Create(email);

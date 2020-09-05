@@ -24,11 +24,6 @@ namespace FootTrack.BusinessLogic.Models.ValueObjects
                 .Ensure(email => Regex.IsMatch(email, @"^(.+)@(.+)$"), Errors.General.Invalid(nameof(Email)))
                 .Map(email => new Email(email));
         }
-        
-        public static explicit operator Email(string email)
-        {
-            return Create(email).Value;
-        }
 
         public static implicit operator string(Email email)
         {

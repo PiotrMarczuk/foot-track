@@ -14,7 +14,7 @@ namespace FootTrack.BusinessLogic.Tests.ServiceTests
     [TestFixture]
     public class UserServiceTests
     {
-        private UserService _sut;
+        private IUserService _sut;
         private IUserRepository _userRepository;
         private IPasswordHasher<UserCredentials> _passwordHasher;
         private IJwtTokenService _jwtTokenService;

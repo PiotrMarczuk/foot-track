@@ -16,11 +16,6 @@ namespace FootTrack.BusinessLogic.Services
 
         public async Task CacheResponseAsync(string cacheKey, object response, TimeSpan timeToLive)
         {
-            if (response == null)
-            {
-                return;
-            }
-
             string serializedResponse = JsonConvert
                 .SerializeObject(response);
 
@@ -29,16 +24,14 @@ namespace FootTrack.BusinessLogic.Services
                 serializedResponse,
                 new DistributedCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = timeToLive
+                    AbsoluteExpirationRelativeToNow = timeToLive,
                 });
         }
 
         public async Task<string> GetCachedResponseAsync(string cacheKey)
         {
-            string cachedResponse = await _distributedCache
+            return await _distributedCache
                 .GetStringAsync(cacheKey);
-
-            return string.IsNullOrEmpty(cachedResponse) ? null : cachedResponse;
         }
     }
 }

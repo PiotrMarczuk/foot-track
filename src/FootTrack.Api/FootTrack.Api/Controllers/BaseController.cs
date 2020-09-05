@@ -50,6 +50,16 @@ namespace FootTrack.Api.Controllers
 
         private IActionResult HandleError(Result result)
         {
+            if (result.Error == Errors.User.IncorrectEmailOrPassword())
+            {
+                return Unauthorized(Envelope.Error(result.Error));
+            }
+
+            if (result.Error == Errors.User.EmailIsTaken())
+            {
+                return Conflict(Envelope.Error(result.Error));
+            }
+
             if (result.Error == Errors.General.NotFound())
             {
                 return NotFound(Envelope.Error(result.Error));
