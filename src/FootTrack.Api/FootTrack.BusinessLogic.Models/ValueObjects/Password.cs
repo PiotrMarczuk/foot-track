@@ -1,9 +1,13 @@
-﻿using FootTrack.Shared.Common;
+﻿using System.Collections.Generic;
+using FootTrack.Shared;
 
 namespace FootTrack.BusinessLogic.Models.ValueObjects
 {
-    public class Password : ValueObject<Password>
+    public class Password : ValueObject
     {
+        private const int MaxLength = 256;
+        private const int MinLength = 6;
+
         public string Value { get; }
 
         private Password(string value)
@@ -13,24 +17,13 @@ namespace FootTrack.BusinessLogic.Models.ValueObjects
 
         public static Result<Password> Create(Maybe<string> passwordOrNothing)
         {
-            return passwordOrNothing.ToResult("Password should not be empty.")
+            return passwordOrNothing.ToResult(Errors.General.Empty(nameof(Password)))
                 .OnSuccess(password => password.Trim())
-                .Ensure(password => password != string.Empty, "Password should not be empty.")
-                .Ensure(password => password.Length <= 256, "Password is too long.")
-                .Ensure(password => password.Length >= 6, "Password is too short.")
+                .Ensure(password => password != string.Empty, Errors.General.Empty(nameof(Password)))
+                .Ensure(password => password.Length <= MaxLength, Errors.General.TooLong(MaxLength, nameof(Password)))
+                .Ensure(password => password.Length >= MinLength, Errors.Password.TooShort(MinLength, nameof(Password)))
                 .Map(password => new Password(password));
         }
-        
-        protected override bool EqualsCore(Password other)
-        {
-            return Value == other.Value;
-        }
-
-        protected override int GetHashCodeCore()
-        {
-            return Value.GetHashCode();
-        }
-
         public static explicit operator Password(string password)
         {
             return Create(password).Value;
@@ -39,6 +32,11 @@ namespace FootTrack.BusinessLogic.Models.ValueObjects
         public static implicit operator string(Password password)
         {
             return password.Value;
+        }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
         }
     }
 }

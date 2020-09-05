@@ -1,10 +1,10 @@
-﻿using FootTrack.Shared.Common;
-
+﻿using System.Collections.Generic;
+using FootTrack.Shared;
 using MongoDB.Bson;
 
 namespace FootTrack.BusinessLogic.Models.ValueObjects
 {
-    public class Id : ValueObject<Id>
+    public class Id : ValueObject
     {
         public string Value { get; }
 
@@ -17,19 +17,9 @@ namespace FootTrack.BusinessLogic.Models.ValueObjects
         {
             return ObjectId.TryParse(idOrNothing.Value, out _)
                 ? Result.Ok(new Id(idOrNothing.Value))
-                : Result.Fail<Id>("Provided id was not correct.");
+                : Result.Fail<Id>(Errors.General.Invalid(nameof(Id)));
         }
-
-        protected override bool EqualsCore(Id other)
-        {
-            return Value == other.Value;
-        }
-
-        protected override int GetHashCodeCore()
-        {
-            return Value.GetHashCode();
-        }
-
+        
         public static explicit operator Id(string id)
         {
             return Create(id).Value;
@@ -38,6 +28,11 @@ namespace FootTrack.BusinessLogic.Models.ValueObjects
         public static implicit operator string(Id id)
         {
             return id.Value;
+        }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
         }
     }
 }

@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 
 using FootTrack.BusinessLogic.Models.ValueObjects;
-using FootTrack.BusinessLogic.Services.Interfaces;
-using FootTrack.Shared.Common;
-
+using FootTrack.BusinessLogic.Services;
+using FootTrack.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +13,8 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FootTrack.Api.Installers
 {
+    // ReSharper disable once UnusedType.Global
+    // ReSharper disable once UnusedMember.Global
     public class JwtInstaller : IInstaller
 
     {
@@ -61,11 +62,11 @@ namespace FootTrack.Api.Installers
                     var userService = context.HttpContext.RequestServices
                         .GetRequiredService<IUserService>();
                     Maybe<string> userIdOrNothing = context.Principal.Identity.Name;
-                    var result = userIdOrNothing.ToResult("userId was empty")
+                    var result = userIdOrNothing.ToResult(Errors.General.Empty(nameof(Id)))
                         .OnSuccess(async userId => await userService.GetByIdAsync(Id.Create(userId).Value));
                     if (result.IsFailure)
                     {
-                        context.Fail(result.Error);
+                        context.Fail(result.Error.Message);
                     } 
                 })
             };

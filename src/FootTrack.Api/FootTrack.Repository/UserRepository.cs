@@ -1,31 +1,34 @@
 ﻿using System.Threading.Tasks;
-using FootTrack.BusinessLogic.Models;
+using FootTrack.BusinessLogic.Models.User;
 using FootTrack.BusinessLogic.Models.ValueObjects;
-using FootTrack.Settings.MongoDb;
-using FootTrack.Shared.Common;
-using MongoDB.Bson;
+using FootTrack.Database.Models;
+using FootTrack.Database.Providers;
+using FootTrack.Repository.Filters;
+using FootTrack.Shared;
 using MongoDB.Driver;
-using User = FootTrack.Database.Models.User;
 
 namespace FootTrack.Repository
 {
-    public class UserRepository : RepositoryBase<User>, IUserRepository
+    public class UserRepository : IUserRepository
     {
-        public UserRepository(IMongoDbSettings settings) : base(settings)
+        private readonly IMongoCollection<User> _collection;
+
+        public UserRepository(ICollectionProvider<User> collectionProvider)
         {
+            _collection = collectionProvider.GetCollection();
         }
 
         public async Task<Maybe<HashedUserCredentials>> GetUserEmailAndHashedPasswordAsync(Email email)
         {
-            return await Collection
-                .Find(Builders<User>.Filter.Eq(user => user.Email, email.Value))
-                .Project(u => new HashedUserCredentials((Email) u.Email, u.PasswordHash, (Id) u.Id.ToString()))
+            return await _collection
+                .Find(UserFilter.FilterByEmail(email))
+                .Project(u => HashedUserCredentials.Create(u.Email, u.PasswordHash, u.Id.ToString()).Value)
                 .SingleOrDefaultAsync();
         }
 
         public async Task<bool> DoesAlreadyExist(Email email)
         {
-            return await Collection.Find(Builders<User>.Filter.Eq(user => user.Email, email.Value))
+            return await _collection.Find(UserFilter.FilterByEmail(email))
                 .AnyAsync();
         }
 
@@ -39,16 +42,16 @@ namespace FootTrack.Repository
                 PasswordHash = hashedUserData.PasswordHash,
             };
 
-            await Collection.InsertOneAsync(user);
+            await _collection.InsertOneAsync(user);
 
-            return Result.Ok(new UserData((Id) user.Id.ToString(), (Email) user.Email, user.FirstName, user.LastName));
+            return UserData.Create(user.Id.ToString(), user.Email, user.FirstName, user.LastName);
         }
 
         public async Task<Maybe<UserData>> GetUserDataAsync(Id id)
         {
-            return await Collection.Find(Builders<User>.Filter.Eq(user => user.Id, ObjectId.Parse(id)))
+            return await _collection.Find(DocumentFilter<User>.FilterById(id))
                 .Project(user =>
-                    new UserData((Id) user.Id.ToString(), (Email) user.Email, user.FirstName, user.LastName))
+                    UserData.Create(user.Id.ToString(), user.Email, user.FirstName, user.LastName).Value)
                 .SingleOrDefaultAsync();
         }
     }

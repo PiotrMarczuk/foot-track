@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using FootTrack.BusinessLogic.Models;
+using FootTrack.BusinessLogic.Models.User;
 using FootTrack.BusinessLogic.Models.ValueObjects;
-using FootTrack.Shared.Common;
+using FootTrack.Shared;
 
 namespace FootTrack.Repository
 {

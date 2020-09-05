@@ -6,6 +6,8 @@ using Microsoft.Extensions.Options;
 
 namespace FootTrack.Api.Installers
 {
+    // ReSharper disable once UnusedType.Global
+    // ReSharper disable once UnusedMember.Global
     public class SettingsInstaller : IInstaller
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)

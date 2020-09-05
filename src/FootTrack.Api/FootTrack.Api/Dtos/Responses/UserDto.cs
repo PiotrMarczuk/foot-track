@@ -1,6 +1,4 @@
-﻿using NullGuard;
-
-namespace FootTrack.Api.Dtos.Responses
+﻿namespace FootTrack.Api.Dtos.Responses
 {
     public class UserDto
     {
@@ -8,10 +6,8 @@ namespace FootTrack.Api.Dtos.Responses
 
         public string Email { get; set; }
         
-        [AllowNull]
         public string FirstName { get; set; }
 
-        [AllowNull]
         public string LastName { get; set; }
 
     }

@@ -3,11 +3,11 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using FootTrack.BusinessLogic.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using FootTrack.Api.Services.Interfaces;
 using FootTrack.Settings;
 using Microsoft.Extensions.Primitives;
 
@@ -50,7 +50,7 @@ namespace FootTrack.Api.Attributes
                 {
                     Content = cachedResponse,
                     ContentType = "application/json",
-                    StatusCode = (int) _statusCode
+                    StatusCode = (int) _statusCode,
                 };
 
                 context.Result = contentResult;

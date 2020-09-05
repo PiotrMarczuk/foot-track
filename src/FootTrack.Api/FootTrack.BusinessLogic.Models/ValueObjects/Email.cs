@@ -1,10 +1,13 @@
-﻿using System.Text.RegularExpressions;
-using FootTrack.Shared.Common;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using FootTrack.Shared;
 
 namespace FootTrack.BusinessLogic.Models.ValueObjects
 {
-    public class Email : ValueObject<Email>
+    public class Email : ValueObject
     {
+        private const int MaxEmailLength = 256;
+
         public string Value { get; }
 
         private Email(string value)
@@ -14,24 +17,14 @@ namespace FootTrack.BusinessLogic.Models.ValueObjects
 
         public static Result<Email> Create(Maybe<string> emailOrNothing)
         {
-            return emailOrNothing.ToResult("Email should not be empty")
+            return emailOrNothing.ToResult(Errors.General.Empty(nameof(Email)))
                 .OnSuccess(email => email.Trim())
-                .Ensure(email => email != string.Empty, "Email should not be empty.")
-                .Ensure(email => email.Length <= 256, "Email is too long.")
-                .Ensure(email => Regex.IsMatch(email, @"^(.+)@(.+)$"), "Email is invalid.")
+                .Ensure(email => email != string.Empty, Errors.General.Empty(nameof(Email)))
+                .Ensure(email => email.Length <= MaxEmailLength, Errors.General.TooLong(MaxEmailLength, nameof(Email)))
+                .Ensure(email => Regex.IsMatch(email, @"^(.+)@(.+)$"), Errors.General.Invalid(nameof(Email)))
                 .Map(email => new Email(email));
         }
         
-        protected override bool EqualsCore(Email other)
-        {
-            return Value == other.Value;
-        }
-
-        protected override int GetHashCodeCore()
-        {
-            return Value.GetHashCode();
-        }
-
         public static explicit operator Email(string email)
         {
             return Create(email).Value;
@@ -40,6 +33,11 @@ namespace FootTrack.BusinessLogic.Models.ValueObjects
         public static implicit operator string(Email email)
         {
             return email.Value;
+        }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
         }
     }
 }
