@@ -19,11 +19,6 @@ namespace FootTrack.BusinessLogic.Models.ValueObjects
                 ? Result.Ok(new Id(idOrNothing.Value))
                 : Result.Fail<Id>(Errors.General.Invalid(nameof(Id)));
         }
-        
-        public static explicit operator Id(string id)
-        {
-            return Create(id).Value;
-        }
 
         public static implicit operator string(Id id)
         {
