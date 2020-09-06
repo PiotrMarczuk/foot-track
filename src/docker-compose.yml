@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   back:
-    build: FootTrack.Api/FootTrack.Api
+    build: FootTrack.Api/
     container_name: back
     ports:
       - "4200:80"
@@ -23,9 +23,7 @@ services:
         container_name: mongodb
         restart: always
         environment:
-            MONGO_INITDB_ROOT_USERNAME: root
-            MONGO_INITDB_ROOT_PASSWORD: password
-            MONGO_INITDB_DATABASE: foot-track
+            MONGO_INITDB_DATABASE: FootTrack
         ports:
             - 27017:27017
         volumes:
@@ -34,7 +32,5 @@ services:
   redis:
     image: redis
     container_name: redis
-    environment: 
-      REDIS_PASSWORD: redispassword
     ports:  
       - "6379:6379"
