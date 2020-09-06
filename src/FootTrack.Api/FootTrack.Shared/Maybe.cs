@@ -81,10 +81,7 @@ namespace FootTrack.Shared
             return _value.Equals(other._value);
         }
 
-        public override int GetHashCode()
-        {
-            return _value.GetHashCode();
-        }
+        public override int GetHashCode() => _value.GetHashCode();
 
         public override string ToString()
         {

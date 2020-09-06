@@ -9,8 +9,6 @@ namespace FootTrack.Repository
     {
         Task<Maybe<HashedUserCredentials>> GetUserEmailAndHashedPasswordAsync(Email email);
 
-        Task<bool> DoesAlreadyExist(Email email);
-
         Task<Result<UserData>> InsertUserAsync(HashedUserData hashedUserData);
 
         Task<Maybe<UserData>> GetUserDataAsync(Id id);

@@ -26,12 +26,6 @@ namespace FootTrack.Repository
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<bool> DoesAlreadyExist(Email email)
-        {
-            return await _collection.Find(UserFilter.FilterByEmail(email))
-                .AnyAsync();
-        }
-
         public async Task<Result<UserData>> InsertUserAsync(HashedUserData hashedUserData)
         {
             var user = new User
@@ -41,6 +35,11 @@ namespace FootTrack.Repository
                 LastName = hashedUserData.LastName,
                 PasswordHash = hashedUserData.PasswordHash,
             };
+
+            if (await DoesAlreadyExist(hashedUserData.Email))
+            {
+                return Result.Fail<UserData>(Errors.User.EmailIsTaken(hashedUserData.Email.Value));
+            }
 
             await _collection.InsertOneAsync(user);
 
@@ -53,6 +52,12 @@ namespace FootTrack.Repository
                 .Project(user =>
                     UserData.Create(user.Id.ToString(), user.Email, user.FirstName, user.LastName).Value)
                 .SingleOrDefaultAsync();
+        }
+
+        private async Task<bool> DoesAlreadyExist(Email email)
+        {
+            return await _collection.Find(UserFilter.FilterByEmail(email))
+                .AnyAsync();
         }
     }
 }
