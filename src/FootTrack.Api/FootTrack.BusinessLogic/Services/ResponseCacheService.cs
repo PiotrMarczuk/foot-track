@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FootTrack.Shared;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 
@@ -28,10 +29,12 @@ namespace FootTrack.BusinessLogic.Services
                 });
         }
 
-        public async Task<string> GetCachedResponseAsync(string cacheKey)
+        public async Task<Result<string>> GetCachedResponseAsync(string cacheKey)
         {
-            return await _distributedCache
+            Maybe<string> cacheOrNothing =  await _distributedCache
                 .GetStringAsync(cacheKey);
+
+            return cacheOrNothing.ToResult(Errors.General.NotFound());
         }
     }
 }

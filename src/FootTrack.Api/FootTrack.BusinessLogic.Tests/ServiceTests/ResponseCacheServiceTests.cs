@@ -47,10 +47,10 @@ namespace FootTrack.BusinessLogic.Tests.ServiceTests
             _distributedCache.GetAsync(cacheKey).Returns(Encoding.ASCII.GetBytes(cachedResponse));
 
             // ACT
-            string result = await _sut.GetCachedResponseAsync(cacheKey);
+            var result = await _sut.GetCachedResponseAsync(cacheKey);
 
             // ASSERT
-            Assert.That(result, Is.EqualTo(cachedResponse));
+            Assert.That(result.Value, Is.EqualTo(cachedResponse));
         }
     }
 }

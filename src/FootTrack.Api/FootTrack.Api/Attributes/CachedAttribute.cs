@@ -41,14 +41,14 @@ namespace FootTrack.Api.Attributes
 
             string cacheKey = GenerateCacheKeyFromRequest(context.HttpContext.Request);
 
-            string cachedResponse = await cacheService
+            var cachedResponseResult = await cacheService
                 .GetCachedResponseAsync(cacheKey);
 
-            if (!string.IsNullOrEmpty(cachedResponse))
+            if (cachedResponseResult.IsSuccess)
             {
                 var contentResult = new ContentResult
                 {
-                    Content = cachedResponse,
+                    Content = cachedResponseResult.Value,
                     ContentType = "application/json",
                     StatusCode = (int) _statusCode,
                 };
