@@ -1,6 +1,5 @@
 using FootTrack.Api.ExtensionMethods;
-using FootTrack.Api.Settings;
-
+using FootTrack.Api.Utils;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,7 +27,12 @@ namespace FootTrack.Api
 
             services.ConfigureCors(Configuration, MyAllowSpecificOrigins);
 
-            services.AddControllers();
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.InvalidModelStateResponseFactory =
+                        ModelStateValidator.ValidateModelState;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,23 +55,7 @@ namespace FootTrack.Api
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
-            var swaggerSettings = new SwaggerSettings();
-            Configuration.GetSection(nameof(SwaggerSettings)).Bind(swaggerSettings);
-
-            app.UseSwagger(option =>
-            {
-                option.RouteTemplate = swaggerSettings.JsonRoute;
-            });
-
-            app.UseSwaggerUI(option =>
-            {
-                option.SwaggerEndpoint(swaggerSettings.UIEndpoint, swaggerSettings.Description);
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

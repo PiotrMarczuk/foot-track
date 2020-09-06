@@ -1,0 +1,28 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  ci:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core 3.1.101
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    - name: Install dependencies
+      run: dotnet restore
+      working-directory: src/FootTrack.Api
+    - name: Build with dotnet
+      run: dotnet build --configuration Release --no-restore
+      working-directory: src/FootTrack.Api
+    - name: Test with dotnet
+      run: dotnet test --no-restore --verbosity normal
+      working-directory: src/FootTrack.Api

@@ -1,12 +1,13 @@
-﻿using FootTrack.Api.Settings.JwtToken;
-using FootTrack.Api.Settings.MongoDb;
-
+﻿using FootTrack.Settings.JwtToken;
+using FootTrack.Settings.MongoDb;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace FootTrack.Api.Installers
 {
+    // ReSharper disable once UnusedType.Global
+    // ReSharper disable once UnusedMember.Global
     public class SettingsInstaller : IInstaller
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
