@@ -1,6 +1,5 @@
 ﻿using System;
 using FootTrack.Database.Factories;
-using FootTrack.Database.Models.Document;
 using FootTrack.Database.Providers;
 using FootTrack.Repository;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +15,7 @@ namespace FootTrack.Api.Installers
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             services
-                .AddSingleton<IMongoDatabaseFactory, MongoSingletonDatabaseFactory>();
+                .AddSingleton<IMongoDatabaseFactory, MongoDatabaseFactory>();
             services
                 .AddSingleton(typeof(IMongoDatabase), MongoDatabaseImplementationFactory);
             services
