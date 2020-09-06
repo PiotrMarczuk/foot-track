@@ -1,4 +1,4 @@
-﻿using FootTrack.BusinessLogic.Models.ValueObjects;
+using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.Shared;
 using NUnit.Framework;
 
@@ -13,12 +13,14 @@ namespace FootTrack.BusinessLogic.Tests.ModelTests
             // ARRANGE
             var emptyEmail = string.Empty;
             var tooLongEmail = new string('*', 257);
-            const string emailWithSpaces = " veryweirdEmail@gmail.com ";
+            const string emailWithSpaces = " veryWeirdEmail@gmail.com ";
+            const string notSoValidMail = "email@.com";
 
             // ACT
             var resultOfEmptyEmail = Email.Create(emptyEmail);
             var resultOfTooLongEmail = Email.Create(tooLongEmail);
             var resultOfEmailWithTrailingSpaces = Email.Create(emailWithSpaces);
+            var resultOfNotSoValidMail = Email.Create(notSoValidMail);
 
             // ASSERT
             Assert.That(resultOfEmptyEmail.IsFailure, Is.True);
@@ -27,6 +29,8 @@ namespace FootTrack.BusinessLogic.Tests.ModelTests
             Assert.That(resultOfTooLongEmail.Error, Is.EqualTo(Errors.General.TooLong(default)));
             Assert.That(resultOfEmailWithTrailingSpaces.IsSuccess, Is.True);
             Assert.That(resultOfEmailWithTrailingSpaces.Value.Value, Is.EqualTo(emailWithSpaces.Trim()));
+            Assert.That(resultOfNotSoValidMail.IsFailure, Is.True);
+            Assert.That(resultOfNotSoValidMail.Error, Is.EqualTo(Errors.General.Invalid()));
         }
 
         [Test]

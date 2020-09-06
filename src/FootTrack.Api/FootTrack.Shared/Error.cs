@@ -8,6 +8,7 @@ namespace FootTrack.Shared
         private const string Separator = "||";
         
         public string Code { get; }
+
         public string Message { get; }
 
         public Error(string code, string message)
