@@ -8,7 +8,6 @@ on:
 
 jobs:
   ci:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -23,6 +22,10 @@ jobs:
     - name: Build with dotnet
       run: dotnet build --configuration Release --no-restore
       working-directory: src/FootTrack.Api
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.3.0
+      with:
+        mongodb-version: 4.2
     - name: Test with dotnet
       run: dotnet test --no-restore --verbosity normal
       working-directory: src/FootTrack.Api
