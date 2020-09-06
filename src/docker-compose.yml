@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  back:
+    build: FootTrack.Api/
+    container_name: back
+    ports:
+      - "4200:80"
+    depends_on:
+    - mongodb
+    - redis
+
+  front:
+    container_name: front
+    build: FootTrack.Web/
+    ports: 
+      - "8080:80"
+    depends_on:
+      - back
+
+  mongodb:
+        image: mongo:latest
+        container_name: mongodb
+        restart: always
+        environment:
+            MONGO_INITDB_DATABASE: FootTrack
+        ports:
+            - 27017:27017
+        volumes:
+            - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro     
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:  
+      - "6379:6379"

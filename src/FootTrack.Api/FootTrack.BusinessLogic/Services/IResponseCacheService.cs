@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FootTrack.Shared;
 
 namespace FootTrack.BusinessLogic.Services
 {
@@ -7,6 +8,6 @@ namespace FootTrack.BusinessLogic.Services
     {
         Task CacheResponseAsync(string cacheKey, object response, TimeSpan timeToLive);
 
-        Task<string> GetCachedResponseAsync(string cacheKey);
+        Task<Result<string>> GetCachedResponseAsync(string cacheKey);
     }
 }
