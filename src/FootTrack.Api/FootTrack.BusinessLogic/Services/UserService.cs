@@ -41,13 +41,6 @@ namespace FootTrack.BusinessLogic.Services
 
         public async Task<Result<AuthenticatedUser>> RegisterAsync(UserToBeRegistered userToBeRegistered)
         {
-            bool doesAlreadyExist = await _userRepository.DoesAlreadyExist(userToBeRegistered.Email);
-
-            if (doesAlreadyExist)
-            {
-                return Result.Fail<AuthenticatedUser>(Errors.User.EmailIsTaken(userToBeRegistered.Email));
-            }
-
             string hashedPassword = _passwordHasher.HashPassword(default, userToBeRegistered.Password);
 
             return await _userRepository.InsertUserAsync(HashedUserData.Create(

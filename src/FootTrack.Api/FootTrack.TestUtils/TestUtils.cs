@@ -1,10 +1,9 @@
 ﻿using Newtonsoft.Json;
-
 using NUnit.Framework;
 
-namespace FootTrack.BusinessLogic.Tests
+namespace FootTrack.TestUtils
 {
-    internal static class TestUtils
+    public static class TestUtils
     {
         public static void AssertAreEqualByJson(object actual, object expected)
         {

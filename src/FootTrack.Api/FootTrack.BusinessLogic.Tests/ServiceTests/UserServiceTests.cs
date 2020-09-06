@@ -122,7 +122,7 @@ namespace FootTrack.BusinessLogic.Tests.ServiceTests
 
             // ASSERT
             Assert.That(result.IsSuccess, Is.True);
-            TestUtils.AssertAreEqualByJson(result.Value, new
+            TestUtils.TestUtils.AssertAreEqualByJson(result.Value, new
             {
                 Id = id,
                 Email = email,
@@ -132,28 +132,12 @@ namespace FootTrack.BusinessLogic.Tests.ServiceTests
         }
 
         [Test]
-        public async Task When_trying_to_register_with_email_already_registered_should_return_error()
-        {
-            // ARRANGE
-            _userRepository.DoesAlreadyExist(Email.Create(UserEmail).Value).Returns(true);
-            UserToBeRegistered userToBeRegistered =
-                UserToBeRegistered.Create(UserEmail, FirstName, LastName, UserPassword).Value;
-
-            // ACT
-            var result = await _sut.RegisterAsync(userToBeRegistered);
-
-            // ASSERT
-            Assert.That(result.IsFailure, Is.True);
-        }
-
-        [Test]
         public async Task When_trying_to_register_with_email_that_is_not_already_registered_should_register()
         {
             // ARRANGE
             const string mockJwtToken = "babble";
             Id id = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
             Email email = Email.Create(UserEmail).Value;
-            _userRepository.DoesAlreadyExist(email).Returns(false);
             UserToBeRegistered userToBeRegistered =
                 UserToBeRegistered.Create(UserEmail, FirstName, LastName, UserPassword).Value;
             _jwtTokenService.GenerateToken(id).Returns(mockJwtToken);
@@ -165,7 +149,7 @@ namespace FootTrack.BusinessLogic.Tests.ServiceTests
 
             // ASSERT
             Assert.That(result.IsSuccess, Is.True);
-            TestUtils.AssertAreEqualByJson(
+            TestUtils.TestUtils.AssertAreEqualByJson(
                 result.Value,
                 new
                 {
