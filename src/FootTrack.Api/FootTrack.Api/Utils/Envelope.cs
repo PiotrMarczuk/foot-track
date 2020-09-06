@@ -7,41 +7,25 @@ namespace FootTrack.Api.Utils
     {
         public T Result { get; }
 
-        public string ErrorMessage { get; }
+        public ErrorDetails Errors { get; }
 
-        public DateTime TimeGenerated { get; }
+        public DateTime TimeGenerated { get; } = DateTime.UtcNow;
 
-        public string FieldName { get; }
-
-        protected internal Envelope(T result, Error error, string fieldName) : this(result, error)
-        {
-            FieldName = fieldName;
-        }
-
-        protected internal Envelope(T result, Error error) : this(result)
-        {
-            ErrorMessage = error.Message;
-        }
 
         protected internal Envelope(T result)
         {
             Result = result;
-            TimeGenerated = DateTime.UtcNow;
+        }
+
+        protected internal Envelope(ErrorDetails details)
+        {
+            Errors = details;
         }
     }
 
     public sealed class Envelope : Envelope<string>
     {
-        private Envelope() : base(null)
-        {
-        }
-
-        private Envelope(Error error)
-            : base(null, error)
-        {
-        }
-
-        private Envelope(Error error, string fieldName) : base(null, error, fieldName)
+        private Envelope(Error error, string fieldName = default) : base(new ErrorDetails(error.Message, fieldName))
         {
         }
 
@@ -50,17 +34,7 @@ namespace FootTrack.Api.Utils
             return new Envelope<T>(result);
         }
 
-        public static Envelope Ok()
-        {
-            return new Envelope();
-        }
-
-        public static Envelope Error(Error error)
-        {
-            return new Envelope(error);
-        }
-
-        public static Envelope Error(Error error, string fieldName)
+        public static Envelope Error(Error error, string fieldName = default)
         {
             return new Envelope(error, fieldName);
         }
