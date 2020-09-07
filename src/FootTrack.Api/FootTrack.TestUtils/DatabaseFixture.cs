@@ -4,7 +4,7 @@ using FootTrack.Settings.MongoDb;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
-namespace FootTrack.Repository.IntegrationTests
+namespace FootTrack.TestUtils
 {
     public class DatabaseFixture : IDisposable
     {
