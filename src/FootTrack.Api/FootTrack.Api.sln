@@ -25,7 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootTrack.Api.Tests", "Foot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootTrack.Repository.IntegrationTests", "FootTrack.Repository.IntegrationTests\FootTrack.Repository.IntegrationTests.csproj", "{0AEAA512-C888-479B-911E-CDCBDF3DE13D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FootTrack.TestUtils", "FootTrack.TestUtils\FootTrack.TestUtils.csproj", "{F5A17C29-4F24-476D-8267-FA429300CEAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootTrack.TestUtils", "FootTrack.TestUtils\FootTrack.TestUtils.csproj", "{F5A17C29-4F24-476D-8267-FA429300CEAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FootTrack.Api.IntegrationTests", "FootTrack.Api.IntegrationTests\FootTrack.Api.IntegrationTests.csproj", "{153D3660-AF85-40CF-9CC2-9C80C5304E3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +83,10 @@ Global
 		{F5A17C29-4F24-476D-8267-FA429300CEAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5A17C29-4F24-476D-8267-FA429300CEAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5A17C29-4F24-476D-8267-FA429300CEAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{153D3660-AF85-40CF-9CC2-9C80C5304E3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{153D3660-AF85-40CF-9CC2-9C80C5304E3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{153D3660-AF85-40CF-9CC2-9C80C5304E3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{153D3660-AF85-40CF-9CC2-9C80C5304E3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
