@@ -22,11 +22,16 @@ namespace FootTrack.Repository.IntegrationTests
         private const string UserLastName = "Wichura";
         private UserData _insertedUser;
 
+        [OneTimeSetUp]
+        public void Init()
+        {
+            _dbFixture = new DatabaseFixture();
+        }
+
         [SetUp]
         public async Task Setup()
         {
-            _dbFixture = new DatabaseFixture();
-            _collectionProvider = new CollectionProvider<User>(_dbFixture.MongoDb);
+            _collectionProvider = new CollectionProvider<User>(_dbFixture.CreateMongoDatabase());
             _sut = new UserRepository(_collectionProvider);
 
             var insertResult = await InsertUserAsync(UserEmail, UserFirstName, UserLastName);
