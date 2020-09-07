@@ -20,27 +20,17 @@ namespace FootTrack.Api.IntegrationTests
         private ApiTestFixture _fixture;
         private HttpClient _client;
 
-        [OneTimeSetUp]
-        public void Init()
-        {
-            _fixture = new ApiTestFixture();
-        }
-
-        [OneTimeTearDown]
-        public void Terminate()
-        {
-            _fixture.Dispose();
-        }
-
         [SetUp]
         public void SetUp()
         {
+            _fixture = new ApiTestFixture();
             _client = _fixture.CreateClient();
         }
 
         [TearDown]
         public void TearDown()
         {
+            _fixture.Dispose();
             _client.Dispose();
         }
 
