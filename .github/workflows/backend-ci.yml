@@ -27,5 +27,5 @@ jobs:
       with:
         mongodb-version: 4.2
     - name: Test with dotnet
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --logger:"console;verbosity=normal"
       working-directory: src/FootTrack.Api
