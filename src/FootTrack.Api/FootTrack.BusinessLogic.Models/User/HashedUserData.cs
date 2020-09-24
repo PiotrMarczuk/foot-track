@@ -27,7 +27,7 @@ namespace FootTrack.BusinessLogic.Models.User
 
         public static Result<HashedUserData> Create(string email, string firstName, string lastName, string passwordHash)
         {
-            var emailResult = Email.Create(email);
+            Result<Email> emailResult = Email.Create(email);
 
             return emailResult.IsFailure
                 ? Result.Fail<HashedUserData>(emailResult.Error)

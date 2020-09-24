@@ -22,7 +22,7 @@ namespace FootTrack.Api.Attributes
                 return new ValidationResult(Errors.General.Invalid(nameof(email)).Serialize());
             }
 
-            var emailResult = Email.Create(email);
+            Result<Email> emailResult = Email.Create(email);
             
             return emailResult.IsFailure 
                 ? new ValidationResult(emailResult.Error.Serialize()) 

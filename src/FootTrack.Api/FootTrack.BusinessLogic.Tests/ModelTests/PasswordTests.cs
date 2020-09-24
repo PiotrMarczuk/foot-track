@@ -17,10 +17,10 @@ namespace FootTrack.BusinessLogic.Tests.ModelTests
             const string passwordWithSpaces = " very weird password ";
 
             // ACT
-            var resultOfEmptyPassword = Password.Create(emptyPassword);
-            var resultOfTooLongPassword = Password.Create(tooLongPassword);
-            var resultOfTooShortPassword = Password.Create(tooShortPassword);
-            var resultOfPasswordWithTrailingSpaces = Password.Create(passwordWithSpaces);
+            Result<Password> resultOfEmptyPassword = Password.Create(emptyPassword);
+            Result<Password> resultOfTooLongPassword = Password.Create(tooLongPassword);
+            Result<Password> resultOfTooShortPassword = Password.Create(tooShortPassword);
+            Result<Password> resultOfPasswordWithTrailingSpaces = Password.Create(passwordWithSpaces);
 
             // ASSERT
             Assert.That(resultOfEmptyPassword.IsFailure, Is.True);

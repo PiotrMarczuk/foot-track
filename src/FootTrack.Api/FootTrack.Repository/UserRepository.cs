@@ -36,7 +36,7 @@ namespace FootTrack.Repository
                 PasswordHash = hashedUserData.PasswordHash,
             };
 
-            if (await DoesAlreadyExist(hashedUserData.Email))
+            if (await CheckIfUserWithEmailAlreadyExist(hashedUserData.Email))
             {
                 return Result.Fail<UserData>(Errors.User.EmailIsTaken(hashedUserData.Email.Value));
             }
@@ -54,7 +54,12 @@ namespace FootTrack.Repository
                 .SingleOrDefaultAsync();
         }
 
-        private async Task<bool> DoesAlreadyExist(Email email)
+        public async Task<bool> CheckIfUserExist(Id id)
+        {
+            return await _collection.Find(DocumentFilter<User>.FilterById(id)).AnyAsync();
+        }
+
+        private async Task<bool> CheckIfUserWithEmailAlreadyExist(Email email)
         {
             return await _collection.Find(UserFilter.FilterByEmail(email))
                 .AnyAsync();

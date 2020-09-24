@@ -7,7 +7,7 @@ namespace FootTrack.Api.IntegrationTests.Utils
 {
     internal class IntegrationMongoDatabaseFactory : IMongoDatabaseFactory, IDisposable
     {
-        private IMongoDbSettings _mongoDbSettings;
+        private readonly IMongoDbSettings _mongoDbSettings;
         private IMongoClient _mongoClient;
 
         public IntegrationMongoDatabaseFactory(IMongoDbSettings mongoDbSettings)

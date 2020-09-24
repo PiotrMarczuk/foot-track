@@ -22,6 +22,13 @@ namespace FootTrack.Api.Controllers
                 : HandleError(result);
         }
 
+        protected IActionResult OkOrError(Result result)
+        {
+            return result.IsSuccess
+                ? Ok()
+                : HandleError(result);
+        }
+
         protected IActionResult CreatedAtOrError<TDestination, TSource>(
             Result<TSource> result,
             string actionName,

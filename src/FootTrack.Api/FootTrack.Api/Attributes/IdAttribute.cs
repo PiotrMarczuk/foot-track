@@ -6,7 +6,7 @@ using FootTrack.Shared;
 namespace FootTrack.Api.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class PasswordAttribute : ValidationAttribute
+    public class IdAttribute : ValidationAttribute
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
@@ -15,17 +15,17 @@ namespace FootTrack.Api.Attributes
                 return ValidationResult.Success;
             }
 
-            var password = value as string;
-
-            if (password == null)
+            var id = value as string;
+            
+            if (id == null)
             {
-                return new ValidationResult(Errors.General.Invalid(nameof(password)).Serialize());
+                return new ValidationResult(Errors.General.Invalid(nameof(id)).Serialize());
             }
 
-            Result<Password> passwordResult = Password.Create(password);
-
-            return passwordResult.IsFailure
-                ? new ValidationResult(passwordResult.Error.Serialize())
+            Result<Id> idResult = Id.Create(id);
+            
+            return idResult.IsFailure 
+                ? new ValidationResult(idResult.Error.Serialize()) 
                 : ValidationResult.Success;
         }
     }

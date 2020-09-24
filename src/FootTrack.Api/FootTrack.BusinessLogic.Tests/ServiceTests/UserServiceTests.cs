@@ -38,7 +38,7 @@ namespace FootTrack.BusinessLogic.Tests.ServiceTests
         public async Task When_tried_to_authenticate_and_user_was_not_found_should_fail()
         {
             // ACT
-            var result = await _sut.AuthenticateAsync(UserCredentials.Create(UserEmail, UserPassword).Value);
+            Result<AuthenticatedUser> result = await _sut.AuthenticateAsync(UserCredentials.Create(UserEmail, UserPassword).Value);
 
             // ASSERT
             Assert.That(result.IsFailure, Is.True);
@@ -59,7 +59,7 @@ namespace FootTrack.BusinessLogic.Tests.ServiceTests
                 .Returns(userLoginWithHashedPassword);
 
             // ACT
-            var result = await _sut.AuthenticateAsync(UserCredentials.Create(UserEmail, UserPassword).Value);
+            Result<AuthenticatedUser> result = await _sut.AuthenticateAsync(UserCredentials.Create(UserEmail, UserPassword).Value);
 
             // ASSERT
             Assert.That(result.IsFailure, Is.True);
@@ -88,7 +88,7 @@ namespace FootTrack.BusinessLogic.Tests.ServiceTests
             _jwtTokenService.GenerateToken(userLoginWithHashedPassword.Id).Returns("token");
 
             // ACT
-            var result = await _sut.AuthenticateAsync(UserCredentials.Create(UserEmail, UserPassword).Value);
+            Result<AuthenticatedUser> result = await _sut.AuthenticateAsync(UserCredentials.Create(UserEmail, UserPassword).Value);
 
             // ASSERT
             Assert.That(result.IsSuccess, Is.True);
@@ -100,7 +100,7 @@ namespace FootTrack.BusinessLogic.Tests.ServiceTests
         public async Task When_getting_user_with_Id_that_does_not_exist_should_fail()
         {
             // ARRANGE & ACT
-            var result = await _sut.GetByIdAsync(Id.Create((ObjectId.GenerateNewId().ToString())).Value);
+            Result<UserData> result = await _sut.GetByIdAsync(Id.Create((ObjectId.GenerateNewId().ToString())).Value);
 
             // ASSERT
             Assert.That(result.IsFailure, Is.True);
@@ -118,7 +118,7 @@ namespace FootTrack.BusinessLogic.Tests.ServiceTests
                 .Returns(UserData.Create(id, UserEmail, FirstName, LastName).Value);
 
             // ACT
-            var result = await _sut.GetByIdAsync(id);
+            Result<UserData> result = await _sut.GetByIdAsync(id);
 
             // ASSERT
             Assert.That(result.IsSuccess, Is.True);
@@ -145,7 +145,7 @@ namespace FootTrack.BusinessLogic.Tests.ServiceTests
                 .ReturnsForAnyArgs(UserData.Create(id, UserEmail, FirstName, LastName));
 
             // ACT
-            var result = await _sut.RegisterAsync(userToBeRegistered);
+            Result<AuthenticatedUser> result = await _sut.RegisterAsync(userToBeRegistered);
 
             // ASSERT
             Assert.That(result.IsSuccess, Is.True);

@@ -12,5 +12,7 @@ namespace FootTrack.Repository
         Task<Result<UserData>> InsertUserAsync(HashedUserData hashedUserData);
 
         Task<Maybe<UserData>> GetUserDataAsync(Id id);
+
+        Task<bool> CheckIfUserExist(Id id);
     }
 }

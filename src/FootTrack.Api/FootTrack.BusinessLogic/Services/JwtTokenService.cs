@@ -19,7 +19,7 @@ namespace FootTrack.BusinessLogic.Services
 
         public string GenerateToken(Id id)
         {
-            var key = Encoding.ASCII
+            byte[] key = Encoding.ASCII
                 .GetBytes(_tokenSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {

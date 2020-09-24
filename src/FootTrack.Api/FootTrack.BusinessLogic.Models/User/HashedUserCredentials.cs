@@ -20,8 +20,8 @@ namespace FootTrack.BusinessLogic.Models.User
 
         public static Result<HashedUserCredentials> Create(string email, string hashedPassword, string id)
         {
-            var emailResult = Email.Create(email);
-            var idResult = Id.Create(id);
+            Result<Email> emailResult = Email.Create(email);
+            Result<Id> idResult = Id.Create(id);
 
             Result validationResult = Result.Combine(emailResult, idResult);
 

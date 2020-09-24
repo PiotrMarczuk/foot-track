@@ -115,7 +115,7 @@ namespace FootTrack.Api.Tests.ControllersTests
                 Password = Password,
             };
 
-            var authenticatedUser =
+            Result<AuthenticatedUser> authenticatedUser =
                 AuthenticatedUser.Create(id, Email, "blablablablablablablablablablablablabla");
 
             _userService.RegisterAsync(default)
@@ -141,7 +141,7 @@ namespace FootTrack.Api.Tests.ControllersTests
                 Password = Password,
             };
 
-            var authenticatedUser =
+            Result<AuthenticatedUser> authenticatedUser =
                 AuthenticatedUser.Create(id, Email, "blablablablablablablablablablablablabla");
 
             _userService.AuthenticateAsync(default)

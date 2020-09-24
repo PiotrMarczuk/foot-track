@@ -17,10 +17,10 @@ namespace FootTrack.BusinessLogic.Tests.ModelTests
             const string notSoValidMail = "email@.com";
 
             // ACT
-            var resultOfEmptyEmail = Email.Create(emptyEmail);
-            var resultOfTooLongEmail = Email.Create(tooLongEmail);
-            var resultOfEmailWithTrailingSpaces = Email.Create(emailWithSpaces);
-            var resultOfNotSoValidMail = Email.Create(notSoValidMail);
+            Result<Email> resultOfEmptyEmail = Email.Create(emptyEmail);
+            Result<Email> resultOfTooLongEmail = Email.Create(tooLongEmail);
+            Result<Email> resultOfEmailWithTrailingSpaces = Email.Create(emailWithSpaces);
+            Result<Email> resultOfNotSoValidMail = Email.Create(notSoValidMail);
 
             // ASSERT
             Assert.That(resultOfEmptyEmail.IsFailure, Is.True);

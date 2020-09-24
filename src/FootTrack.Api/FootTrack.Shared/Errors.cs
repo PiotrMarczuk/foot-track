@@ -31,5 +31,11 @@
             public static Error TooShort(int minLength, string entityName = "Record") =>
                 new Error("password.too.short", $"'{entityName}' too short. Min length is '{minLength}'.");
         }
+
+        public static class Device
+        {
+            public static Error DeviceUnreachable(string deviceName = "device") =>
+                new Error("device.unreachable", $"Device called '{deviceName}' is unreachable.");
+        }
     }
 }

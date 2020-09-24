@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Azure.Devices" Version="1.27.1-preview-003" />
+      <PackageReference Include="NullGuard.Fody" Version="3.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FootTrack.BusinessLogic.Models\FootTrack.BusinessLogic.Models.csproj" />
+      <ProjectReference Include="..\FootTrack.Settings\FootTrack.Settings.csproj" />
+      <ProjectReference Include="..\FootTrack.Shared\FootTrack.Shared.csproj" />
+    </ItemGroup>
+
+</Project>

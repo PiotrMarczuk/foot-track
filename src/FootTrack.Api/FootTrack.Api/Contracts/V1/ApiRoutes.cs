@@ -18,5 +18,12 @@
 
             public const string GetById = ControllerEndpoint + "/{id}";
         }
+
+        public static class Trainings
+        {
+            private const string ControllerEndpoint = Base + "/trainings";
+
+            public const string Start = ControllerEndpoint + "/start";
+        }
     }
 }

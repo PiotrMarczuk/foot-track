@@ -29,7 +29,7 @@ namespace FootTrack.Shared
         
         public static Error Deserialize(string serialized)
         {
-            var data = serialized.Split(
+            string[] data = serialized.Split(
                 new[] { Separator },
                 StringSplitOptions.RemoveEmptyEntries);
 

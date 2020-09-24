@@ -16,6 +16,7 @@
     <ItemGroup>
       <ProjectReference Include="..\FootTrack.BusinessLogic.Models\FootTrack.BusinessLogic.Models.csproj" />
       <ProjectReference Include="..\FootTrack.Database\FootTrack.Database.csproj" />
+      <ProjectReference Include="..\FootTrack.RemoteDevicesConnection\FootTrack.RemoteDevicesConnection.csproj" />
       <ProjectReference Include="..\FootTrack.Repository\FootTrack.Repository.csproj" />
     </ItemGroup>
 

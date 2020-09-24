@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
-
+using FootTrack.BusinessLogic.Models.User;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.BusinessLogic.Services;
 using FootTrack.Shared;
@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-
 
 
 namespace FootTrack.Api.Installers
@@ -22,7 +21,7 @@ namespace FootTrack.Api.Installers
         {
             string secret = configuration.GetSection("JwtTokenSettings")["Secret"];
 
-            var key = Encoding.ASCII.GetBytes(secret);
+            byte[] key = Encoding.ASCII.GetBytes(secret);
 
             services.AddAuthentication(x =>
                 {
@@ -57,18 +56,19 @@ namespace FootTrack.Api.Installers
             return new JwtBearerEvents
             {
                 OnTokenValidated = async context =>
-                await Task.Run(() =>
-                {
-                    var userService = context.HttpContext.RequestServices
-                        .GetRequiredService<IUserService>();
-                    Maybe<string> userIdOrNothing = context.Principal.Identity.Name;
-                    var result = userIdOrNothing.ToResult(Errors.General.Empty(nameof(Id)))
-                        .OnSuccess(async userId => await userService.GetByIdAsync(Id.Create(userId).Value));
-                    if (result.IsFailure)
+                    await Task.Run(() =>
                     {
-                        context.Fail(result.Error.Message);
-                    } 
-                })
+                        var userService = context.HttpContext.RequestServices
+                            .GetRequiredService<IUserService>();
+                        Maybe<string> userIdOrNothing = context.Principal.Identity.Name;
+                        Result<Task<Result<UserData>>> result = userIdOrNothing
+                            .ToResult(Errors.General.Empty(nameof(Id)))
+                            .OnSuccess(async userId => await userService.GetByIdAsync(Id.Create(userId).Value));
+                        if (result.IsFailure)
+                        {
+                            context.Fail(result.Error.Message);
+                        }
+                    }),
             };
         }
     }

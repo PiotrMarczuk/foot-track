@@ -15,7 +15,7 @@ namespace FootTrack.Shared
         public static async Task<Result<T>> ToResultAsync<T>(this Task<Maybe<T>> maybeTask, Error error)
             where T : class
         {
-            var maybe = await maybeTask;
+            Maybe<T> maybe = await maybeTask;
 
             return ToResult(maybe, error);
         }
@@ -29,7 +29,7 @@ namespace FootTrack.Shared
         
         public static async Task<Result<TK>> OnSuccessAsync<T, TK>(this Task<Result<T>> resultTask, Func<T, TK> func)
         {
-            var result = await resultTask;
+            Result<T> result = await resultTask;
 
             return OnSuccess(result, func);
         }
@@ -49,7 +49,7 @@ namespace FootTrack.Shared
         public static async Task<Result<T>> EnsureAsync<T>(this Task<Result<T>> resultTask, Func<T, bool> predicate,
             Error error)
         {
-            var result = await resultTask;
+            Result<T> result = await resultTask;
 
             return Ensure(result, predicate, error);
         }

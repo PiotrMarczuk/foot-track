@@ -16,8 +16,8 @@ namespace FootTrack.BusinessLogic.Tests.ModelTests
             var generatedId = ObjectId.GenerateNewId().ToString();
 
             // ACT
-            var stupidIdResult = Id.Create(stupidId);
-            var generatedIdResult = Id.Create(generatedId);
+            Result<Id> stupidIdResult = Id.Create(stupidId);
+            Result<Id> generatedIdResult = Id.Create(generatedId);
 
             // ASSERT
             Assert.That(stupidIdResult.IsFailure, Is.True);

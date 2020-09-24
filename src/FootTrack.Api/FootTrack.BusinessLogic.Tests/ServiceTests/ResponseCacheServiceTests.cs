@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using FootTrack.BusinessLogic.Services;
+using FootTrack.Shared;
 using Microsoft.Extensions.Caching.Distributed;
 using NSubstitute;
 using NUnit.Framework;
@@ -47,7 +48,7 @@ namespace FootTrack.BusinessLogic.Tests.ServiceTests
             _distributedCache.GetAsync(cacheKey).Returns(Encoding.ASCII.GetBytes(cachedResponse));
 
             // ACT
-            var result = await _sut.GetCachedResponseAsync(cacheKey);
+            Result<string> result = await _sut.GetCachedResponseAsync(cacheKey);
 
             // ASSERT
             Assert.That(result.Value, Is.EqualTo(cachedResponse));
