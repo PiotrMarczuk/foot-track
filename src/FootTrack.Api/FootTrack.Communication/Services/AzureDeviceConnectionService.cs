@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FootTrack.Shared;
+using Hangfire;
 using Microsoft.Azure.Devices;
 
 namespace FootTrack.Communication.Services
@@ -11,19 +12,16 @@ namespace FootTrack.Communication.Services
 
         private readonly CloudToDeviceMethod _method;
         private readonly ServiceClient _serviceClient;
-        private readonly IJobExecutor _jobExecutor;
 
         public AzureDeviceConnectionService(
             CloudToDeviceMethod method,
-            ServiceClient serviceClient,
-            IJobExecutor jobExecutor)
+            ServiceClient serviceClient)
         {
             _method = method;
             _serviceClient = serviceClient;
-            _jobExecutor = jobExecutor;
         }
 
-        public async Task<Result> StartTrainingSessionAsync()
+        public async Task<Result<string>> StartTrainingSessionAsync()
         {
             try
             {
@@ -31,11 +29,11 @@ namespace FootTrack.Communication.Services
             }
             catch (Exception)
             {
-                return Result.Fail(Errors.Device.DeviceUnreachable(TargetDevice));
+                return Result.Fail<string>(Errors.Device.DeviceUnreachable(TargetDevice));
             }
 
-            _jobExecutor.Execute();
-            return Result.Ok();
+            string jobId = BackgroundJob.Enqueue<IJobExecutor>(jobExecutor =>  jobExecutor.Execute());
+            return Result.Ok(jobId);
         }
     }
 }

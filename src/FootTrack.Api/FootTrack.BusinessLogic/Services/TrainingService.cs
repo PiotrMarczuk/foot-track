@@ -26,7 +26,10 @@ namespace FootTrack.BusinessLogic.Services
                 return Result.Fail(Errors.General.NotFound("User", userId.Value));
             }
 
-            return await _azureDeviceConnectionService.StartTrainingSessionAsync();
+            Result<string> trainingSessionResult = await _azureDeviceConnectionService
+                .StartTrainingSessionAsync();
+
+            return trainingSessionResult.IsSuccess ? Result.Ok() : Result.Fail(trainingSessionResult.Error);
         }
     }
 }

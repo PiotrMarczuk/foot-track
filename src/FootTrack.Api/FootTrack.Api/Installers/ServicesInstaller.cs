@@ -50,12 +50,10 @@ namespace FootTrack.Api.Installers
             CloudToDeviceMethod cloudToDeviceMethod =
                 serviceProvider.GetRequiredService<ICloudToDeviceMethodFactory>().Create();
             ServiceClient serviceClient = serviceProvider.GetRequiredService<IServiceClientFactory>().Create();
-            var jobExecutor = serviceProvider.GetRequiredService<IJobExecutor>();
 
             return new AzureDeviceConnectionService(
                 cloudToDeviceMethod,
-                serviceClient,
-                jobExecutor);
+                serviceClient);
         }
     }
 }
