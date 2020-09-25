@@ -1,9 +1,9 @@
 ﻿using Microsoft.Azure.Devices;
 
-namespace FootTrack.RemoteDevicesConnection.Factories
+namespace FootTrack.Communication.Factories
 {
     public interface ICloudToDeviceMethodFactory
     {
-        CloudToDeviceMethod CreateMethod();
+        CloudToDeviceMethod Create();
     }
 }

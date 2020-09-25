@@ -27,7 +27,8 @@ namespace FootTrack.Api.ExtensionMethods
                         builder
                             .WithOrigins(urlSettings.ClientUrl)
                             .AllowAnyMethod()
-                            .AllowAnyHeader();
+                            .AllowAnyHeader()
+                            .AllowCredentials();
                     });
             });
         }

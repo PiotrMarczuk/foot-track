@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FootTrack.Shared;
 
-namespace FootTrack.RemoteDevicesConnection.Services
+namespace FootTrack.Communication.Services
 {
     public interface IAzureDeviceConnectionService
     {

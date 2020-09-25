@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootTrack.TestUtils", "Foot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootTrack.Api.IntegrationTests", "FootTrack.Api.IntegrationTests\FootTrack.Api.IntegrationTests.csproj", "{153D3660-AF85-40CF-9CC2-9C80C5304E3F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootTrack.RemoteDevicesConnection", "FootTrack.RemoteDevicesConnection\FootTrack.RemoteDevicesConnection.csproj", "{D286DAA0-72C2-4054-9B13-56E66D2F8408}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootTrack.Communication", "FootTrack.Communication\FootTrack.Communication.csproj", "{D286DAA0-72C2-4054-9B13-56E66D2F8408}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

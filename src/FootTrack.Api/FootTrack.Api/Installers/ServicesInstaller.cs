@@ -1,8 +1,13 @@
-﻿using FootTrack.BusinessLogic.Services;
-using FootTrack.RemoteDevicesConnection;
-using FootTrack.RemoteDevicesConnection.Factories;
-using FootTrack.RemoteDevicesConnection.Services;
+﻿using System;
+using FootTrack.BusinessLogic.Services;
+using FootTrack.Communication;
+using FootTrack.Communication.Factories;
+using FootTrack.Communication.Hubs;
+using FootTrack.Communication.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Azure.Devices;
+using Microsoft.Azure.EventHubs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,10 +28,34 @@ namespace FootTrack.Api.Installers
             services
                 .AddTransient<ITrainingService, TrainingService>();
             services
-                .AddTransient<IAzureDeviceConnectionService, AzureDeviceConnectionService>();
+                .AddSingleton<IAzureDeviceConnectionService, AzureDeviceConnectionService>(
+                    DeviceConnectionServiceFactory);
 
             services.AddTransient<IServiceClientFactory, ServiceClientFactory>();
             services.AddTransient<ICloudToDeviceMethodFactory, CloudToDeviceMethodFactory>();
+            services.AddTransient<IEventHubClientFactory, EventHubClientFactory>();
+            services.AddSingleton<IJobExecutor, TrainingJobExecutor>(JobExecutorFactory);
+        }
+
+        private static TrainingJobExecutor JobExecutorFactory(IServiceProvider serviceProvider)
+        {
+            EventHubClient eventHubClient = serviceProvider.GetRequiredService<IEventHubClientFactory>().Create();
+            var hub = serviceProvider.GetRequiredService<IHubContext<TrainingHub>>();
+
+            return new TrainingJobExecutor(eventHubClient, hub);
+        }
+
+        private static AzureDeviceConnectionService DeviceConnectionServiceFactory(IServiceProvider serviceProvider)
+        {
+            CloudToDeviceMethod cloudToDeviceMethod =
+                serviceProvider.GetRequiredService<ICloudToDeviceMethodFactory>().Create();
+            ServiceClient serviceClient = serviceProvider.GetRequiredService<IServiceClientFactory>().Create();
+            var jobExecutor = serviceProvider.GetRequiredService<IJobExecutor>();
+
+            return new AzureDeviceConnectionService(
+                cloudToDeviceMethod,
+                serviceClient,
+                jobExecutor);
         }
     }
 }

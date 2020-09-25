@@ -10,7 +10,8 @@ COPY ["FootTrack.Repository/FootTrack.Repository.csproj", "FootTrack.Repository/
 COPY ["FootTrack.Database/FootTrack.Database.csproj", "FootTrack.Database/"]
 COPY ["FootTrack.Settings/FootTrack.Settings.csproj", "FootTrack.Settings/"]
 COPY ["FootTrack.BusinessLogic/FootTrack.BusinessLogic.csproj", "FootTrack.BusinessLogic/"]
-COPY ["FootTrack.AzureConnection/FootTrack.RemoteDevicesConnection.csproj", "FootTrack.RemoteDevicesConnection/"]
+COPY ["FootTrack.Communication/FootTrack.Communication.csproj", "FootTrack.Communication/"]
+
 RUN dotnet restore "FootTrack.Api/FootTrack.Api.csproj"
 COPY . .
 WORKDIR "/src/FootTrack.Api"

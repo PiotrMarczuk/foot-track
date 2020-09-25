@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using FootTrack.RemoteDevicesConnection;
 using FootTrack.BusinessLogic.Models.ValueObjects;
-using FootTrack.RemoteDevicesConnection.Services;
+using FootTrack.Communication.Services;
 using FootTrack.Repository;
 using FootTrack.Shared;
 

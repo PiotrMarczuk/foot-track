@@ -1,7 +1,7 @@
 ﻿using FootTrack.Settings.AzureServiceClient;
 using Microsoft.Azure.Devices;
 
-namespace FootTrack.RemoteDevicesConnection.Factories
+namespace FootTrack.Communication.Factories
 {
     public class ServiceClientFactory : IServiceClientFactory
     {
