@@ -37,8 +37,10 @@ namespace FootTrack.Shared
             {
                 throw new InvalidOperationException($"Invalid error serialization: '{serialized}'");
             }
-            
-            return new Error(data[0], data[1]);
+
+            return data.Length == 1 
+                ? new Error("microsoft.validation.error", data[0]) 
+                : new Error(data[0], data[1]);
         }
     }
 }

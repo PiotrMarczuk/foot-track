@@ -1,31 +1,45 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/login">Login</router-link>
+  <div id="app">
+    <login-form></login-form>
+    <register-form></register-form>
+    <div>
+      <navbar></navbar>
+    </div>
+    <div>
+      <router-view />
+      <div v-if="alert.message">
+        <alert v-bind="alert.message"></alert>
+      </div>
+    </div>
   </div>
-  <router-view />
 </template>
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import Alert from "@/components/Alert.vue";
+import Navbar from "@/components/Navbar.vue";
+import LoginForm from "@/components/LoginForm.vue";
+import RegisterForm from "@/components/RegisterForm.vue";
 
+@Component({
+  components: {
+    Alert,
+    Navbar,
+    LoginForm,
+    RegisterForm
+  }
+})
+export default class App extends Vue {
+  get alert() {
+    return this.$store.state.alert;
+  }
+}
+</script>
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+  background-color: $base-white;
 }
 </style>
