@@ -1,12 +1,24 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
+import TrainingHub from "@/plugins/training-hub";
+import vuetify from "./plugins/vuetify";
+/* eslint-disable */
+// @ts-ignore
+import VueGoogleHeatmap from "vue-google-heatmap";
+/* eslint-enable */
 
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
+Vue.config.productionTip = false;
+Vue.use(VueGoogleHeatmap, {
+  apiKey: ""
+});
 
-if (environment.production) {
-  enableProdMode();
-}
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+Vue.use(TrainingHub);
+new Vue({
+  router,
+  store,
+  vuetify,
+  render: h => h(App)
+}).$mount("#app");
