@@ -1,18 +1,17 @@
-import { mutations } from './mutations';
-import { FormState } from './types';
-import { getters } from './getters';
+import { mutations } from "./mutations";
+import { FormState } from "./types";
+import { getters } from "./getters";
 
-
-export const state:  FormState = {
-    loginFormVisible: false,
-    registerFormVisible: false,
+export const state: FormState = {
+  loginFormVisible: false,
+  registerFormVisible: false
 };
 
 const namespaced = true;
 
 export const form = {
-    namespaced,
-    state,
-    getters,
-    mutations,
+  namespaced,
+  state,
+  getters,
+  mutations
 };

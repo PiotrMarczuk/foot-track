@@ -1,10 +1,5 @@
- <template>
-  <vs-alert solid>
-    <template #title>
-      Vuesax Framework
-    </template>
-    {{ msg }}
-  </vs-alert>
+<template>
+  <v-snackbar :value="true" top>{{ msg }}</v-snackbar>
 </template>
 
 <script lang="ts">

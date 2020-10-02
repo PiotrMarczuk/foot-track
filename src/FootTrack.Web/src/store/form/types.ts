@@ -1,4 +1,4 @@
 export interface FormState {
-    loginFormVisible: boolean;
-    registerFormVisible: boolean;
+  loginFormVisible: boolean;
+  registerFormVisible: boolean;
 }

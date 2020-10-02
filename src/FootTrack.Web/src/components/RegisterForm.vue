@@ -1,80 +1,139 @@
 <template>
-  <div class="center">
-    <form @submit.prevent="register">
-      <vs-dialog blur v-model="visible">
-        <template #header>
-          <h4 class="not-margin">Welcome to <b>Foot Track</b></h4>
-        </template>
+  <v-row justify="center">
+    <v-dialog v-model="visible" hide-overlay max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline"> Join Foot Track </span>
+        </v-card-title>
+        <v-card-text>
+          <validation-observer ref="validationObserverRef">
+            <form>
+              <validation-provider
+                v-slot="{ errors }"
+                name="Email"
+                rules="required|email"
+              >
+                <v-text-field
+                  v-model="userRegister.email"
+                  :error-messages="errors"
+                  label="E-mail"
+                  required
+                ></v-text-field>
+              </validation-provider>
+              <validation-provider
+                v-slot="{ errors }"
+                name="Password"
+                rules="required|min:6"
+              >
+                <v-text-field
+                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="showPassword ? 'text' : 'password'"
+                  :error-messages="errors"
+                  label="Password"
+                  hint="At least 6 characters"
+                  class="input-group--focused"
+                  @click:append="showPassword = !showPassword"
+                  v-model="userRegister.password"
+                ></v-text-field>
+              </validation-provider>
+              <validation-provider
+                v-slot="{ errors }"
+                name="Confirm password"
+                rules="required|min:6|confirmed:Password"
+              >
+                <v-text-field
+                  :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="showConfirmPassword ? 'text' : 'password'"
+                  :error-messages="errors"
+                  label="Confirm password"
+                  hint="At least 6 characters"
+                  class="input-group--focused"
+                  @click:append="showConfirmPassword = !showConfirmPassword"
+                  v-model="confirmPassword"
+                ></v-text-field>
+              </validation-provider>
+              <v-text-field
+                v-model="userRegister.firstName"
+                label="First name"
+              ></v-text-field>
+              <v-text-field
+                v-model="userRegister.lastName"
+                label="Last name"
+              ></v-text-field>
 
-        <div class="con-form">
-          <vs-input v-model="userFormGroup.props.email" placeholder="Email">
-            <template #icon>
-              <i class="material-icons">email</i>
-            </template>
-          </vs-input>
-          <vs-input
-            type="password"
-            v-model="userFormGroup.props.password"
-            placeholder="Password"
-          >
-            <template #icon>
-              <i class="material-icons">lock</i>
-            </template>
-          </vs-input>
-          <vs-input
-            type="text"
-            v-model="userFormGroup.props.firstName"
-            placeholder="First Name"
-          >
-            <template #icon>
-              <i class="material-icons">person</i>
-            </template>
-          </vs-input>
-
-          <vs-input
-            type="text"
-            v-model="userFormGroup.props.lastName"
-            placeholder="Last Name"
-          >
-            <template #icon>
-              <i class="material-icons">people</i>
-            </template>
-          </vs-input>
-        </div>
-
-        <template #footer>
-          <div class="footer-dialog">
-            <vs-button
-              block
-              color="#ff2e63"
-              :disabled="userFormGroup.invalid"
-              @click="register"
-            >
-              Register
-            </vs-button>
-          </div>
-        </template>
-      </vs-dialog>
-    </form>
-  </div>
+              <v-btn
+                id="custom-disabled-register"
+                color="secondary"
+                @click="submit"
+                :loading="isSubmitDisabled"
+                :disabled="isSubmitDisabled"
+                block
+                rounded
+              >
+                REGISTER
+              </v-btn>
+            </form>
+          </validation-observer>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </v-row>
 </template>
-
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { RxFormBuilder, IFormGroup } from "@rxweb/reactive-forms";
+import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
+import { required, email, min, confirmed } from "vee-validate/dist/rules";
+import { getters } from "@/store/profile/getters";
 import { UserRegister } from "@/models/UserRegister";
 
-@Component
-export default class LoginForm extends Vue {
-  userFormGroup!: IFormGroup<UserRegister>;
-  formBuilder: RxFormBuilder = new RxFormBuilder();
+extend("required", {
+  ...required,
+  message: "{_field_} can not be empty"
+});
 
-  constructor() {
-    super();
-    this.userFormGroup = this.formBuilder.formGroup(UserRegister) as IFormGroup<
-      UserRegister
-    >;
+extend("min", {
+  ...min,
+  message: "{_field_} must be longer than {length} characters"
+}),
+  extend("email", {
+    ...email,
+    message: "Email must be valid"
+  });
+extend("confirmed", {
+  ...confirmed,
+  message: "{_field_} does not match."
+});
+
+@Component({
+  components: {
+    ValidationProvider,
+    ValidationObserver
+  }
+})
+export default class RegisterForm extends Vue {
+  $refs!: {
+    validationObserverRef: InstanceType<typeof ValidationObserver>;
+  };
+
+  showPassword = false;
+  showConfirmPassword = false;
+  confirmPassword = "";
+  userRegister = new UserRegister();
+  errors = null;
+
+  get isSubmitDisabled(): boolean {
+    const { getters } = this.$store;
+    return getters["profile/userStatus"].registering;
+  }
+
+  async submit() {
+    if ((await this.$refs.validationObserverRef.validate()) == false) {
+      return;
+    }
+
+    const { dispatch } = this.$store;
+    dispatch("profile/register", this.userRegister);
   }
 
   get visible() {
@@ -85,78 +144,12 @@ export default class LoginForm extends Vue {
     const { commit } = this.$store;
     commit("form/setRegisterFormVisible", value);
   }
-
-  register() {
-    const { dispatch } = this.$store;
-    dispatch("profile/register", this.userFormGroup.props);
-  }
 }
 </script>
 
 <style lang="scss" scoped>
-.not-margin {
-  margin: 0px;
-  font-weight: normal;
-  padding: 10px;
-}
-
-.con-form {
-  width: 100%;
-}
-
-.con-form .flex {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.con-form .flex a {
-  font-size: 0.8rem;
-  opacity: 0.7;
-}
-
-.con-form .flex a:hover {
-  opacity: 1;
-}
-
-.con-form .vs-checkbox-label {
-  font-size: 0.8rem;
-}
-
-.con-form .vs-input-content {
-  margin: 10px 0px;
-  width: calc(100%);
-}
-
-.con-form .vs-input-content .vs-input {
-  width: 100%;
-}
-
-.footer-dialog {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: calc(100%);
-}
-
-.footer-dialog .new {
-  margin: 0px;
-  margin-top: 20px;
-  padding: 0px;
-  font-size: 0.7rem;
-}
-
-.footer-dialog .new a {
-  color: rgba(var(--vs-primary), 1) !important;
-  margin-left: 6px;
-}
-
-.footer-dialog .new a:hover {
-  text-decoration: underline;
-}
-
-.footer-dialog .vs-button {
-  margin: 0px;
+#custom-disabled-register.theme--light.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
+  background-color: $secondary !important;
+  color: white !important;
 }
 </style>

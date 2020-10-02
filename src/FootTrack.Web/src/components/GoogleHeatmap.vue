@@ -3,6 +3,7 @@
 </template>
 
 <script lang="ts">
+import { Point } from '@/models/Point';
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
@@ -21,10 +22,5 @@ export default class GoogleHeatmap extends Vue {
     this.points.push({ lat: 37.786117, lng: -122.440119 });
     this.points.push({ lat: 37.786117, lng: -122.440119 });
   }
-}
-
-interface Point {
-  lat: number;
-  lng: number;
 }
 </script>

@@ -44,7 +44,7 @@ namespace FootTrack.Communication
                 foreach (EventData eventData in events)
                 {
                     string data = Encoding.UTF8.GetString(eventData.Body.Array!);
-                    await _hubContext.Clients.All.SendAsync("SendMessage", new
+                    await _hubContext.Clients.All.SendAsync("TrainingMessage", new
                     {
                         data,
                     });

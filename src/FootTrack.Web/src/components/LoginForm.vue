@@ -1,64 +1,125 @@
 <template>
-  <div class="center">
-    <form>
-      <vs-dialog blur v-model="visible">
-        <template #header>
-          <h4 class="not-margin">Welcome to <b>Foot Track</b></h4>
-        </template>
-
-        <div class="con-form">
-          <vs-input v-model="userFormGroup.props.email" placeholder="Email">
-            <template #icon>
-              <i class="material-icons">email</i>
-            </template>
-          </vs-input>
-          <vs-input
-            type="password"
-            v-model="userFormGroup.props.password"
-            placeholder="Password"
-          >
-            <template #icon>
-              <i class="material-icons">lock</i>
-            </template>
-          </vs-input>
-        </div>
-
-        <template #footer>
-          <div class="footer-dialog">
-            <vs-button color="#ff2e63" :disabled="!userFormGroup.valid" block @click="login">
-              Sign In
-            </vs-button>
-            <div class="new">
-              New Here?
-              <vs-button color="#ff2e63"  @click="enableRegister"
-                ><i class="material-icons">check_box</i>Create New
-                Account</vs-button
-              >
-            </div>
-          </div>
-        </template>
-      </vs-dialog>
-    </form>
-  </div>
+  <v-dialog v-model="visible" hide-overlay max-width="600px">
+    <v-card>
+      <v-card-title>
+        <span class="headline"> Welcome to Foot Track</span>
+      </v-card-title>
+      <v-card-text class="login-form-wrapper">
+        <validation-observer ref="validationObserverRef">
+          <form>
+            <validation-provider
+              v-slot="{ errors }"
+              name="Email"
+              rules="required|email"
+            >
+              <v-text-field
+                v-model="userLogin.email"
+                :error-messages="errors"
+                label="E-mail"
+                required
+              ></v-text-field>
+            </validation-provider>
+            <validation-provider
+              v-slot="{ errors }"
+              name="Password"
+              rules="required|min:6"
+            >
+              <v-text-field
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showPassword ? 'text' : 'password'"
+                :error-messages="errors"
+                label="Password"
+                hint="At least 6 characters"
+                class="input-group--focused"
+                @click:append="showPassword = !showPassword"
+                v-model="userLogin.password"
+              ></v-text-field>
+            </validation-provider>
+            <v-card-actions >
+              <v-container>
+                <v-row>
+                  <v-btn
+                    id="custom-disabled"
+                    color="secondary"
+                    @click="submit"
+                    :loading="isSubmitDisabled"
+                    :disabled="isSubmitDisabled"
+                    block
+                    rounded
+                  >
+                    Log in
+                  </v-btn>
+                </v-row>
+                <v-row class="register-wrapper">
+                  <v-card-text>
+                    <span class="account-question">
+                      Don't have account yet?
+                    </span>
+                    <v-btn color="secondary" text small rounded @click="enableRegister">
+                    Register
+                     <v-icon right>
+                      mdi-account-plus
+                    </v-icon>
+                  </v-btn>
+                  </v-card-text>
+                </v-row>
+              </v-container>
+            </v-card-actions>
+          </form>
+        </validation-observer>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { RxFormBuilder, IFormGroup } from "@rxweb/reactive-forms";
+import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
+import { required, email, min } from "vee-validate/dist/rules";
 import { UserLogin } from "@/models/UserLogin";
+import { getters } from "@/store/profile/getters";
 
-@Component
+extend("required", {
+  ...required,
+  message: "{_field_} can not be empty"
+});
+
+extend("min", {
+  ...min,
+  message: "{_field_} must be longer than {length} characters"
+}),
+  extend("email", {
+    ...email,
+    message: "Email must be valid"
+  });
+
+@Component({
+  components: {
+    ValidationProvider,
+    ValidationObserver
+  }
+})
 export default class LoginForm extends Vue {
-  userFormGroup!: IFormGroup<UserLogin>;
-  formBuilder: RxFormBuilder = new RxFormBuilder();
-  submitted = false;
-  checkbox1 = false;
+  $refs!: {
+    validationObserverRef: InstanceType<typeof ValidationObserver>;
+  };
 
-  constructor() {
-    super();
-    this.userFormGroup = this.formBuilder.formGroup(UserLogin) as IFormGroup<
-      UserLogin
-    >;
+  showPassword = false;
+  userLogin = new UserLogin();
+  errors = null;
+
+  get isSubmitDisabled(): boolean {
+    const { getters } = this.$store;
+    return getters["profile/userStatus"].loggingIn;
+  }
+
+  async submit() {
+    if ((await this.$refs.validationObserverRef.validate()) == false) {
+      return;
+    }
+
+    const { dispatch } = this.$store;
+    dispatch("profile/login", this.userLogin);
   }
 
   get visible() {
@@ -72,7 +133,7 @@ export default class LoginForm extends Vue {
 
   public login() {
     const { dispatch } = this.$store;
-    dispatch("profile/login", this.userFormGroup.props);
+    dispatch("profile/login", {});
   }
 
   public enableRegister() {
@@ -82,70 +143,14 @@ export default class LoginForm extends Vue {
 }
 </script>
 
-  <style lang="scss">
-.not-margin {
-  margin: 0px;
-  font-weight: normal;
-  padding: 10px;
+<style lang="scss" scoped>
+#custom-disabled.theme--light.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
+  background-color: $secondary !important;
+  color: white !important;
 }
 
-.con-form {
-  width: 100%;
-}
-
-.con-form .flex {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.con-form .flex a {
-  font-size: 0.8rem;
-  opacity: 0.7;
-}
-
-.con-form .flex a:hover {
-  opacity: 1;
-}
-
-.con-form .vs-checkbox-label {
-  font-size: 0.8rem;
-}
-
-.con-form .vs-input-content {
-  margin: 10px 0px;
-  width: calc(100%);
-}
-
-.con-form .vs-input-content .vs-input {
-  width: 100%;
-}
-
-.footer-dialog {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: calc(100%);
-}
-
-.footer-dialog .new {
-  margin: 0px;
-  margin-top: 20px;
-  padding: 0px;
-  font-size: 0.7rem;
-}
-
-.footer-dialog .new a {
-  color: rgba(var(--vs-primary), 1) !important;
-  margin-left: 6px;
-}
-
-.footer-dialog .new a:hover {
-  text-decoration: underline;
-}
-
-.footer-dialog .vs-button {
-  margin: 0px;
+.register-wrapper {
+  text-align: center;
 }
 </style>
+

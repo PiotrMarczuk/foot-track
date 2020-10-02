@@ -1,4 +1,4 @@
 export interface AlertState {
-    type?: string;
-    message?: string;
+  type?: string;
+  message?: string;
 }
