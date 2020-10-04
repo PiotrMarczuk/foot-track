@@ -37,5 +37,20 @@
             public static Error DeviceUnreachable(string deviceName = "device") =>
                 new Error("device.unreachable", $"Device called '{deviceName}' is unreachable.");
         }
+
+        public static class Training
+        {
+            public static Error AlreadyStarted(string userId = default) =>
+                new Error("training.already.started", $"Training for user with id {userId} was already started.");
+
+            public static Error FailedToStartTraining(string userId = default) =>
+                new Error("start.training.failed", $"Failed to start training for user with id {userId}");
+        }
+
+        public static class Database
+        {
+            public static Error Failed() =>
+                new Error("database.operation.failed", "Database operation failed.");
+        }
     }
 }

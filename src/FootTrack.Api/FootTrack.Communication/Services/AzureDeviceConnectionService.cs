@@ -32,8 +32,23 @@ namespace FootTrack.Communication.Services
                 return Result.Fail<string>(Errors.Device.DeviceUnreachable(TargetDevice));
             }
 
-            string jobId = BackgroundJob.Enqueue<IJobExecutor>(jobExecutor =>  jobExecutor.Execute());
+            string jobId = BackgroundJob.Enqueue<IJobExecutor>(jobExecutor => jobExecutor.Execute());
             return Result.Ok(jobId);
+        }
+
+        public async Task<Result> EndTrainingSessionAsync(string jobId)
+        {
+            BackgroundJob.Delete(jobId);
+            try
+            {
+                await _serviceClient.InvokeDeviceMethodAsync(TargetDevice, _method);
+            }
+            catch (Exception)
+            {
+                return Result.Fail(Errors.Device.DeviceUnreachable(TargetDevice));
+            }
+
+            return Result.Ok();
         }
     }
 }

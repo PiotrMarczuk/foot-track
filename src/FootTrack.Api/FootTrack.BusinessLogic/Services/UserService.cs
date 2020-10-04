@@ -30,7 +30,7 @@ namespace FootTrack.BusinessLogic.Services
                 .EnsureAsync(user =>
                         CheckIfPasswordMatch(user.HashedPassword, userCredentials.Password),
                     Errors.User.IncorrectEmailOrPassword())
-                .OnSuccessAsync(CreateAuthenticatedUser);
+                .OnSuccessAsync(hashedUserCredentials => Result.Ok(CreateAuthenticatedUser(hashedUserCredentials)));
         }
 
         public async Task<Result<UserData>> GetByIdAsync(Id id)
@@ -48,7 +48,7 @@ namespace FootTrack.BusinessLogic.Services
                     userToBeRegistered.FirstName,
                     userToBeRegistered.LastName,
                     hashedPassword).Value)
-                .OnSuccessAsync(CreateAuthenticatedUser);
+                .OnSuccessAsync(userData => Result.Ok(CreateAuthenticatedUser(userData)));
         }
 
         private AuthenticatedUser CreateAuthenticatedUser(IUserBasicData user)

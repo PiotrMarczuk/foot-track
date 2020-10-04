@@ -54,9 +54,9 @@ namespace FootTrack.Repository
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<bool> CheckIfUserExist(Id id)
+        public async Task<Result<bool>> CheckIfUserExist(Id id)
         {
-            return await _collection.Find(DocumentFilter<User>.FilterById(id)).AnyAsync();
+            return Result.Ok(await _collection.Find(DocumentFilter<User>.FilterById(id)).AnyAsync());
         }
 
         private async Task<bool> CheckIfUserWithEmailAlreadyExist(Email email)

@@ -126,6 +126,23 @@ namespace FootTrack.Repository.IntegrationTests
             Assert.That(result.IsFailure);
         }
 
+        [Test]
+        public async Task Should_correctly_check_when_user_already_exist()
+        {
+            // ACT
+            var result = await _sut.CheckIfUserExist(_insertedUser.Id);
+
+            Assert.That(result.Value, Is.True);
+        }
+
+        [Test]
+        public async Task Should_correctly_check_when_user_does_not_already_exist()
+        {
+            var result = await _sut.CheckIfUserExist(Id.Create(ObjectId.Empty.ToString()).Value);
+
+            Assert.That(result.Value, Is.False);
+        }
+
         private async Task<Result<UserData>> InsertUserAsync(string email, string firstName, string lastName)
         {
             const string hashedPassword = "blablasuperhash";

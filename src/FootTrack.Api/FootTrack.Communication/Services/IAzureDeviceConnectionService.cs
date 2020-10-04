@@ -6,5 +6,7 @@ namespace FootTrack.Communication.Services
     public interface IAzureDeviceConnectionService
     {
         Task<Result<string>> StartTrainingSessionAsync();
+
+        Task<Result> EndTrainingSessionAsync(string jobId);
     }
 }
