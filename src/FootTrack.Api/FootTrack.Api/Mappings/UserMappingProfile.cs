@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FootTrack.Api.Dtos.Responses;
-using FootTrack.BusinessLogic.Models;
 using FootTrack.BusinessLogic.Models.User;
 
 namespace FootTrack.Api.Mappings

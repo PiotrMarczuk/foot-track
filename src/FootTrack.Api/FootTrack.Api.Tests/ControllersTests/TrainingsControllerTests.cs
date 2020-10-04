@@ -1,17 +1,17 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using System.Threading.Tasks;
+using AutoMapper;
 using FootTrack.Api.Controllers.V1;
 using FootTrack.Api.Dtos.Requests;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.BusinessLogic.Services;
 using FootTrack.Shared;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using NSubstitute;
 using NUnit.Framework;
-using System.Threading.Tasks;
-using System.Net;
-using Microsoft.AspNetCore.Mvc;
 
-namespace FootTrack.Api.Tests.ControllersTests
+namespace FootTrack.Api.UnitTests.ControllersTests
 {
     [TestFixture]
     public class TrainingsControllerTests
@@ -37,7 +37,12 @@ namespace FootTrack.Api.Tests.ControllersTests
             _trainingService.StartTrainingAsync(id).Returns(Result.Fail(Errors.Training.AlreadyStarted()));
             var result = await _sut.Start(dto) as ObjectResult;
 
-            Assert.That((HttpStatusCode)result?.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
+            if (result?.StatusCode != null)
+            {
+                Assert.That((HttpStatusCode) result.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
+                return;
+            }
+            Assert.Fail();
         }
 
         [Test]
@@ -49,7 +54,12 @@ namespace FootTrack.Api.Tests.ControllersTests
 
             var result = await _sut.Start(dto) as StatusCodeResult;
 
-            Assert.That((HttpStatusCode)result?.StatusCode, Is.EqualTo(HttpStatusCode.ServiceUnavailable));
+            if (result?.StatusCode != null)
+            {
+                Assert.That((HttpStatusCode) result.StatusCode, Is.EqualTo(HttpStatusCode.ServiceUnavailable));
+                return;
+            }
+            Assert.Fail();
         }
     }
 }

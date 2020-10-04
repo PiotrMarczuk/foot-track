@@ -1,8 +1,8 @@
 ﻿using System;
 using FootTrack.BusinessLogic.Services;
-using FootTrack.Communication;
 using FootTrack.Communication.Factories;
 using FootTrack.Communication.Hubs;
+using FootTrack.Communication.JobExecutors;
 using FootTrack.Communication.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -29,15 +29,15 @@ namespace FootTrack.Api.Installers
                 .AddTransient<ITrainingService, TrainingService>();
             services
                 .AddSingleton<IAzureDeviceConnectionService, AzureDeviceConnectionService>(
-                    DeviceConnectionServiceFactory);
+                    AzureDeviceConnectionServiceFactoryMethod);
 
             services.AddTransient<IServiceClientFactory, ServiceClientFactory>();
             services.AddTransient<ICloudToDeviceMethodFactory, CloudToDeviceMethodFactory>();
             services.AddTransient<IEventHubClientFactory, EventHubClientFactory>();
-            services.AddSingleton<IJobExecutor, TrainingJobExecutor>(JobExecutorFactory);
+            services.AddSingleton<IJobExecutor, TrainingJobExecutor>(TrainingJobExecutorFactoryMethod);
         }
 
-        private static TrainingJobExecutor JobExecutorFactory(IServiceProvider serviceProvider)
+        private static TrainingJobExecutor TrainingJobExecutorFactoryMethod(IServiceProvider serviceProvider)
         {
             EventHubClient eventHubClient = serviceProvider.GetRequiredService<IEventHubClientFactory>().Create();
             var hub = serviceProvider.GetRequiredService<IHubContext<TrainingHub>>();
@@ -45,7 +45,7 @@ namespace FootTrack.Api.Installers
             return new TrainingJobExecutor(eventHubClient, hub);
         }
 
-        private static AzureDeviceConnectionService DeviceConnectionServiceFactory(IServiceProvider serviceProvider)
+        private static AzureDeviceConnectionService AzureDeviceConnectionServiceFactoryMethod(IServiceProvider serviceProvider)
         {
             CloudToDeviceMethod cloudToDeviceMethod =
                 serviceProvider.GetRequiredService<ICloudToDeviceMethodFactory>().Create();

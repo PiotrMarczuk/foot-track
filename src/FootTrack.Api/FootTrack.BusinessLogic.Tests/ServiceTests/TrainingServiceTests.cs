@@ -1,18 +1,14 @@
-﻿using FootTrack.BusinessLogic.Models.ValueObjects;
+﻿using System.Threading.Tasks;
+using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.BusinessLogic.Services;
 using FootTrack.Communication.Services;
 using FootTrack.Repository;
 using FootTrack.Shared;
-
 using MongoDB.Bson;
-
 using NSubstitute;
-
 using NUnit.Framework;
 
-using System.Threading.Tasks;
-
-namespace FootTrack.BusinessLogic.Tests.ServiceTests
+namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
 {
     [TestFixture]
     public class TrainingServiceTests

@@ -2,7 +2,7 @@ using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.Shared;
 using NUnit.Framework;
 
-namespace FootTrack.BusinessLogic.Tests.ModelTests
+namespace FootTrack.BusinessLogic.UnitTests.ModelTests
 {
     [TestFixture]
     public class EmailTests

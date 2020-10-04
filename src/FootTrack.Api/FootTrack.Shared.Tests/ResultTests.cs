@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using NUnit.Framework;
 
-namespace FootTrack.Shared.Tests
+namespace FootTrack.Shared.UnitTests
 {
     [ExcludeFromCodeCoverage]
     [TestFixture]

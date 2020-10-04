@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FootTrack.Communication.Dtos;
 using FootTrack.Communication.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Azure.EventHubs;
+using Newtonsoft.Json;
 
-namespace FootTrack.Communication
+namespace FootTrack.Communication.JobExecutors
 {
     public class TrainingJobExecutor : IJobExecutor
     {
@@ -44,11 +46,11 @@ namespace FootTrack.Communication
                 foreach (EventData eventData in events)
                 {
                     string data = Encoding.UTF8.GetString(eventData.Body.Array!);
-                    await _hubContext.Clients.All.SendAsync("TrainingMessage", new
-                    {
-                        data,
-                    });
+                    var trainingRecord = JsonConvert.DeserializeObject<TrainingRecordDto>(data);
+                    await _hubContext.Clients.All.SendAsync("TrainingMessage", trainingRecord);
                 }
+
+                return;
             }
         }
     }
