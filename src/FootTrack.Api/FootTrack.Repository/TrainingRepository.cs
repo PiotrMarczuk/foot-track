@@ -1,9 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.Database.Models;
 using FootTrack.Database.Providers;
+using FootTrack.Repository.Filters;
+using FootTrack.Repository.UpdateDefinitions;
 using FootTrack.Shared;
 
 using MongoDB.Driver;
@@ -31,18 +32,21 @@ namespace FootTrack.Repository
             return Result.Ok();
         }
 
-        public Task<Result> EndTrainingAsync(Id userId)
+        public async Task<Result<string>> EndTrainingAsync(Id userId)
         {
-            throw new NotImplementedException();
+            Training updateResult = await _collection.FindOneAndUpdateAsync(
+                TrainingsFilters.FilterByUserId(userId),
+                TrainingsUpdateDefinitions.UpdateTrainingState(TrainingState.Ended));
+
+            return updateResult != null
+                ? Result.Ok(updateResult.JobId)
+                : Result.Fail<string>(Errors.General.NotFound("Training"));
         }
 
         public async Task<Result<bool>> CheckIfTrainingExist(Id userId)
         {
             return Result.Ok(await _collection
-                .Find(
-                    Builders<Training>
-                        .Filter
-                        .Eq(training => training.UserId, userId.Value))
+                .Find(TrainingsFilters.FilterByUserId(userId))
                 .AnyAsync());
         }
     }

@@ -24,8 +24,7 @@ namespace FootTrack.Communication.Services
         {
             return await _azureDeviceCommunicationFacade
                 .InvokeChangeStateMethodAsync(TargetDevice)
-                .OnSuccessAsync(() => _hangfireBackgroundJobFacade.EnqueueJob())
-                .OnSuccessAsync(Result.Ok);
+                .OnSuccessAsync(() => _hangfireBackgroundJobFacade.EnqueueJob());
         }
 
         public async Task<Result> EndTrainingSessionAsync(string jobId)

@@ -36,7 +36,7 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
             _userRepository.CheckIfUserExist(_userId).Returns(Result.Ok(false));
 
             // ACT
-            var result = await _sut.StartTrainingAsync(_userId);
+            Result result = await _sut.StartTrainingAsync(_userId);
 
             // ASSERT
             Assert.That(result.IsFailure);
@@ -51,7 +51,7 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
             _trainingRepository.CheckIfTrainingExist(_userId).Returns(Result.Ok(true));
 
             // ACT
-            var result = await _sut.StartTrainingAsync(_userId);
+            Result result = await _sut.StartTrainingAsync(_userId);
 
             // ASSERT
             Assert.That(result.IsFailure);
@@ -64,11 +64,11 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
             // ARRANGE
             _userRepository.CheckIfUserExist(_userId).Returns(Result.Ok(true));
             _trainingRepository.CheckIfTrainingExist(_userId).Returns(Result.Ok(false));
-            var deviceUnreachableError = Errors.Device.DeviceUnreachable();
+            Error deviceUnreachableError = Errors.Device.DeviceUnreachable();
             _azureDeviceConnectionService.StartTrainingSessionAsync().Returns(Result.Fail<string>(deviceUnreachableError));
 
             // ACT
-            var result = await _sut.StartTrainingAsync(_userId);
+            Result result = await _sut.StartTrainingAsync(_userId);
 
             // ASSERT
             Assert.That(result.IsFailure);
@@ -87,7 +87,7 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
             _azureDeviceConnectionService.EndTrainingSessionAsync(jobId).Returns(Result.Ok());
 
             // ACT
-            var result = await _sut.StartTrainingAsync(_userId);
+            Result result = await _sut.StartTrainingAsync(_userId);
 
             // ASSERT
             await _azureDeviceConnectionService.Received().EndTrainingSessionAsync(jobId);
@@ -96,7 +96,7 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         }
 
         [Test]
-        public async Task When_successfully_started_training_should_result_in_starting()
+        public async Task When_successfully_started_training_should_result_in_success()
         {
             // ARRANGE
             _userRepository.CheckIfUserExist(_userId).Returns(Result.Ok(true));
@@ -106,7 +106,60 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
             _trainingRepository.BeginTrainingAsync(_userId, jobId).Returns(Result.Ok());
 
             // ACT
-            var result = await _sut.StartTrainingAsync(_userId);
+            Result result = await _sut.StartTrainingAsync(_userId);
+
+            // ASSERT
+            Assert.That(result.IsSuccess);
+        }
+
+        [Test]
+        public async Task When_failed_to_end_training_on_db_should_return_error()
+        {
+            // ARRANGE
+            Error error = Errors.General.NotFound();
+            _trainingRepository
+                .EndTrainingAsync(_userId)
+                .Returns(Result.Fail<string>(error));
+
+            // ACT
+            Result result = await _sut.EndTrainingAsync(_userId);
+
+            // ASSERT
+            Assert.That(result.IsFailure);
+            Assert.That(result.Error, Is.EqualTo(error));
+        }
+
+        [Test]
+        public async Task When_successfully_saved_state_to_database_but_failed_to_send_message_to_device_should_result_in_error()
+        {
+            // ARRANGE
+            Error error = Errors.Device.DeviceUnreachable();
+            const string jobId = "somejobId";
+            _trainingRepository
+                .EndTrainingAsync(_userId)
+                .Returns(Result.Ok(jobId));
+            _azureDeviceConnectionService.EndTrainingSessionAsync(jobId).Returns(Result.Fail(error));
+
+            // ACT
+            Result result = await _sut.EndTrainingAsync(_userId);
+
+            // ASSERT
+            Assert.That(result.IsFailure);
+            Assert.That(result.Error, Is.EqualTo(error));
+        }
+
+        [Test]
+        public async Task When_successfully_saved_state_to_database_and_sent_message_to_device_should_result_in_success()
+        {
+            // ARRANGE
+            const string jobId = "somejobId";
+            _trainingRepository
+                .EndTrainingAsync(_userId)
+                .Returns(Result.Ok(jobId));
+            _azureDeviceConnectionService.EndTrainingSessionAsync(jobId).Returns(Result.Ok());
+
+            // ACT
+            Result result = await _sut.EndTrainingAsync(_userId);
 
             // ASSERT
             Assert.That(result.IsSuccess);

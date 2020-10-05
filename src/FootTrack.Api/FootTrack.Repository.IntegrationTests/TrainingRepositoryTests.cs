@@ -54,7 +54,7 @@ namespace FootTrack.Repository.IntegrationTests
             await _sut.BeginTrainingAsync(_userId, JobId);
 
             // ACT
-            var result = await _sut.CheckIfTrainingExist(_userId);
+            Result<bool> result = await _sut.CheckIfTrainingExist(_userId);
 
             // ASSERT
             Assert.That(result.Value, Is.True);
@@ -67,10 +67,35 @@ namespace FootTrack.Repository.IntegrationTests
             await _sut.BeginTrainingAsync(_userId, JobId);
 
             // ACT
-            var result = await _sut.CheckIfTrainingExist(Id.Create(ObjectId.Empty.ToString()).Value);
+            Result<bool> result = await _sut.CheckIfTrainingExist(Id.Create(ObjectId.Empty.ToString()).Value);
 
             // ASSERT
             Assert.That(result.Value, Is.False);
+        }
+
+        [Test]
+        public async Task Should_return_fail_when_ending_training_which_does_not_exist()
+        {
+            // ACT
+            Result<string> result = await _sut.EndTrainingAsync(_userId);
+
+            // ASSERT
+            Assert.That(result.IsFailure);
+            Assert.That(result.Error, Is.EqualTo(Errors.General.NotFound()));
+        }
+
+        [Test]
+        public async Task Should_return_jobId_when_ending_training_which_exist()
+        {
+            // ARRANGE
+            await _sut.BeginTrainingAsync(_userId, JobId);
+
+            // ACT
+            Result<string> result = await _sut.EndTrainingAsync(_userId);
+
+            // ASSERT
+            Assert.That(result.IsSuccess);
+            Assert.That(result.Value, Is.EqualTo(JobId));
         }
     }
 }

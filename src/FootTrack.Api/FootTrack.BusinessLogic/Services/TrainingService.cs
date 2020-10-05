@@ -35,6 +35,12 @@ namespace FootTrack.BusinessLogic.Services
                 .OnSuccessAsync(Result.Ok));
         }
 
+        public async Task<Result> EndTrainingAsync(Id userId)
+        {
+            return await _trainingRepository.EndTrainingAsync(userId)
+                .OnSuccessAsync(jobId => _azureDeviceConnectionService.EndTrainingSessionAsync(jobId));
+        }
+
         private async Task<Result> HandleBeginningTrainingSessionFailure(string jobId)
         {
             await _azureDeviceConnectionService.EndTrainingSessionAsync(jobId);
