@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 
-namespace FootTrack.Shared.Tests
+namespace FootTrack.Shared.UnitTests
 {
     [ExcludeFromCodeCoverage]
     [TestFixture]

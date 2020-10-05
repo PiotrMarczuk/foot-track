@@ -7,5 +7,7 @@ namespace FootTrack.BusinessLogic.Services
     public interface ITrainingService
     {
         Task<Result> StartTrainingAsync(Id userId);
+
+        Task<Result> EndTrainingAsync(Id userId);
     }
 }

@@ -13,6 +13,6 @@ namespace FootTrack.Repository
 
         Task<Maybe<UserData>> GetUserDataAsync(Id id);
 
-        Task<bool> CheckIfUserExist(Id id);
+        Task<Result<bool>> CheckIfUserExist(Id id);
     }
 }

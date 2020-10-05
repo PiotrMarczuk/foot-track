@@ -21,7 +21,7 @@ namespace FootTrack.Repository
         public async Task<Maybe<HashedUserCredentials>> GetUserEmailAndHashedPasswordAsync(Email email)
         {
             return await _collection
-                .Find(UserFilter.FilterByEmail(email))
+                .Find(UsersFilters.FilterByEmail(email))
                 .Project(u => HashedUserCredentials.Create(u.Email, u.PasswordHash, u.Id.ToString()).Value)
                 .SingleOrDefaultAsync();
         }
@@ -48,20 +48,20 @@ namespace FootTrack.Repository
 
         public async Task<Maybe<UserData>> GetUserDataAsync(Id id)
         {
-            return await _collection.Find(DocumentFilter<User>.FilterById(id))
+            return await _collection.Find(DocumentsFilters<User>.FilterById(id))
                 .Project(user =>
                     UserData.Create(user.Id.ToString(), user.Email, user.FirstName, user.LastName).Value)
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<bool> CheckIfUserExist(Id id)
+        public async Task<Result<bool>> CheckIfUserExist(Id id)
         {
-            return await _collection.Find(DocumentFilter<User>.FilterById(id)).AnyAsync();
+            return Result.Ok(await _collection.Find(DocumentsFilters<User>.FilterById(id)).AnyAsync());
         }
 
         private async Task<bool> CheckIfUserWithEmailAlreadyExist(Email email)
         {
-            return await _collection.Find(UserFilter.FilterByEmail(email))
+            return await _collection.Find(UsersFilters.FilterByEmail(email))
                 .AnyAsync();
         }
     }

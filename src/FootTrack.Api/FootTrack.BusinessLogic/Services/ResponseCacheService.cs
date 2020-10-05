@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FootTrack.Shared;
+using FootTrack.Shared.ExtensionMethods;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 

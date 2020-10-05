@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FootTrack.Api.Utils;
 using FootTrack.Shared;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootTrack.Api.Controllers
@@ -67,9 +68,14 @@ namespace FootTrack.Api.Controllers
                 return Unauthorized(Envelope.Error(result.Error));
             }
 
-            if (result.Error == Errors.User.EmailIsTaken())
+            if (result.Error == Errors.User.EmailIsTaken() || result.Error == Errors.Training.AlreadyStarted())
             {
                 return Conflict(Envelope.Error(result.Error));
+            }
+
+            if( (result.Error == Errors.Training.FailedToStartTraining()) || (result.Error == Errors.Device.DeviceUnreachable()))
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable);
             }
 
             return BadRequest(Envelope.Error(result.Error));

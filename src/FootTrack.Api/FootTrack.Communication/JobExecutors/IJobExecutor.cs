@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace FootTrack.Communication
+namespace FootTrack.Communication.JobExecutors
 {
     public interface IJobExecutor
     {

@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 
-namespace FootTrack.Shared.Tests
+namespace FootTrack.Shared.UnitTests
 {
     [ExcludeFromCodeCoverage]
     [TestFixture]

@@ -4,6 +4,7 @@ using FootTrack.BusinessLogic.Models.User;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.BusinessLogic.Services;
 using FootTrack.Shared;
+using FootTrack.Shared.ExtensionMethods;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,17 +57,21 @@ namespace FootTrack.Api.Installers
             return new JwtBearerEvents
             {
                 OnTokenValidated = async context =>
-                    await Task.Run(() =>
+                    await Task.Run(async () =>
                     {
                         var userService = context.HttpContext.RequestServices
                             .GetRequiredService<IUserService>();
                         Maybe<string> userIdOrNothing = context.Principal.Identity.Name;
-                        Result<Task<Result<UserData>>> result = userIdOrNothing
-                            .ToResult(Errors.General.Empty(nameof(Id)))
-                            .OnSuccess(async userId => await userService.GetByIdAsync(Id.Create(userId).Value));
-                        if (result.IsFailure)
+                        Result<string> idOrNothingResult = userIdOrNothing
+                            .ToResult(Errors.General.Empty(nameof(Id)));
+
+                        if (idOrNothingResult.IsSuccess)
                         {
-                            context.Fail(result.Error.Message);
+                            Result<UserData> userDataResult = await userService.GetByIdAsync(Id.Create(userIdOrNothing.Value).Value);
+                            if (userDataResult.IsFailure)
+                            {
+                                context.Fail(idOrNothingResult.Error.Message);
+                            }
                         }
                     }),
             };

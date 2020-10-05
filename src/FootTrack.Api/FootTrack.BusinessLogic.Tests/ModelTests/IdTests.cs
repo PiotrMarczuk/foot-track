@@ -3,7 +3,7 @@ using FootTrack.Shared;
 using MongoDB.Bson;
 using NUnit.Framework;
 
-namespace FootTrack.BusinessLogic.Tests.ModelTests
+namespace FootTrack.BusinessLogic.UnitTests.ModelTests
 {
     [TestFixture]
     public class IdTests

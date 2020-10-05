@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace FootTrack.Api.Utils
 {
-    public class ModelStateValidator
+    public static class ModelStateValidator
     {
         public static IActionResult ValidateModelState(ActionContext context)
         {

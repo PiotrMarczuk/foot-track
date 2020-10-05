@@ -6,7 +6,7 @@ from datetime import datetime
 
 CONNECTION_STRING = "connString"
 
-MSG_TXT = '{{"latitude": {lat},"longitude": {lon}, "speed": {speed}, "timestamp":{timestamp}}}'
+MSG_TXT = '{{"latitude": "{lat}","longitude": "{lon}", "speed": "{speed}", "timestamp":"{timestamp}"}}'
 
 SEND_GPS = False
 

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace FootTrack.BusinessLogic.Tests.ServiceTests
+namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
 {
     [TestFixture]
     public class ResponseCacheServiceTests

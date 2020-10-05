@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using FootTrack.Shared;
+using FootTrack.Shared.ExtensionMethods;
 
 namespace FootTrack.BusinessLogic.Models.ValueObjects
 {

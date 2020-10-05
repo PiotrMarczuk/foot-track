@@ -1,4 +1,5 @@
-﻿using Hangfire;
+﻿using FootTrack.Settings.MongoDb;
+using Hangfire;
 using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
@@ -13,7 +14,11 @@ namespace FootTrack.Api.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            var mongoUrlBuilder = new MongoUrlBuilder("mongodb://mongodb/jobs");
+            var mongoConnectionString = configuration
+                .GetSection(nameof(MongoDbSettings))
+                [nameof(MongoDbSettings.ConnectionString)];
+            
+            var mongoUrlBuilder = new MongoUrlBuilder($"{mongoConnectionString}/jobs");
             var mongoClient = new MongoClient(mongoUrlBuilder.ToMongoUrl());
 
             services.AddHangfire(config =>
