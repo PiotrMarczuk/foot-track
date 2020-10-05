@@ -4,9 +4,10 @@ using FootTrack.Communication.Factories;
 using FootTrack.Communication.Hubs;
 using FootTrack.Communication.JobExecutors;
 using FootTrack.Communication.Services;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Azure.Devices;
+
 using Microsoft.Azure.EventHubs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,8 +29,7 @@ namespace FootTrack.Api.Installers
             services
                 .AddTransient<ITrainingService, TrainingService>();
             services
-                .AddSingleton<IAzureDeviceConnectionService, AzureDeviceConnectionService>(
-                    AzureDeviceConnectionServiceFactoryMethod);
+                .AddSingleton<IAzureDeviceConnectionService, AzureDeviceConnectionService>();
 
             services.AddTransient<IServiceClientFactory, ServiceClientFactory>();
             services.AddTransient<ICloudToDeviceMethodFactory, CloudToDeviceMethodFactory>();
@@ -43,17 +43,6 @@ namespace FootTrack.Api.Installers
             var hub = serviceProvider.GetRequiredService<IHubContext<TrainingHub>>();
 
             return new TrainingJobExecutor(eventHubClient, hub);
-        }
-
-        private static AzureDeviceConnectionService AzureDeviceConnectionServiceFactoryMethod(IServiceProvider serviceProvider)
-        {
-            CloudToDeviceMethod cloudToDeviceMethod =
-                serviceProvider.GetRequiredService<ICloudToDeviceMethodFactory>().Create();
-            ServiceClient serviceClient = serviceProvider.GetRequiredService<IServiceClientFactory>().Create();
-
-            return new AzureDeviceConnectionService(
-                cloudToDeviceMethod,
-                serviceClient);
         }
     }
 }

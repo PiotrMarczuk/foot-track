@@ -4,6 +4,7 @@ using FootTrack.BusinessLogic.Models.User;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.BusinessLogic.Services;
 using FootTrack.Shared;
+using FootTrack.Shared.ExtensionMethods;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace FootTrack.Shared
+namespace FootTrack.Shared.ExtensionMethods
 {
     public static class ResultMappingExtensions
     {

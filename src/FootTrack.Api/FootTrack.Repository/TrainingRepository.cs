@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.Database.Models;
 using FootTrack.Database.Providers;
 using FootTrack.Shared;
+
 using MongoDB.Driver;
 
 namespace FootTrack.Repository

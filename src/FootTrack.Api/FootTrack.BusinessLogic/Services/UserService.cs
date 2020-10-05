@@ -3,6 +3,7 @@ using FootTrack.BusinessLogic.Models.User;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.Repository;
 using FootTrack.Shared;
+using FootTrack.Shared.ExtensionMethods;
 using Microsoft.AspNetCore.Identity;
 
 namespace FootTrack.BusinessLogic.Services

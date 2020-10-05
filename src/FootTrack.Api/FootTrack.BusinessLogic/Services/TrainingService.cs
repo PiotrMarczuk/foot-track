@@ -3,6 +3,7 @@ using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.Communication.Services;
 using FootTrack.Repository;
 using FootTrack.Shared;
+using FootTrack.Shared.ExtensionMethods;
 
 namespace FootTrack.BusinessLogic.Services
 {

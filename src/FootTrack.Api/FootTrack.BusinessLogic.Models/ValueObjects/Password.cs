@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FootTrack.Shared;
+using FootTrack.Shared.ExtensionMethods;
 
 namespace FootTrack.BusinessLogic.Models.ValueObjects
 {

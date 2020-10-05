@@ -1,54 +1,38 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+
+using FootTrack.Communication.Facades;
 using FootTrack.Shared;
-using Hangfire;
-using Microsoft.Azure.Devices;
+using FootTrack.Shared.ExtensionMethods;
 
 namespace FootTrack.Communication.Services
 {
     public class AzureDeviceConnectionService : IAzureDeviceConnectionService
     {
+        private readonly IAzureDeviceCommunicationFacade _azureDeviceCommunicationFacade;
+        private readonly IHangfireBackgroundJobFacade _hangfireBackgroundJobFacade;
         private const string TargetDevice = "rpi";
 
-        private readonly CloudToDeviceMethod _method;
-        private readonly ServiceClient _serviceClient;
-
         public AzureDeviceConnectionService(
-            CloudToDeviceMethod method,
-            ServiceClient serviceClient)
+            IAzureDeviceCommunicationFacade azureDeviceCommunicationFacade,
+            IHangfireBackgroundJobFacade hangfireBackgroundJobFacade)
         {
-            _method = method;
-            _serviceClient = serviceClient;
+            _azureDeviceCommunicationFacade = azureDeviceCommunicationFacade;
+            _hangfireBackgroundJobFacade = hangfireBackgroundJobFacade;
         }
 
         public async Task<Result<string>> StartTrainingSessionAsync()
         {
-            try
-            {
-                await _serviceClient.InvokeDeviceMethodAsync(TargetDevice, _method);
-            }
-            catch (Exception)
-            {
-                return Result.Fail<string>(Errors.Device.DeviceUnreachable(TargetDevice));
-            }
-
-            string jobId = BackgroundJob.Enqueue<IJobExecutor>(jobExecutor => jobExecutor.Execute());
-            return Result.Ok(jobId);
+            return await _azureDeviceCommunicationFacade
+                .InvokeChangeStateMethodAsync(TargetDevice)
+                .OnSuccessAsync(() => _hangfireBackgroundJobFacade.EnqueueJob())
+                .OnSuccessAsync(Result.Ok);
         }
 
         public async Task<Result> EndTrainingSessionAsync(string jobId)
         {
-            BackgroundJob.Delete(jobId);
-            try
-            {
-                await _serviceClient.InvokeDeviceMethodAsync(TargetDevice, _method);
-            }
-            catch (Exception)
-            {
-                return Result.Fail(Errors.Device.DeviceUnreachable(TargetDevice));
-            }
-
-            return Result.Ok();
+            return await _hangfireBackgroundJobFacade
+                .DeleteJob(jobId)
+                .OnSuccessAsync(() => _azureDeviceCommunicationFacade.InvokeChangeStateMethodAsync(TargetDevice));
         }
     }
 }

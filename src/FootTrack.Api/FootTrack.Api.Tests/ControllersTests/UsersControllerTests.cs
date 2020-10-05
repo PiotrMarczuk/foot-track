@@ -12,7 +12,7 @@ using MongoDB.Bson;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace FootTrack.Api.Tests.ControllersTests
+namespace FootTrack.Api.UnitTests.ControllersTests
 {
     [TestFixture]
     public class UsersControllerTests
