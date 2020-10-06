@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using FootTrack.Api.Utils;
 using FootTrack.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootTrack.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     public abstract class BaseController : ControllerBase
     {
         private readonly IMapper _mapper;

@@ -13,7 +13,6 @@ using FootTrack.Shared;
 
 namespace FootTrack.Api.Controllers.V1
 {
-    [Authorize]
     public class UsersController : BaseController
     {
         private readonly IUserService _userService;

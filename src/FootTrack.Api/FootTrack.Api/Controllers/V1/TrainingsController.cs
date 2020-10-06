@@ -5,12 +5,10 @@ using FootTrack.Api.Dtos.Requests;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.BusinessLogic.Services;
 using FootTrack.Shared;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootTrack.Api.Controllers.V1
 {
-    [Authorize]
     public class TrainingsController : BaseController
     {
         private readonly ITrainingService _trainingService;
