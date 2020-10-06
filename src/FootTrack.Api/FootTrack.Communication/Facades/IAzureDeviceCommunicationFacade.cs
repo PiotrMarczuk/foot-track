@@ -5,6 +5,8 @@ namespace FootTrack.Communication.Facades
 {
     public interface IAzureDeviceCommunicationFacade
     {
-        Task<Result> InvokeChangeStateMethodAsync(string targetDevice);
+        Task<Result> InvokeStartTrainingMethodAsync(string targetDevice);
+
+        Task<Result> InvokeEndTrainingMethodAsync(string targetDevice);
     }
 }

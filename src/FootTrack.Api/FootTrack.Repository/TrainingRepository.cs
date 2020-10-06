@@ -39,7 +39,7 @@ namespace FootTrack.Repository
             try
             {
                 updateResult = await _collection.FindOneAndUpdateAsync(
-                    TrainingsFilters.FilterByUserId(userId),
+                    TrainingsFilters.FilterByUserIdAndState(userId, TrainingState.InProgress),
                     TrainingsUpdateDefinitions.UpdateTrainingState(TrainingState.Ended));
             }
             catch (MongoException)

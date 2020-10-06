@@ -10,6 +10,7 @@ using MongoDB.Driver;
 namespace FootTrack.Api.Installers
 {
     // ReSharper disable once UnusedMember.Global
+    // ReSharper disable once UnusedType.Global
     public class HangfireInstaller : IInstaller
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)

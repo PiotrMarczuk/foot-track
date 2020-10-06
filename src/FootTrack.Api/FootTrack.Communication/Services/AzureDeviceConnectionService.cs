@@ -23,7 +23,7 @@ namespace FootTrack.Communication.Services
         public async Task<Result<string>> StartTrainingSessionAsync()
         {
             return await _azureDeviceCommunicationFacade
-                .InvokeChangeStateMethodAsync(TargetDevice)
+                .InvokeStartTrainingMethodAsync(TargetDevice)
                 .OnSuccessAsync(() => _hangfireBackgroundJobFacade.EnqueueJob());
         }
 
@@ -31,7 +31,7 @@ namespace FootTrack.Communication.Services
         {
             return await _hangfireBackgroundJobFacade
                 .DeleteJob(jobId)
-                .OnSuccessAsync(() => _azureDeviceCommunicationFacade.InvokeChangeStateMethodAsync(TargetDevice));
+                .OnSuccessAsync(() => _azureDeviceCommunicationFacade.InvokeEndTrainingMethodAsync(TargetDevice));
         }
     }
 }

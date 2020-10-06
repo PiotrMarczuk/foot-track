@@ -4,6 +4,8 @@ namespace FootTrack.Communication.Factories
 {
     public interface ICloudToDeviceMethodFactory
     {
-        CloudToDeviceMethod Create();
+        CloudToDeviceMethod CreateStartMethod();
+
+        CloudToDeviceMethod CreateEndMethod();
     }
 }

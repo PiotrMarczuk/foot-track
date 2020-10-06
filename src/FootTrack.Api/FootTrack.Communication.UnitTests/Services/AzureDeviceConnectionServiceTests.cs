@@ -27,7 +27,7 @@ namespace FootTrack.Communication.UnitTests.Services
         {
             // ARRANGE
             Error error = Errors.Device.DeviceUnreachable("rpi");
-            _azureDeviceCommunicationFacade.InvokeChangeStateMethodAsync("rpi")
+            _azureDeviceCommunicationFacade.InvokeStartTrainingMethodAsync("rpi")
                 .Returns(Result.Fail(error));
 
             // ACT
@@ -42,7 +42,7 @@ namespace FootTrack.Communication.UnitTests.Services
         public async Task When_succeeded_to_invoke_remote_method_should_return_ok_result()
         {
             // ARRANGE
-            _azureDeviceCommunicationFacade.InvokeChangeStateMethodAsync("rpi")
+            _azureDeviceCommunicationFacade.InvokeStartTrainingMethodAsync("rpi")
                 .Returns(Result.Ok());
             _hangfireBackgroundJobFacade.EnqueueJob().Returns(Result.Ok("jobId"));
 
@@ -78,7 +78,7 @@ namespace FootTrack.Communication.UnitTests.Services
             const string jobId = "jobId";
             Error error = Errors.Device.DeviceUnreachable("rpi");
             _hangfireBackgroundJobFacade.DeleteJob(jobId).Returns(Result.Ok());
-            _azureDeviceCommunicationFacade.InvokeChangeStateMethodAsync("rpi")
+            _azureDeviceCommunicationFacade.InvokeStartTrainingMethodAsync("rpi")
                 .Returns(Result.Fail(error));
 
             // ACT
@@ -95,7 +95,7 @@ namespace FootTrack.Communication.UnitTests.Services
             // ARRANGE
             const string jobId = "jobId";
             _hangfireBackgroundJobFacade.DeleteJob(jobId).Returns(Result.Ok());
-            _azureDeviceCommunicationFacade.InvokeChangeStateMethodAsync("rpi")
+            _azureDeviceCommunicationFacade.InvokeStartTrainingMethodAsync("rpi")
                 .Returns(Result.Ok());
 
             // ACT

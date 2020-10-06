@@ -7,9 +7,14 @@ namespace FootTrack.Communication.Factories
     {
         private readonly TimeSpan _responseTimeout = TimeSpan.FromSeconds(30);
 
-        public CloudToDeviceMethod Create()
+        public CloudToDeviceMethod CreateStartMethod()
         {
-            return new CloudToDeviceMethod("changeMeasurementState") {ResponseTimeout = _responseTimeout};
+            return new CloudToDeviceMethod("startTraining") {ResponseTimeout = _responseTimeout};
+        }
+
+        public CloudToDeviceMethod CreateEndMethod()
+        {
+            return new CloudToDeviceMethod("endTraining") {ResponseTimeout = _responseTimeout};
         }
     }
 }

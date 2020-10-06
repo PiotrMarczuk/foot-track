@@ -21,13 +21,15 @@ namespace FootTrack.Api.Installers
         private static AzureDeviceCommunicationFacade AzureDeviceCommunicationFacadeFactoryMethod(
             IServiceProvider serviceProvider)
         {
-            CloudToDeviceMethod cloudToDeviceMethod =
-                serviceProvider.GetRequiredService<ICloudToDeviceMethodFactory>().Create();
+            var cloudToDeviceMethodFactory = serviceProvider.GetRequiredService<ICloudToDeviceMethodFactory>();
+            CloudToDeviceMethod startTrainingMethod = cloudToDeviceMethodFactory.CreateStartMethod();
+            CloudToDeviceMethod endTrainingMethod = cloudToDeviceMethodFactory.CreateEndMethod();
             ServiceClient serviceClient = serviceProvider.GetRequiredService<IServiceClientFactory>().Create();
 
             return new AzureDeviceCommunicationFacade(
                 serviceClient,
-                cloudToDeviceMethod
+                startTrainingMethod,
+                endTrainingMethod
             );
         }
     }
