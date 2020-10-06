@@ -38,6 +38,8 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         public async Task When_tried_to_authenticate_and_user_was_not_found_should_fail()
         {
             // ACT
+            _userRepository.GetUserEmailAndHashedPasswordAsync(Email.Create(UserEmail).Value)
+                .Returns(Result.Fail<Maybe<HashedUserCredentials>>(Errors.User.IncorrectEmailOrPassword()));
             Result<AuthenticatedUser> result = await _sut.AuthenticateAsync(UserCredentials.Create(UserEmail, UserPassword).Value);
 
             // ASSERT
@@ -49,14 +51,14 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         public async Task When_tried_to_authenticate_and_password_does_not_match_should_fail()
         {
             // ARRANGE
-            HashedUserCredentials userLoginWithHashedPassword = HashedUserCredentials.Create(
+            Maybe<HashedUserCredentials> userLoginWithHashedPassword = HashedUserCredentials.Create(
                     UserEmail,
                     "balaclavas",
                     Id.Create(ObjectId.GenerateNewId(1).ToString()).Value)
                 .Value;
 
             _userRepository.GetUserEmailAndHashedPasswordAsync(Email.Create(UserEmail).Value)
-                .Returns(userLoginWithHashedPassword);
+                .Returns(Result.Ok(userLoginWithHashedPassword));
 
             // ACT
             Result<AuthenticatedUser> result = await _sut.AuthenticateAsync(UserCredentials.Create(UserEmail, UserPassword).Value);
@@ -70,22 +72,22 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         public async Task When_tried_to_authenticate_with_correct_data_should_pass()
         {
             // ARRANGE
-            HashedUserCredentials userLoginWithHashedPassword = HashedUserCredentials.Create(
+            Maybe<HashedUserCredentials> userLoginWithHashedPassword = HashedUserCredentials.Create(
                     UserEmail,
                     UserPassword,
                     Id.Create(ObjectId.GenerateNewId(1).ToString()).Value)
                 .Value;
 
             _userRepository.GetUserEmailAndHashedPasswordAsync(Email.Create(UserEmail).Value)
-                .Returns(userLoginWithHashedPassword);
+                .Returns(Result.Ok(userLoginWithHashedPassword));
 
             _passwordHasher.VerifyHashedPassword(
                     default,
-                    userLoginWithHashedPassword.HashedPassword,
+                    userLoginWithHashedPassword.Value.HashedPassword,
                     UserPassword)
                 .Returns(PasswordVerificationResult.Success);
 
-            _jwtTokenService.GenerateToken(userLoginWithHashedPassword.Id).Returns("token");
+            _jwtTokenService.GenerateToken(userLoginWithHashedPassword.Value.Id).Returns("token");
 
             // ACT
             Result<AuthenticatedUser> result = await _sut.AuthenticateAsync(UserCredentials.Create(UserEmail, UserPassword).Value);
@@ -99,8 +101,12 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         [Test]
         public async Task When_getting_user_with_Id_that_does_not_exist_should_fail()
         {
-            // ARRANGE & ACT
-            Result<UserData> result = await _sut.GetByIdAsync(Id.Create((ObjectId.GenerateNewId().ToString())).Value);
+            // ARRANGE 
+            Id id = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
+            _userRepository.GetUserDataAsync(id).Returns(Result.Fail<Maybe<UserData>>(Errors.General.NotFound()));
+
+            // ACT
+            Result<UserData> result = await _sut.GetByIdAsync(id);
 
             // ASSERT
             Assert.That(result.IsFailure, Is.True);
@@ -113,9 +119,9 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
             // ARRANGE
             Id id = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
             Email email = Email.Create(UserEmail).Value;
-
+            Maybe<UserData> userData = UserData.Create(id, UserEmail, FirstName, LastName).Value;
             _userRepository.GetUserDataAsync(id)
-                .Returns(UserData.Create(id, UserEmail, FirstName, LastName).Value);
+                .Returns(Result.Ok(userData));
 
             // ACT
             Result<UserData> result = await _sut.GetByIdAsync(id);

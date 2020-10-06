@@ -10,5 +10,10 @@ namespace FootTrack.Repository.Filters
         public static FilterDefinition<Training> FilterByUserId(Id userId) =>
             Builders<Training>.Filter.Eq(training => training.UserId, userId.Value);
 
+        public static FilterDefinition<Training> FilterByUserIdAndState(Id userId, TrainingState trainingState) =>
+            Builders<Training>.Filter.And(FilterByUserId(userId), FilterByState(trainingState));
+
+        private static FilterDefinition<Training> FilterByState(TrainingState trainingState) =>
+            Builders<Training>.Filter.Eq(training => training.State, trainingState);
     }
 }

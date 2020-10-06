@@ -34,20 +34,39 @@ namespace FootTrack.Repository
 
         public async Task<Result<string>> EndTrainingAsync(Id userId)
         {
-            Training updateResult = await _collection.FindOneAndUpdateAsync(
-                TrainingsFilters.FilterByUserId(userId),
-                TrainingsUpdateDefinitions.UpdateTrainingState(TrainingState.Ended));
+            Training updateResult;
+
+            try
+            {
+                updateResult = await _collection.FindOneAndUpdateAsync(
+                    TrainingsFilters.FilterByUserId(userId),
+                    TrainingsUpdateDefinitions.UpdateTrainingState(TrainingState.Ended));
+            }
+            catch (MongoException)
+            {
+                return Result.Fail<string>(Errors.Database.Failed("Ending training"));
+            }
 
             return updateResult != null
                 ? Result.Ok(updateResult.JobId)
                 : Result.Fail<string>(Errors.General.NotFound("Training"));
         }
 
-        public async Task<Result<bool>> CheckIfTrainingExist(Id userId)
+        public async Task<Result<bool>> CheckIfTrainingAlreadyStarted(Id userId)
         {
-            return Result.Ok(await _collection
-                .Find(TrainingsFilters.FilterByUserId(userId))
-                .AnyAsync());
+            bool isInProgress;
+            try
+            {
+                isInProgress = await _collection
+                    .Find(TrainingsFilters.FilterByUserIdAndState(userId, TrainingState.InProgress))
+                    .AnyAsync();
+            }
+            catch (MongoException)
+            {
+                return Result.Fail<bool>(Errors.Database.Failed("When looking for active training"));
+            }
+
+            return Result.Ok(isInProgress);
         }
     }
 }

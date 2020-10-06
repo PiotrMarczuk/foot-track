@@ -18,12 +18,23 @@ namespace FootTrack.Repository
             _collection = collectionProvider.GetCollection();
         }
 
-        public async Task<Maybe<HashedUserCredentials>> GetUserEmailAndHashedPasswordAsync(Email email)
+        public async Task<Result<Maybe<HashedUserCredentials>>> GetUserEmailAndHashedPasswordAsync(Email email)
         {
-            return await _collection
-                .Find(UsersFilters.FilterByEmail(email))
-                .Project(u => HashedUserCredentials.Create(u.Email, u.PasswordHash, u.Id.ToString()).Value)
-                .SingleOrDefaultAsync();
+            Maybe<HashedUserCredentials> hashedUserCredentialsOrNothing;
+
+            try
+            {
+                hashedUserCredentialsOrNothing = await _collection
+                    .Find(UsersFilters.FilterByEmail(email))
+                    .Project(u => HashedUserCredentials.Create(u.Email, u.PasswordHash, u.Id.ToString()).Value)
+                    .SingleOrDefaultAsync();
+            }
+            catch (MongoException)
+            {
+                return Result.Fail<Maybe<HashedUserCredentials>>(Errors.Database.Failed("Getting user email and password hash"));
+            }
+
+            return Result.Ok(hashedUserCredentialsOrNothing);
         }
 
         public async Task<Result<UserData>> InsertUserAsync(HashedUserData hashedUserData)
@@ -36,33 +47,65 @@ namespace FootTrack.Repository
                 PasswordHash = hashedUserData.PasswordHash,
             };
 
-            if (await CheckIfUserWithEmailAlreadyExist(hashedUserData.Email))
+            bool userWithEmailExist;
+            try
+            {
+                userWithEmailExist = await _collection.Find(UsersFilters.FilterByEmail(hashedUserData.Email)).AnyAsync();
+            }
+            catch(MongoException)
+            {
+                return Result.Fail<UserData>(Errors.Database.Failed("Checking if user with same email exist"));
+            }
+
+            if (userWithEmailExist)
             {
                 return Result.Fail<UserData>(Errors.User.EmailIsTaken(hashedUserData.Email.Value));
             }
 
-            await _collection.InsertOneAsync(user);
+            try
+            {
+                await _collection.InsertOneAsync(user);
+            }
+            catch (MongoException)
+            {
+                return Result.Fail<UserData>(Errors.Database.Failed("Saving user data"));
+            }
 
             return UserData.Create(user.Id.ToString(), user.Email, user.FirstName, user.LastName);
         }
 
-        public async Task<Maybe<UserData>> GetUserDataAsync(Id id)
+        public async Task<Result<Maybe<UserData>>> GetUserDataAsync(Id id)
         {
-            return await _collection.Find(DocumentsFilters<User>.FilterById(id))
-                .Project(user =>
-                    UserData.Create(user.Id.ToString(), user.Email, user.FirstName, user.LastName).Value)
-                .SingleOrDefaultAsync();
+            Maybe<UserData> userDataOrNothing;
+
+            try
+            {
+                userDataOrNothing = await _collection.Find(DocumentsFilters<User>.FilterById(id))
+                    .Project(user =>
+                        UserData.Create(user.Id.ToString(), user.Email, user.FirstName, user.LastName).Value)
+                    .SingleOrDefaultAsync();
+            }
+            catch (MongoException)
+            {
+                return Result.Fail<Maybe<UserData>>(Errors.Database.Failed("Getting user data"));
+            }
+
+            return Result.Ok(userDataOrNothing);
         }
 
         public async Task<Result<bool>> CheckIfUserExist(Id id)
         {
-            return Result.Ok(await _collection.Find(DocumentsFilters<User>.FilterById(id)).AnyAsync());
-        }
+            bool userExist;
+            try
+            {
+                userExist = await _collection.Find(DocumentsFilters<User>.FilterById(id)).AnyAsync();
+            }
+            catch (MongoException)
+            {
+                return Result.Fail<bool>(Errors.Database.Failed("Checking if user exist"));
+            }
 
-        private async Task<bool> CheckIfUserWithEmailAlreadyExist(Email email)
-        {
-            return await _collection.Find(UsersFilters.FilterByEmail(email))
-                .AnyAsync();
+            return Result.Ok(userExist);
         }
     }
 }

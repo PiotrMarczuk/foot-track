@@ -48,7 +48,7 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         {
             // ARRANGE
             _userRepository.CheckIfUserExist(_userId).Returns(Result.Ok(true));
-            _trainingRepository.CheckIfTrainingExist(_userId).Returns(Result.Ok(true));
+            _trainingRepository.CheckIfTrainingAlreadyStarted(_userId).Returns(Result.Ok(true));
 
             // ACT
             Result result = await _sut.StartTrainingAsync(_userId);
@@ -63,7 +63,7 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         {
             // ARRANGE
             _userRepository.CheckIfUserExist(_userId).Returns(Result.Ok(true));
-            _trainingRepository.CheckIfTrainingExist(_userId).Returns(Result.Ok(false));
+            _trainingRepository.CheckIfTrainingAlreadyStarted(_userId).Returns(Result.Ok(false));
             Error deviceUnreachableError = Errors.Device.DeviceUnreachable();
             _azureDeviceConnectionService.StartTrainingSessionAsync().Returns(Result.Fail<string>(deviceUnreachableError));
 
@@ -80,7 +80,7 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         {
             // ARRANGE
             _userRepository.CheckIfUserExist(_userId).Returns(Result.Ok(true));
-            _trainingRepository.CheckIfTrainingExist(_userId).Returns(Result.Ok(false));
+            _trainingRepository.CheckIfTrainingAlreadyStarted(_userId).Returns(Result.Ok(false));
             const string jobId = "randomJobId";
             _azureDeviceConnectionService.StartTrainingSessionAsync().Returns(Result.Ok(jobId));
             _trainingRepository.BeginTrainingAsync(_userId, jobId).Returns(Result.Fail(Errors.Database.Failed()));
@@ -100,7 +100,7 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         {
             // ARRANGE
             _userRepository.CheckIfUserExist(_userId).Returns(Result.Ok(true));
-            _trainingRepository.CheckIfTrainingExist(_userId).Returns(Result.Ok(false));
+            _trainingRepository.CheckIfTrainingAlreadyStarted(_userId).Returns(Result.Ok(false));
             const string jobId = "randomJobId";
             _azureDeviceConnectionService.StartTrainingSessionAsync().Returns(Result.Ok(jobId));
             _trainingRepository.BeginTrainingAsync(_userId, jobId).Returns(Result.Ok());
@@ -133,19 +133,18 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         public async Task When_successfully_saved_state_to_database_but_failed_to_send_message_to_device_should_result_in_error()
         {
             // ARRANGE
-            Error error = Errors.Device.DeviceUnreachable();
             const string jobId = "somejobId";
             _trainingRepository
                 .EndTrainingAsync(_userId)
                 .Returns(Result.Ok(jobId));
-            _azureDeviceConnectionService.EndTrainingSessionAsync(jobId).Returns(Result.Fail(error));
+            _azureDeviceConnectionService.EndTrainingSessionAsync(jobId).Returns(Result.Fail(Errors.Device.DeviceUnreachable()));
 
             // ACT
             Result result = await _sut.EndTrainingAsync(_userId);
 
             // ASSERT
             Assert.That(result.IsFailure);
-            Assert.That(result.Error, Is.EqualTo(error));
+            Assert.That(result.Error, Is.EqualTo(Errors.Training.FailedToEndTraining()));
         }
 
         [Test]

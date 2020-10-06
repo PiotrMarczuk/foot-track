@@ -27,24 +27,30 @@ namespace FootTrack.BusinessLogic.Services
         {
             return await _userRepository.CheckIfUserExist(userId)
                 .EnsureAsync(userExist => userExist, Errors.General.NotFound("User", userId.Value))
-                .OnSuccessAsync(() => _trainingRepository.CheckIfTrainingExist(userId))
-                .EnsureAsync(trainingExist => !trainingExist, Errors.Training.AlreadyStarted(userId))
+                .OnSuccessAsync(() => _trainingRepository.CheckIfTrainingAlreadyStarted(userId))
+                .EnsureAsync(trainingAlreadyStarted => !trainingAlreadyStarted, Errors.Training.AlreadyStarted(userId))
                 .OnSuccessAsync(() => _azureDeviceConnectionService.StartTrainingSessionAsync())
                 .OnSuccessAsync(jobId => _trainingRepository.BeginTrainingAsync(userId, jobId)
-                    .OnFailureAsync(() => HandleBeginningTrainingSessionFailure(jobId))
-                .OnSuccessAsync(Result.Ok));
+                    .OnFailureAsync(() => HandleBeginningTrainingSessionFailure(userId, jobId)));
         }
 
         public async Task<Result> EndTrainingAsync(Id userId)
         {
             return await _trainingRepository.EndTrainingAsync(userId)
-                .OnSuccessAsync(jobId => _azureDeviceConnectionService.EndTrainingSessionAsync(jobId));
+                .OnSuccessAsync(jobId => _azureDeviceConnectionService.EndTrainingSessionAsync(jobId)
+                    .OnFailureAsync(() => HandleEndingTrainingSessionFailure(userId, jobId)));
         }
 
-        private async Task<Result> HandleBeginningTrainingSessionFailure(string jobId)
+        private async Task<Result> HandleEndingTrainingSessionFailure(Id userId, string jobId)
+        {
+            await _trainingRepository.BeginTrainingAsync(userId, jobId);
+            return Result.Fail(Errors.Training.FailedToEndTraining(userId));
+        }
+
+        private async Task<Result> HandleBeginningTrainingSessionFailure(Id userId, string jobId)
         {
             await _azureDeviceConnectionService.EndTrainingSessionAsync(jobId);
-            return Result.Fail(Errors.Training.FailedToStartTraining());
+            return Result.Fail(Errors.Training.FailedToStartTraining(userId));
         }
     }
 }

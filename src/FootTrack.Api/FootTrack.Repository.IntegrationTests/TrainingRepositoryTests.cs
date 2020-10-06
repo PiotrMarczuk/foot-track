@@ -54,7 +54,7 @@ namespace FootTrack.Repository.IntegrationTests
             await _sut.BeginTrainingAsync(_userId, JobId);
 
             // ACT
-            Result<bool> result = await _sut.CheckIfTrainingExist(_userId);
+            Result<bool> result = await _sut.CheckIfTrainingAlreadyStarted(_userId);
 
             // ASSERT
             Assert.That(result.Value, Is.True);
@@ -67,7 +67,7 @@ namespace FootTrack.Repository.IntegrationTests
             await _sut.BeginTrainingAsync(_userId, JobId);
 
             // ACT
-            Result<bool> result = await _sut.CheckIfTrainingExist(Id.Create(ObjectId.Empty.ToString()).Value);
+            Result<bool> result = await _sut.CheckIfTrainingAlreadyStarted(Id.Create(ObjectId.Empty.ToString()).Value);
 
             // ASSERT
             Assert.That(result.Value, Is.False);

@@ -10,6 +10,6 @@ namespace FootTrack.Repository
 
         Task<Result<string>> EndTrainingAsync(Id userId);
 
-        Task<Result<bool>> CheckIfTrainingExist(Id userId);
+        Task<Result<bool>> CheckIfTrainingAlreadyStarted(Id userId);
     }
 }

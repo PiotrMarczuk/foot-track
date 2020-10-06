@@ -27,7 +27,7 @@ namespace FootTrack.BusinessLogic.Services
         public async Task<Result<AuthenticatedUser>> AuthenticateAsync(UserCredentials userCredentials)
         {
             return await _userRepository.GetUserEmailAndHashedPasswordAsync(userCredentials.Email)
-                .ToResultAsync(Errors.User.IncorrectEmailOrPassword())
+                .OnSuccessAsync(maybeUser => maybeUser.ToResult(Errors.User.IncorrectEmailOrPassword()))
                 .EnsureAsync(user =>
                         CheckIfPasswordMatch(user.HashedPassword, userCredentials.Password),
                     Errors.User.IncorrectEmailOrPassword())
@@ -37,7 +37,8 @@ namespace FootTrack.BusinessLogic.Services
         public async Task<Result<UserData>> GetByIdAsync(Id id)
         {
             return await _userRepository.GetUserDataAsync(id)
-                .ToResultAsync(Errors.General.NotFound("User", id.Value));
+                .OnSuccessAsync(userDataOrNothing =>
+                    userDataOrNothing.ToResult(Errors.General.NotFound("User", id.Value)));
         }
 
         public async Task<Result<AuthenticatedUser>> RegisterAsync(UserToBeRegistered userToBeRegistered)
