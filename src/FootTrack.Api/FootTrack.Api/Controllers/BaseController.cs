@@ -73,7 +73,7 @@ namespace FootTrack.Api.Controllers
                 return Conflict(Envelope.Error(result.Error));
             }
 
-            if( (result.Error == Errors.Training.FailedToStartTraining()) || (result.Error == Errors.Device.DeviceUnreachable()))
+            if( result.Error == Errors.Training.FailedToStartTraining() || result.Error == Errors.Device.DeviceUnreachable())
             {
                 return StatusCode(StatusCodes.Status503ServiceUnavailable);
             }

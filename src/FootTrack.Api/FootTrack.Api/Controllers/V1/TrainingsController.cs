@@ -29,5 +29,15 @@ namespace FootTrack.Api.Controllers.V1
 
             return OkOrError(startTrainingResult);
         }
+
+        [HttpPost(ApiRoutes.Trainings.End)]
+        public async Task<IActionResult> End([FromBody] IdDto userIdDto)
+        {
+            Id userId = Id.Create(userIdDto.Id).Value;
+            
+            Result endTrainingResult = await _trainingService.EndTrainingAsync(userId);
+
+            return OkOrError(endTrainingResult);
+        }
     }
 }

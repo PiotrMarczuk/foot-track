@@ -70,7 +70,7 @@ namespace FootTrack.Api.Installers
                             Result<UserData> userDataResult = await userService.GetByIdAsync(Id.Create(userIdOrNothing.Value).Value);
                             if (userDataResult.IsFailure)
                             {
-                                context.Fail(idOrNothingResult.Error.Message);
+                                context.Fail(userDataResult.Error.Message);
                             }
                         }
                     }),

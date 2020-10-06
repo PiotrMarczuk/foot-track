@@ -24,6 +24,8 @@
             private const string ControllerEndpoint = Base + "/trainings";
 
             public const string Start = ControllerEndpoint + "/start";
+            
+            public const string End = ControllerEndpoint + "/end";
         }
     }
 }
