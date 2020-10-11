@@ -3,7 +3,7 @@ import { actions } from "./actions";
 import { mutations } from "./mutations";
 import { ProfileState } from "./types";
 
-const user = JSON.parse(localStorage.getItem("user") || "{}");
+const user = JSON.parse(localStorage.getItem("user")!);
 
 export const state: ProfileState = user
   ? {

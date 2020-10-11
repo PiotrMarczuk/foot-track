@@ -2,20 +2,17 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import TrainingHub from "@/plugins/training-hub";
 import vuetify from "./plugins/vuetify";
-/* eslint-disable */
-// @ts-ignore
-import VueGoogleHeatmap from "vue-google-heatmap";
-/* eslint-enable */
+import Axios from 'axios';
 
 Vue.config.productionTip = false;
-Vue.use(VueGoogleHeatmap, {
-  apiKey: ""
-});
 
+Axios.interceptors.request.use(config => {
+  config.headers.Authorization = `Bearer ${localStorage.getItem('user-token')}`;
+  return config;
+},
+  error => Promise.reject(error));
 
-Vue.use(TrainingHub);
 new Vue({
   router,
   store,

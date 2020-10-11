@@ -1,26 +1,44 @@
 <template>
-  <vue-google-heatmap :points="points" :width="400" :height="350" />
+  <div id="map" class="map">bla bla bla</div>
 </template>
 
 <script lang="ts">
-import { Point } from '@/models/Point';
+import { Loader, LoaderOptions } from "google-maps";
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class GoogleHeatmap extends Vue {
-  points = new Array<Point>();
-  constructor() {
-    super();
-    this.points.push({ lat: 37.786117, lng: -122.440119 });
-    this.points.push({ lat: 37.786117, lng: -122.440119 });
-    this.points.push({ lat: 37.786117, lng: -122.440119 });
-    this.points.push({ lat: 37.786117, lng: -122.440119 });
-    this.points.push({ lat: 37.786117, lng: -122.440119 });
-    this.points.push({ lat: 37.786117, lng: -122.440119 });
-    this.points.push({ lat: 37.786117, lng: -122.440119 });
-    this.points.push({ lat: 37.786117, lng: -122.440119 });
-    this.points.push({ lat: 37.786117, lng: -122.440119 });
-    this.points.push({ lat: 37.786117, lng: -122.440119 });
+  points: Array<google.maps.LatLng> = new Array<google.maps.LatLng>();
+  map: any;
+  heatmap: any;
+
+  async mounted() {
+    const loader = new Loader(process.env.VUE_APP_GOOGLE_API_KEY, {
+      libraries: ["visualization"]
+    });
+    const google = await loader.load();
+    this.map = new google.maps.Map(document.getElementById("map")!, {
+      center: { lat: 37.782, lng: -122.447 },
+      zoom: 20
+    });
+
+    this.heatmap = new google.maps.visualization.HeatmapLayer({
+      data: this.points
+    });
+
+    setInterval(this.reloadHeatmap, 10000);
+  }
+
+  private reloadHeatmap() {
+    this.heatmap.setMap(null);
+    this.heatmap.setMap(this.map);
+    console.log('reloaded');
   }
 }
 </script>
+<style lang="scss" scoped>
+.map {
+  height: 500px;
+  width: 500px;
+}
+</style>

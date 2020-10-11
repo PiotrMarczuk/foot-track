@@ -26,8 +26,7 @@ import Component from 'vue-class-component';
   }
 })
 export default class extends Vue{
-  get alert(){
-    console.log(this.$store.state.alert.message);
+   get alert(){
     return this.$store.state.alert.message;
   }
 }

@@ -35,7 +35,7 @@
                 v-model="userLogin.password"
               ></v-text-field>
             </validation-provider>
-            <v-card-actions >
+            <v-card-actions>
               <v-container>
                 <v-row>
                   <v-btn
@@ -55,12 +55,18 @@
                     <span class="account-question">
                       Don't have account yet?
                     </span>
-                    <v-btn color="secondary" text small rounded @click="enableRegister">
-                    Register
-                     <v-icon right>
-                      mdi-account-plus
-                    </v-icon>
-                  </v-btn>
+                    <v-btn
+                      color="secondary"
+                      text
+                      small
+                      rounded
+                      @click="enableRegister"
+                    >
+                      Register
+                      <v-icon right>
+                        mdi-account-plus
+                      </v-icon>
+                    </v-btn>
                   </v-card-text>
                 </v-row>
               </v-container>
@@ -78,6 +84,8 @@ import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import { required, email, min } from "vee-validate/dist/rules";
 import { UserLogin } from "@/models/UserLogin";
 import { getters } from "@/store/profile/getters";
+import { Getter, Action, Mutation } from "vuex-class";
+import { UserStatus } from "@/store/profile/types";
 
 extend("required", {
   ...required,
@@ -100,6 +108,12 @@ extend("min", {
   }
 })
 export default class LoginForm extends Vue {
+  @Getter("profile/userStatus") userStatus!: UserStatus;
+  @Getter("form/loginFormVisible") isLoginFormVisible!: boolean;
+  @Mutation("form/setLoginFormVisible") setLoginFormVisibility: any;
+  @Mutation("form/setRegisterFormVisible") setRegisterFormVisibility: any;
+  @Action("profile/login") login!: any;
+
   $refs!: {
     validationObserverRef: InstanceType<typeof ValidationObserver>;
   };
@@ -109,8 +123,7 @@ export default class LoginForm extends Vue {
   errors = null;
 
   get isSubmitDisabled(): boolean {
-    const { getters } = this.$store;
-    return getters["profile/userStatus"].loggingIn;
+    return this.userStatus?.loggingIn;
   }
 
   async submit() {
@@ -118,27 +131,19 @@ export default class LoginForm extends Vue {
       return;
     }
 
-    const { dispatch } = this.$store;
-    dispatch("profile/login", this.userLogin);
+    this.login(this.userLogin);
   }
 
   get visible() {
-    return this.$store.state.form.loginFormVisible;
+    return this.isLoginFormVisible;
   }
 
   set visible(value: boolean) {
-    const { commit } = this.$store;
-    commit("form/setLoginFormVisible", value);
-  }
-
-  public login() {
-    const { dispatch } = this.$store;
-    dispatch("profile/login", {});
+    this.setLoginFormVisibility(value);
   }
 
   public enableRegister() {
-    const { commit } = this.$store;
-    commit("form/setRegisterFormVisible", true);
+    this.setRegisterFormVisibility(true);
   }
 }
 </script>

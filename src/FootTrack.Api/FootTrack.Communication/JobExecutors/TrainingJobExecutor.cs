@@ -49,9 +49,8 @@ namespace FootTrack.Communication.JobExecutors
                     var trainingRecord = JsonConvert.DeserializeObject<TrainingRecordDto>(data);
                     await _hubContext.Clients.All.SendAsync("TrainingMessage", trainingRecord);
                 }
-
-                return;
             }
+            // ReSharper disable once FunctionNeverReturns
         }
     }
 }

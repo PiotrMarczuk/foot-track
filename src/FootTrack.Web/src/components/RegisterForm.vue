@@ -86,6 +86,8 @@ import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import { required, email, min, confirmed } from "vee-validate/dist/rules";
 import { getters } from "@/store/profile/getters";
 import { UserRegister } from "@/models/UserRegister";
+import { Getter, Action, Mutation } from "vuex-class";
+import { UserStatus } from "@/store/profile/types";
 
 extend("required", {
   ...required,
@@ -112,6 +114,11 @@ extend("confirmed", {
   }
 })
 export default class RegisterForm extends Vue {
+  @Getter("profile/userStatus") userStatus!: UserStatus;
+  @Getter("form/registerFormVisible") isRegisterFormVisible!: boolean;
+  @Mutation("form/setRegisterFormVisible") setRegisterFormVisibility: any;
+  @Action("profile/register") register!: any;
+
   $refs!: {
     validationObserverRef: InstanceType<typeof ValidationObserver>;
   };
@@ -123,26 +130,22 @@ export default class RegisterForm extends Vue {
   errors = null;
 
   get isSubmitDisabled(): boolean {
-    const { getters } = this.$store;
-    return getters["profile/userStatus"].registering;
+    return this.userStatus?.registering;
   }
 
   async submit() {
     if ((await this.$refs.validationObserverRef.validate()) == false) {
       return;
     }
-
-    const { dispatch } = this.$store;
-    dispatch("profile/register", this.userRegister);
+    this.register(this.userRegister);
   }
 
   get visible() {
-    return this.$store.state.form.registerFormVisible;
+    return this.isRegisterFormVisible;
   }
 
   set visible(value: boolean) {
-    const { commit } = this.$store;
-    commit("form/setRegisterFormVisible", value);
+    this.setRegisterFormVisibility(value);
   }
 }
 </script>
