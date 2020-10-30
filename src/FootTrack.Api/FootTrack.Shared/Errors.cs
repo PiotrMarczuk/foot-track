@@ -31,5 +31,29 @@
             public static Error TooShort(int minLength, string entityName = "Record") =>
                 new Error("password.too.short", $"'{entityName}' too short. Min length is '{minLength}'.");
         }
+
+        public static class Device
+        {
+            public static Error DeviceUnreachable(string deviceName = "device") =>
+                new Error("device.unreachable", $"Device called '{deviceName}' is unreachable.");
+        }
+
+        public static class Training
+        {
+            public static Error AlreadyStarted(string userId = default) =>
+                new Error("training.already.started", $"Training for user with id {userId} was already started.");
+
+            public static Error FailedToStartTraining(string userId = default) =>
+                new Error("start.training.failed", $"Failed to start training for user with id {userId}");
+
+            public static Error FailedToEndTraining(string userId = default) =>
+                new Error("end.training.failed", $"Failed to end training for user with id {userId}");
+        }
+
+        public static class Database
+        {
+            public static Error Failed(string message = "connecting") =>
+                new Error("database.operation.failed", $"Database operation failed on {message}.");
+        }
     }
 }

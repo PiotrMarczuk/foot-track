@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using NUnit.Framework;
 
-namespace FootTrack.Shared.Tests
+namespace FootTrack.Shared.UnitTests
 {
     [ExcludeFromCodeCoverage]
     [TestFixture]
@@ -28,7 +28,7 @@ namespace FootTrack.Shared.Tests
         [Test]
         public void When_trying_to_extract_value_with_set_error_should_fail()
         {
-            var emailResult = Email.Create(null);
+            Result<Email> emailResult = Email.Create(null);
 
             Assert.Throws<InvalidOperationException>(() =>
             {
@@ -39,8 +39,8 @@ namespace FootTrack.Shared.Tests
         [Test]
         public void When_combining_multiple_results_with_at_least_one_error_should_return_error()
         {
-            var emailResult = Email.Create(null);
-            var emailResult2 = Email.Create("test@gmail.com");
+            Result<Email> emailResult = Email.Create(null);
+            Result<Email> emailResult2 = Email.Create("test@gmail.com");
 
             Result combineResult = Result.Combine(emailResult, emailResult2);
 

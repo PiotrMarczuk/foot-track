@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using FootTrack.Settings;
+using FootTrack.Shared;
 using Microsoft.Extensions.Primitives;
 
 namespace FootTrack.Api.Attributes
@@ -41,7 +42,7 @@ namespace FootTrack.Api.Attributes
 
             string cacheKey = GenerateCacheKeyFromRequest(context.HttpContext.Request);
 
-            var cachedResponseResult = await cacheService
+            Result<string> cachedResponseResult = await cacheService
                 .GetCachedResponseAsync(cacheKey);
 
             if (cachedResponseResult.IsSuccess)

@@ -7,10 +7,12 @@ namespace FootTrack.Repository
 {
     public interface IUserRepository
     {
-        Task<Maybe<HashedUserCredentials>> GetUserEmailAndHashedPasswordAsync(Email email);
+        Task<Result<Maybe<HashedUserCredentials>>> GetUserEmailAndHashedPasswordAsync(Email email);
 
         Task<Result<UserData>> InsertUserAsync(HashedUserData hashedUserData);
 
-        Task<Maybe<UserData>> GetUserDataAsync(Id id);
+        Task<Result<Maybe<UserData>>> GetUserDataAsync(Id id);
+
+        Task<Result<bool>> CheckIfUserExist(Id id);
     }
 }

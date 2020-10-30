@@ -32,6 +32,11 @@ namespace FootTrack.Shared
             return new Result<T>(default, false, error);
         }
 
+        public static Result Fail(Error error)
+        {
+            return new Result(false, error);
+        }
+        
         public static Result Ok()
         {
             return new Result(true, default);

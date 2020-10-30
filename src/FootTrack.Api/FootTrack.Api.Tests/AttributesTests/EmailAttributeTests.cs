@@ -1,7 +1,7 @@
 ﻿using FootTrack.Api.Attributes;
 using NUnit.Framework;
 
-namespace FootTrack.Api.Tests.AttributesTests
+namespace FootTrack.Api.UnitTests.AttributesTests
 {
     [TestFixture]
     public class EmailAttributeTests

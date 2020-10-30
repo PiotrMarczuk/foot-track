@@ -6,15 +6,24 @@ from datetime import datetime
 
 CONNECTION_STRING = "connString"
 
-MSG_TXT = '{{"latitude": {lat},"longitude": {lon}, "speed": {speed}, "timestamp":{timestamp}}}'
+MSG_TXT = '{{"latitude": "{lat}","longitude": "{lon}", "speed": "{speed}", "timestamp":"{timestamp}"}}'
 
 SEND_GPS = False
 
-def message_listener(client):
+def start_message_listener(client):
     global SEND_GPS
     while True:
-        method_request = client.receive_method_request("changeMeasurementState")
-        SEND_GPS = not SEND_GPS
+        method_request = client.receive_method_request("startTraining")
+        SEND_GPS = True
+        resp_status = 200
+        method_response = MethodResponse(method_request.request_id, resp_status)
+        client.send_method_response(method_response)
+
+def end_message_listener(client):
+    global SEND_GPS
+    while True:
+        method_request = client.receive_method_request("endTraining")
+        SEND_GPS = False
         resp_status = 200
         method_response = MethodResponse(method_request.request_id, resp_status)
         client.send_method_response(method_response)
@@ -22,9 +31,12 @@ def message_listener(client):
 def iothub_client_run():
     try:
         client = IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)
-        message_listener_thread = threading.Thread(target=message_listener, args=(client,))
-        message_listener_thread.daemon = True
-        message_listener_thread.start()
+        start_message_listener_thread = threading.Thread(target=start_message_listener, args=(client,))
+        start_message_listener_thread.daemon = True
+        start_message_listener_thread.start()
+        end_message_listener_thread = threading.Thread(target=end_message_listener, args=(client,))
+        end_message_listener_thread.daemon = True
+        end_message_listener_thread.start()
         gpsd.connect()
         while True:
             if SEND_GPS:

@@ -22,6 +22,8 @@ namespace FootTrack.Api.Installers
                 .AddScoped(typeof(ICollectionProvider<>), typeof(CollectionProvider<>));
             services
                 .AddTransient<IUserRepository, UserRepository>();
+            services
+                .AddTransient<ITrainingRepository, TrainingRepository>();
         }
 
         private static IMongoDatabase MongoDatabaseImplementationFactory(IServiceProvider serviceProvider)

@@ -34,7 +34,7 @@ namespace FootTrack.Repository.IntegrationTests
             _collectionProvider = new CollectionProvider<User>(_dbFixture.CreateMongoDatabase());
             _sut = new UserRepository(_collectionProvider);
 
-            var insertResult = await InsertUserAsync(UserEmail, UserFirstName, UserLastName);
+            Result<UserData> insertResult = await InsertUserAsync(UserEmail, UserFirstName, UserLastName);
             _insertedUser = insertResult.Value;
         }
 
@@ -53,7 +53,7 @@ namespace FootTrack.Repository.IntegrationTests
                 {
                     Email = _insertedUser.Email.Value,
                     _insertedUser.FirstName,
-                    _insertedUser.LastName
+                    _insertedUser.LastName,
                 },
                 new
                 {
@@ -67,7 +67,8 @@ namespace FootTrack.Repository.IntegrationTests
         public async Task Should_get_correct_user_data()
         {
             // ACT
-            var userDataOrNothing = await _sut.GetUserDataAsync(_insertedUser.Id);
+            Result<Maybe<UserData>> userDataResult = await _sut.GetUserDataAsync(_insertedUser.Id);
+            Maybe<UserData> userDataOrNothing = userDataResult.Value;
             UserData userData = userDataOrNothing.Value;
 
             // ASSERT
@@ -78,7 +79,8 @@ namespace FootTrack.Repository.IntegrationTests
         public async Task Should_not_return_user_data_when_there_is_no_matching_record()
         {
             // ACT
-            var userDataOrNothing = await _sut.GetUserDataAsync(Id.Create(ObjectId.GenerateNewId().ToString()).Value);
+            Result<Maybe<UserData>> userDataResult = await _sut.GetUserDataAsync(Id.Create(ObjectId.GenerateNewId().ToString()).Value);
+            Maybe<UserData> userDataOrNothing = userDataResult.Value;
 
             // ASSERT
             Assert.That(userDataOrNothing.HasNoValue);
@@ -88,20 +90,21 @@ namespace FootTrack.Repository.IntegrationTests
         public async Task Should_return_user_credentials()
         {
             // ACT
-            var userOrNothing = await _sut.GetUserEmailAndHashedPasswordAsync(Email.Create(UserEmail).Value);
-            HashedUserCredentials hashedUserCredentials = userOrNothing.Value;
+            Result<Maybe<HashedUserCredentials>> userResult = await _sut.GetUserEmailAndHashedPasswordAsync(Email.Create(UserEmail).Value);
+            Maybe<HashedUserCredentials> hashedUserCredentialsOrNothing = userResult.Value;
+            HashedUserCredentials hashedUserCredentials = hashedUserCredentialsOrNothing.Value;
             
             // ASSERT
             TestUtils.TestUtils.AssertAreEqualByJson(
                 new
                 {
                     hashedUserCredentials.Email,
-                    hashedUserCredentials.Id
+                    hashedUserCredentials.Id,
                 },
                 new
                 {
                     _insertedUser.Email,
-                    _insertedUser.Id
+                    _insertedUser.Id,
                 });
         }
 
@@ -109,8 +112,9 @@ namespace FootTrack.Repository.IntegrationTests
         public async Task Should_not_return_user_credentials_when_does_not_exist()
         {
             // ACT
-            var userOrNothing =
+            Result<Maybe<HashedUserCredentials>> userResult =
                 await _sut.GetUserEmailAndHashedPasswordAsync(Email.Create("UserEmail@gmail.com").Value);
+            Maybe<HashedUserCredentials> userOrNothing = userResult.Value;
 
             // ASSERT
             Assert.That(userOrNothing.HasNoValue);
@@ -120,10 +124,27 @@ namespace FootTrack.Repository.IntegrationTests
         public async Task Should_fail_when_adding_user_with_email_that_already_exist()
         {
             // ACT
-            var result = await InsertUserAsync(UserEmail, string.Empty, string.Empty);
+            Result<UserData> result = await InsertUserAsync(UserEmail, string.Empty, string.Empty);
 
             // ASSERT
             Assert.That(result.IsFailure);
+        }
+
+        [Test]
+        public async Task Should_correctly_check_when_user_already_exist()
+        {
+            // ACT
+            var result = await _sut.CheckIfUserExist(_insertedUser.Id);
+
+            Assert.That(result.Value, Is.True);
+        }
+
+        [Test]
+        public async Task Should_correctly_check_when_user_does_not_already_exist()
+        {
+            var result = await _sut.CheckIfUserExist(Id.Create(ObjectId.Empty.ToString()).Value);
+
+            Assert.That(result.Value, Is.False);
         }
 
         private async Task<Result<UserData>> InsertUserAsync(string email, string firstName, string lastName)

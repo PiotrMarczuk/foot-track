@@ -1,4 +1,6 @@
-﻿using FootTrack.Settings.JwtToken;
+﻿using FootTrack.Settings.AzureServiceClient;
+using FootTrack.Settings.HubSettings;
+using FootTrack.Settings.JwtToken;
 using FootTrack.Settings.MongoDb;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,12 +24,28 @@ namespace FootTrack.Api.Installers
                     .GetRequiredService<IOptions<JwtTokenSettings>>()
                     .Value);
 
+            services.AddSingleton<IAzureServiceClientSettings>(serviceProvider =>
+                serviceProvider
+                    .GetRequiredService<IOptions<AzureServiceClientSettings>>()
+                    .Value);
+
+            services.AddSingleton<IHubSettings>(serviceProvider =>
+                serviceProvider
+                    .GetRequiredService<IOptions<HubSettings>>()
+                    .Value);
+            
             services
                 .Configure<MongoDbSettings>(configuration
                     .GetSection(nameof(MongoDbSettings)));
             services
                 .Configure<JwtTokenSettings>(configuration
                     .GetSection(nameof(JwtTokenSettings)));
+            services
+                .Configure<AzureServiceClientSettings>(configuration
+                    .GetSection(nameof(AzureServiceClientSettings)));
+            services
+                .Configure<HubSettings>(configuration
+                    .GetSection(nameof(HubSettings)));
         }
     }
 }

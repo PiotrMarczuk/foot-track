@@ -3,7 +3,7 @@ using FootTrack.Shared;
 using MongoDB.Bson;
 using NUnit.Framework;
 
-namespace FootTrack.BusinessLogic.Tests.ModelTests
+namespace FootTrack.BusinessLogic.UnitTests.ModelTests
 {
     [TestFixture]
     public class IdTests
@@ -16,8 +16,8 @@ namespace FootTrack.BusinessLogic.Tests.ModelTests
             var generatedId = ObjectId.GenerateNewId().ToString();
 
             // ACT
-            var stupidIdResult = Id.Create(stupidId);
-            var generatedIdResult = Id.Create(generatedId);
+            Result<Id> stupidIdResult = Id.Create(stupidId);
+            Result<Id> generatedIdResult = Id.Create(generatedId);
 
             // ASSERT
             Assert.That(stupidIdResult.IsFailure, Is.True);

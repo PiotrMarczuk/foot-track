@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 
-namespace FootTrack.Shared.Tests
+namespace FootTrack.Shared.UnitTests
 {
     [ExcludeFromCodeCoverage]
     [TestFixture]
@@ -14,7 +15,7 @@ namespace FootTrack.Shared.Tests
         public void Error_codes_must_be_unique()
         {
 
-            var methods = typeof(Error)
+            List<MethodInfo> methods = typeof(Error)
                 .GetMethods(BindingFlags.Static | BindingFlags.Public)
                 .Where(x => x.ReturnType == typeof(Error))
                 .ToList();
@@ -46,7 +47,7 @@ namespace FootTrack.Shared.Tests
 
         private static string GetErrorCode(MethodInfo method)
         {
-            var parameters = method.GetParameters()
+            object[] parameters = method.GetParameters()
                 .Select<ParameterInfo, object>(x =>
                 {
                     if (x.ParameterType == typeof(string))

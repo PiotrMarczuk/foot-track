@@ -22,7 +22,7 @@ namespace FootTrack.Api.Attributes
                 return new ValidationResult(Errors.General.Invalid(nameof(password)).Serialize());
             }
 
-            var passwordResult = Password.Create(password);
+            Result<Password> passwordResult = Password.Create(password);
 
             return passwordResult.IsFailure
                 ? new ValidationResult(passwordResult.Error.Serialize())

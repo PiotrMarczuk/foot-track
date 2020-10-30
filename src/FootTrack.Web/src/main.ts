@@ -1,12 +1,21 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
+import vuetify from "./plugins/vuetify";
+import Axios from 'axios';
 
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
+Vue.config.productionTip = false;
 
-if (environment.production) {
-  enableProdMode();
-}
+Axios.interceptors.request.use(config => {
+  config.headers.Authorization = `Bearer ${localStorage.getItem('user-token')}`;
+  return config;
+},
+  error => Promise.reject(error));
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+new Vue({
+  router,
+  store,
+  vuetify,
+  render: h => h(App)
+}).$mount("#app");

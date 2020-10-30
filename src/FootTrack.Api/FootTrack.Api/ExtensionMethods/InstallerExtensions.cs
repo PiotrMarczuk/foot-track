@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Microsoft.Extensions.Configuration;
@@ -12,7 +13,7 @@ namespace FootTrack.Api.ExtensionMethods
     {
         public static void InstallServiceInAssembly(this IServiceCollection services, IConfiguration configuration)
         {
-            var installers = typeof(Startup).Assembly.ExportedTypes
+            List<IInstaller> installers = typeof(Startup).Assembly.ExportedTypes
                 .Where(x =>
                 typeof(IInstaller).IsAssignableFrom(x)
                 && !x.IsInterface

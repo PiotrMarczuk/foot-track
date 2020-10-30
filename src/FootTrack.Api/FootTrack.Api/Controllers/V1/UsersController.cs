@@ -9,10 +9,10 @@ using FootTrack.Api.Dtos.Responses;
 using FootTrack.BusinessLogic.Models.User;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.BusinessLogic.Services;
+using FootTrack.Shared;
 
 namespace FootTrack.Api.Controllers.V1
 {
-    [Authorize]
     public class UsersController : BaseController
     {
         private readonly IUserService _userService;
@@ -28,7 +28,7 @@ namespace FootTrack.Api.Controllers.V1
         {
             UserCredentials userCredentials = UserCredentials.Create(loginDto.Email, loginDto.Password).Value;
 
-            var authenticatedUserResult = await _userService
+            Result<AuthenticatedUser> authenticatedUserResult = await _userService
                 .AuthenticateAsync(userCredentials);
 
             return OkOrError<AuthenticatedUserDto, AuthenticatedUser>(authenticatedUserResult);
@@ -45,7 +45,7 @@ namespace FootTrack.Api.Controllers.V1
                     registerDto.Password)
                 .Value;
 
-            var userResult = await _userService.RegisterAsync(userToBeRegistered);
+            Result<AuthenticatedUser> userResult = await _userService.RegisterAsync(userToBeRegistered);
 
             return CreatedAtOrError<AuthenticatedUserDto, AuthenticatedUser>(
                 userResult,
@@ -62,14 +62,14 @@ namespace FootTrack.Api.Controllers.V1
         [Cached(300)]
         public async Task<IActionResult> GetById(string id)
         {
-            var idResult = Id.Create(id);
+            Result<Id> idResult = Id.Create(id);
 
             if (idResult.IsFailure)
             {
                 return Error(idResult);
             }
 
-            var userResult = await _userService
+            Result<UserData> userResult = await _userService
                 .GetByIdAsync(idResult.Value);
 
             return OkOrError<UserDto, UserData>(userResult);

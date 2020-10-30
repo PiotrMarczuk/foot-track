@@ -31,8 +31,8 @@ namespace FootTrack.BusinessLogic.Models.User
             string lastName,
             string password)
         {
-            var emailResult = Email.Create(email);
-            var passwordResult = Password.Create(password);
+            Result<Email> emailResult = Email.Create(email);
+            Result<Password> passwordResult = Password.Create(password);
 
             Result validationResult = Result.Combine(emailResult, passwordResult);
 

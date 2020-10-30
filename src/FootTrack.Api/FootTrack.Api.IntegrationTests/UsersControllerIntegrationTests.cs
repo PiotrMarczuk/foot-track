@@ -58,7 +58,7 @@ namespace FootTrack.Api.IntegrationTests
         public async Task Should_be_able_to_get_user_data_when_authenticated()
         {
             // ARRANGE
-            var apiResponse = await RegisterUserAndSetClientToken();
+            ApiResponse<AuthenticatedUserDto> apiResponse = await RegisterUserAndSetClientToken();
 
             // ACT
             HttpResponseMessage userResult = await GetUser(apiResponse.Result.Id);
@@ -71,7 +71,7 @@ namespace FootTrack.Api.IntegrationTests
         public async Task Should_not_be_able_to_get_user_data_when_passing_wrong_token()
         {
             // ARRANGE
-            var apiResponse = await RegisterUserAndSetClientToken();
+            ApiResponse<AuthenticatedUserDto> apiResponse = await RegisterUserAndSetClientToken();
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "blablablablabla");
 
             // ACT
@@ -136,7 +136,7 @@ namespace FootTrack.Api.IntegrationTests
                 Email = email,
                 FirstName = "Kaziu",
                 LastName = "Wichura",
-                Password = "verystrongpassword"
+                Password = "verystrongpassword",
             };
 
             var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");

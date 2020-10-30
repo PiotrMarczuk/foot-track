@@ -23,8 +23,8 @@ namespace FootTrack.BusinessLogic.Models.User
 
         public static Result<UserData> Create(string id, string email, string firstName, string lastName)
         {
-            var idResult = Id.Create(id);
-            var emailResult = Email.Create(email);
+            Result<Id> idResult = Id.Create(id);
+            Result<Email> emailResult = Email.Create(email);
 
             Result validationResult = Result.Combine(idResult, emailResult);
 

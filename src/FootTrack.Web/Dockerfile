@@ -1,12 +1,12 @@
-FROM node AS compile-image
-WORKDIR /app/front
-
-COPY package.json ./
+# build stage
+FROM node:lts-alpine as build-stage
+WORKDIR /app
+COPY package*.json ./
 RUN npm install
-
 COPY . .
-ARG Environment="Debug"
-RUN if [ "$Environment" = "Debug" ]; then npm run build; else npm run build --prod; fi
+RUN npm run build
 
-FROM nginx
-COPY --from=compile-image /app/front/dist/foot-track/ usr/share/nginx/html
+# production stage
+FROM nginx:stable-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+CMD ["nginx", "-g", "daemon off;"]
