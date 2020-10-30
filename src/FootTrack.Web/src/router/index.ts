@@ -16,6 +16,12 @@ const routes: Array<RouteConfig> = [
     name: "Training",
     component: () =>
       import("@/views/Training.vue")
+  },
+  {
+    path: "/about",
+    name: "About",
+    component: () =>
+      import("@/views/About.vue")
   }
 ];
 

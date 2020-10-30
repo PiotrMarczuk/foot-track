@@ -78,7 +78,7 @@ namespace FootTrack.Communication.UnitTests.Services
             const string jobId = "jobId";
             Error error = Errors.Device.DeviceUnreachable("rpi");
             _hangfireBackgroundJobFacade.DeleteJob(jobId).Returns(Result.Ok());
-            _azureDeviceCommunicationFacade.InvokeStartTrainingMethodAsync("rpi")
+            _azureDeviceCommunicationFacade.InvokeEndTrainingMethodAsync("rpi")
                 .Returns(Result.Fail(error));
 
             // ACT
@@ -95,7 +95,7 @@ namespace FootTrack.Communication.UnitTests.Services
             // ARRANGE
             const string jobId = "jobId";
             _hangfireBackgroundJobFacade.DeleteJob(jobId).Returns(Result.Ok());
-            _azureDeviceCommunicationFacade.InvokeStartTrainingMethodAsync("rpi")
+            _azureDeviceCommunicationFacade.InvokeEndTrainingMethodAsync("rpi")
                 .Returns(Result.Ok());
 
             // ACT

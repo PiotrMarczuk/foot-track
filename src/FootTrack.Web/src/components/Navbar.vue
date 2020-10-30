@@ -1,18 +1,8 @@
 <template>
   <div>
     <v-app-bar app color="primary" dark>
+      <v-btn text depressed to="/">FootTrack</v-btn>
       <v-spacer></v-spacer>
-      <v-btn
-        color="secondary"
-        dark
-        rounded
-        @click="loginClick"
-        v-if="!isUserLoggedIn"
-      >
-        <span class="mr-2">Sign in</span>
-        <v-icon>mdi-soccer</v-icon>
-      </v-btn>
-
       <v-btn v-if="isUserLoggedIn" @click="logout">
         LogOut
       </v-btn>
@@ -36,14 +26,9 @@ import { UserStatus } from "@/store/profile/types";
 export default class Navbar extends Vue {
   @Getter("profile/userStatus") userStatus!: UserStatus;
   @Action("profile/logout") userLogout!: any;
-  @Mutation("form/setLoginFormVisible") setLoginFormVisibility: any;
 
   get isUserLoggedIn() {
     return this.userStatus?.loggedIn;
-  }
-
-  loginClick() {
-    this.setLoginFormVisibility(true);
   }
 
   logout() {
