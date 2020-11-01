@@ -11,17 +11,17 @@ namespace FootTrack.Api.Controllers
     [Authorize]
     public abstract class BaseController : ControllerBase
     {
-        private readonly IMapper _mapper;
+        protected readonly IMapper Mapper;
 
         protected BaseController(IMapper mapper)
         {
-            _mapper = mapper;
+            Mapper = mapper;
         }
 
         protected IActionResult OkOrError<TDestination, TSource>(Result<TSource> result)
         {
             return result.IsSuccess
-                ? Ok(_mapper.Map<TDestination>(result.Value))
+                ? Ok(Mapper.Map<TDestination>(result.Value))
                 : HandleError(result);
         }
 
@@ -38,7 +38,7 @@ namespace FootTrack.Api.Controllers
             object routeValues)
         {
             return result.IsSuccess
-                ? CreatedAtAction(actionName, routeValues, _mapper.Map<TDestination>(result.Value))
+                ? CreatedAtAction(actionName, routeValues, Mapper.Map<TDestination>(result.Value))
                 : HandleError(result);
         }
 

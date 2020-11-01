@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FootTrack.BusinessLogic.Models.Training;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.Shared;
 
@@ -11,5 +12,7 @@ namespace FootTrack.Repository
         Task<Result<string>> EndTrainingAsync(Id userId);
 
         Task<Result<bool>> CheckIfTrainingAlreadyStarted(Id userId);
+
+        Task<Result> AppendTrainingDataAsync(TrainingData trainingData);
     }
 }

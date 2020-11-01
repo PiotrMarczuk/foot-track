@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using AutoMapper;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.Database.Models;
 using FootTrack.Database.Providers;
@@ -16,6 +17,7 @@ namespace FootTrack.Repository.IntegrationTests
         private ICollectionProvider<Training> _collectionProvider;
         private TrainingRepository _sut;
         private readonly Id _userId = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
+        private IMapper _mapper;
         private const string JobId = "blablarandomJobId";
 
         [OneTimeSetUp]
@@ -28,9 +30,10 @@ namespace FootTrack.Repository.IntegrationTests
         public void SetUp()
         {
             _collectionProvider = new CollectionProvider<Training>(_dbFixture.CreateMongoDatabase());
-            _sut = new TrainingRepository(_collectionProvider);
+            _mapper = CreateMapper();
+            _sut = new TrainingRepository(_collectionProvider, _mapper);
         }
-
+        
         [TearDown]
         public void Teardown()
         {
@@ -96,6 +99,12 @@ namespace FootTrack.Repository.IntegrationTests
             // ASSERT
             Assert.That(result.IsSuccess);
             Assert.That(result.Value, Is.EqualTo(JobId));
+        }
+
+        private static IMapper CreateMapper()
+        {
+            var config = new MapperConfiguration(cfg => {});
+            return config.CreateMapper();
         }
     }
 }
