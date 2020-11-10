@@ -27,7 +27,11 @@
             
             public const string End = ControllerEndpoint + "/end";
 
-            public const string AppendTrainingData = ControllerEndpoint + "/appendTrainingData";
+            public const string TrainingData = ControllerEndpoint + "/trainingData";
+
+            public const string UserTrainings = ControllerEndpoint;
+
+            public const string GetTrainingData = TrainingData + "/{id}";
         }
     }
 }

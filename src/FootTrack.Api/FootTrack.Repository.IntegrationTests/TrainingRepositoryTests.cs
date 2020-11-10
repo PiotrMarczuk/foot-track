@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using AutoMapper;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.Database.Models;
 using FootTrack.Database.Providers;
@@ -17,8 +16,7 @@ namespace FootTrack.Repository.IntegrationTests
         private ICollectionProvider<Training> _collectionProvider;
         private TrainingRepository _sut;
         private readonly Id _userId = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
-        private IMapper _mapper;
-        private const string JobId = "blablarandomJobId";
+        private readonly Id _jobId = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
 
         [OneTimeSetUp]
         public void Init()
@@ -30,8 +28,7 @@ namespace FootTrack.Repository.IntegrationTests
         public void SetUp()
         {
             _collectionProvider = new CollectionProvider<Training>(_dbFixture.CreateMongoDatabase());
-            _mapper = CreateMapper();
-            _sut = new TrainingRepository(_collectionProvider, _mapper);
+            _sut = new TrainingRepository(_collectionProvider);
         }
         
         [TearDown]
@@ -44,7 +41,7 @@ namespace FootTrack.Repository.IntegrationTests
         public async Task Should_successfully_begin_training()
         {
             // ACT
-            Result result = await _sut.BeginTrainingAsync(_userId, JobId);
+            Result result = await _sut.BeginTrainingAsync(_userId, _jobId);
 
             // ASSERT
             Assert.That(result.IsSuccess, Is.True);
@@ -54,7 +51,7 @@ namespace FootTrack.Repository.IntegrationTests
         public async Task Should_successfully_check_if_training_exist()
         {
             // ARRANGE
-            await _sut.BeginTrainingAsync(_userId, JobId);
+            await _sut.BeginTrainingAsync(_userId, _jobId);
 
             // ACT
             Result<bool> result = await _sut.CheckIfTrainingAlreadyStarted(_userId);
@@ -67,7 +64,7 @@ namespace FootTrack.Repository.IntegrationTests
         public async Task Should_successfully_check_if_training_does_not_exist()
         {
             // ARRANGE
-            await _sut.BeginTrainingAsync(_userId, JobId);
+            await _sut.BeginTrainingAsync(_userId, _jobId);
 
             // ACT
             Result<bool> result = await _sut.CheckIfTrainingAlreadyStarted(Id.Create(ObjectId.Empty.ToString()).Value);
@@ -80,7 +77,7 @@ namespace FootTrack.Repository.IntegrationTests
         public async Task Should_return_fail_when_ending_training_which_does_not_exist()
         {
             // ACT
-            Result<string> result = await _sut.EndTrainingAsync(_userId);
+            Result<Id> result = await _sut.EndTrainingAsync(_userId);
 
             // ASSERT
             Assert.That(result.IsFailure);
@@ -91,20 +88,14 @@ namespace FootTrack.Repository.IntegrationTests
         public async Task Should_return_jobId_when_ending_training_which_exist()
         {
             // ARRANGE
-            await _sut.BeginTrainingAsync(_userId, JobId);
+            await _sut.BeginTrainingAsync(_userId, _jobId);
 
             // ACT
-            Result<string> result = await _sut.EndTrainingAsync(_userId);
+            Result<Id> result = await _sut.EndTrainingAsync(_userId);
 
             // ASSERT
             Assert.That(result.IsSuccess);
-            Assert.That(result.Value, Is.EqualTo(JobId));
-        }
-
-        private static IMapper CreateMapper()
-        {
-            var config = new MapperConfiguration(cfg => {});
-            return config.CreateMapper();
+            Assert.That(result.Value, Is.EqualTo(_jobId));
         }
     }
 }

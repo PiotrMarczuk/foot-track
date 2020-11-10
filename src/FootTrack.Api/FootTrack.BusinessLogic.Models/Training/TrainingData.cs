@@ -5,13 +5,13 @@ namespace FootTrack.BusinessLogic.Models.Training
 {
     public sealed class TrainingData
     {
-        public Id UserId { get; }
-
+        public Id Id { get; }
+        
         public List<TrainingRecord> TrainingRecords { get; }
 
-        public TrainingData(Id userId, List<TrainingRecord> trainingRecords)
+        public TrainingData(Id id, List<TrainingRecord> trainingRecords)
         {
-            UserId = userId;
+            Id = id;
             TrainingRecords = trainingRecords;
         }
     }

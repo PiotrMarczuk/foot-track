@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FootTrack.BusinessLogic.Models.Training;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.Communication.Services;
@@ -41,13 +42,20 @@ namespace FootTrack.BusinessLogic.Services
         public async Task<Result> AppendTrainingDataAsync(TrainingData trainingData) =>
             await _trainingRepository.AppendTrainingDataAsync(trainingData);
 
-        private async Task<Result> HandleEndingTrainingSessionFailure(Id userId, string jobId)
+        public async Task<Result<IEnumerable<TrainingData>>> GetTrainings(
+            GetTrainingsForUserParameters trainingsForUserParametersData) =>
+            await _trainingRepository.GetTrainingsForUser(trainingsForUserParametersData);
+
+        public async Task<Result<TrainingData>> GetTraining(Id trainingId) =>
+            await _trainingRepository.GetTraining(trainingId);
+
+        private async Task<Result> HandleEndingTrainingSessionFailure(Id userId, Id jobId)
         {
             await _trainingRepository.BeginTrainingAsync(userId, jobId);
             return Result.Fail(Errors.Training.FailedToEndTraining(userId));
         }
 
-        private async Task<Result> HandleBeginningTrainingSessionFailure(Id userId, string jobId)
+        private async Task<Result> HandleBeginningTrainingSessionFailure(Id userId, Id jobId)
         {
             await _azureDeviceConnectionService.EndTrainingSessionAsync(jobId);
             return Result.Fail(Errors.Training.FailedToStartTraining(userId));

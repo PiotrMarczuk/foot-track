@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using FootTrack.BusinessLogic.Models.ValueObjects;
 using FootTrack.Database.Models;
 using FootTrack.Database.Providers;
 using FootTrack.Repository.Filters;
+using FootTrack.Repository.Mappers;
 using FootTrack.Repository.UpdateDefinitions;
 using FootTrack.Shared;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using BusinessModels = FootTrack.BusinessLogic.Models.Training;
 
@@ -15,29 +15,32 @@ namespace FootTrack.Repository
 {
     public class TrainingRepository : ITrainingRepository
     {
-        private readonly IMapper _mapper;
         private readonly IMongoCollection<Training> _collection;
 
-        public TrainingRepository(ICollectionProvider<Training> collectionProvider, IMapper mapper)
+        public TrainingRepository(ICollectionProvider<Training> collectionProvider)
         {
-            _mapper = mapper;
             _collection = collectionProvider.GetCollection();
         }
 
-        public async Task<Result> BeginTrainingAsync(Id userId, string jobId)
+        public async Task<Result<Id>> BeginTrainingAsync(Id userId, Id jobId)
         {
-            await _collection.InsertOneAsync(new Training
+            var training = new Training
             {
+                Id = ObjectId.GenerateNewId(),
+                Name = "Training " + await _collection.EstimatedDocumentCountAsync(),
                 JobId = jobId,
                 State = TrainingState.InProgress,
-                UserId = userId.Value,
+                UserId = ObjectId.Parse(userId.Value),
                 TrainingData = new List<TrainingData>(),
-            });
+            };
 
-            return Result.Ok();
+            await _collection.InsertOneAsync(training);
+            
+            Id trainingId = Id.Create(training.Id.ToString()).Value;
+            return Result.Ok(trainingId);
         }
 
-        public async Task<Result<string>> EndTrainingAsync(Id userId)
+        public async Task<Result<Id>> EndTrainingAsync(Id userId)
         {
             Training updateResult;
 
@@ -49,12 +52,12 @@ namespace FootTrack.Repository
             }
             catch (MongoException)
             {
-                return Result.Fail<string>(Errors.Database.Failed("Ending training"));
+                return Result.Fail<Id>(Errors.Database.Failed("Ending training"));
             }
 
             return updateResult != null
-                ? Result.Ok(updateResult.JobId)
-                : Result.Fail<string>(Errors.General.NotFound("Training"));
+                ? Result.Ok(Id.Create(updateResult.JobId).Value)
+                : Result.Fail<Id>(Errors.General.NotFound("Training"));
         }
 
         public async Task<Result<bool>> CheckIfTrainingAlreadyStarted(Id userId)
@@ -68,7 +71,7 @@ namespace FootTrack.Repository
             }
             catch (MongoException)
             {
-                return Result.Fail<bool>(Errors.Database.Failed("When looking for active training"));
+                return Result.Fail<bool>(Errors.Database.Failed("looking for active training"));
             }
 
             return Result.Ok(isInProgress);
@@ -76,21 +79,66 @@ namespace FootTrack.Repository
 
         public async Task<Result> AppendTrainingDataAsync(BusinessModels.TrainingData trainingData)
         {
-            var trainingRecords = _mapper.Map<List<TrainingData>>(trainingData.TrainingRecords);
+            IEnumerable<TrainingData> trainingRecords = TrainingMapper.Map(trainingData.TrainingRecords);
 
             try
             {
                 await _collection.UpdateOneAsync(
-                    TrainingsFilters.FilterByUserIdAndState(trainingData.UserId, TrainingState.InProgress),
+                    DocumentsFilters<Training>.FilterById(trainingData.Id),
                     TrainingsUpdateDefinitions.PushTrainingRecords(trainingRecords));
             }
-            catch (MongoException e)
+            catch (MongoException)
             {
-                Console.WriteLine(e.Message);
-                return Result.Fail<bool>(Errors.Database.Failed("When appending training data."));
+                return Result.Fail<bool>(Errors.Database.Failed("appending training data."));
             }
 
             return Result.Ok();
+        }
+
+
+        public async Task<Result<IEnumerable<BusinessModels.TrainingData>>> GetTrainingsForUser(
+            BusinessModels.GetTrainingsForUserParameters trainingsForUserParametersData)
+        {
+            var trainings = new List<BusinessModels.TrainingData>();
+
+            try
+            {
+                List<Training> dbTrainings = await _collection.Find(
+                        TrainingsFilters.FilterByUserId(trainingsForUserParametersData.UserId))
+                    .Skip((trainingsForUserParametersData.PageNumber - 1) * trainingsForUserParametersData.PageSize)
+                    .Limit(trainingsForUserParametersData.PageSize)
+                    .ToListAsync();
+
+                trainings.AddRange(TrainingMapper.Map(dbTrainings));
+            }
+            catch (MongoException)
+            {
+                return Result.Fail<IEnumerable<BusinessModels.TrainingData>>(
+                    Errors.Database.Failed("getting trainings"));
+            }
+
+            return Result.Ok((IEnumerable<BusinessModels.TrainingData>) trainings);
+        }
+
+        public async Task<Result<BusinessModels.TrainingData>> GetTraining(Id trainingId)
+        {
+            BusinessModels.TrainingData trainingData;
+
+            try
+            {
+                Training dbTraining = await _collection
+                    .Find(DocumentsFilters<Training>.FilterById(trainingId))
+                    .SingleAsync();
+
+                trainingData = TrainingMapper.Map(dbTraining);
+            }
+            catch (MongoException)
+            {
+                return Result.Fail<BusinessModels.TrainingData>(
+                    Errors.Database.Failed("getting training data"));
+            }
+
+            return Result.Ok(trainingData);
         }
     }
 }

@@ -4,6 +4,8 @@ using FootTrack.Shared;
 using NSubstitute;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using FootTrack.BusinessLogic.Models.ValueObjects;
+using MongoDB.Bson;
 
 namespace FootTrack.Communication.UnitTests.Services
 {
@@ -31,7 +33,7 @@ namespace FootTrack.Communication.UnitTests.Services
                 .Returns(Result.Fail(error));
 
             // ACT
-            Result<string> result = await _sut.StartTrainingSessionAsync();
+            Result<Id> result = await _sut.StartTrainingSessionAsync();
 
             // ASSERT
             Assert.That(result.IsFailure, Is.True);
@@ -44,11 +46,11 @@ namespace FootTrack.Communication.UnitTests.Services
             // ARRANGE
             _azureDeviceCommunicationFacade.InvokeStartTrainingMethodAsync("rpi")
                 .Returns(Result.Ok());
-            _hangfireBackgroundJobFacade.EnqueueJob().Returns(Result.Ok("jobId"));
-
+            _hangfireBackgroundJobFacade.EnqueueJob()
+                .Returns(Result.Ok(Id.Create(ObjectId.GenerateNewId().ToString()).Value));
 
             // ACT
-            Result<string> result = await _sut.StartTrainingSessionAsync();
+            Result<Id> result = await _sut.StartTrainingSessionAsync();
 
             // ASSERT
             Assert.That(result.IsSuccess, Is.True);
@@ -58,7 +60,7 @@ namespace FootTrack.Communication.UnitTests.Services
         public async Task When_failed_to_delete_job_should_return_fail_result()
         {
             // ARRANGE
-            const string jobId = "jobId";
+            Id jobId = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
             Error error = Errors.General.Empty();
 
             _hangfireBackgroundJobFacade.DeleteJob(jobId).Returns(Result.Fail(error));
@@ -75,7 +77,7 @@ namespace FootTrack.Communication.UnitTests.Services
         public async Task When_failed_to_end_training_session_should_return_fail_result()
         {
             // ARRANGE
-            const string jobId = "jobId";
+            Id jobId = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
             Error error = Errors.Device.DeviceUnreachable("rpi");
             _hangfireBackgroundJobFacade.DeleteJob(jobId).Returns(Result.Ok());
             _azureDeviceCommunicationFacade.InvokeEndTrainingMethodAsync("rpi")
@@ -93,7 +95,7 @@ namespace FootTrack.Communication.UnitTests.Services
         public async Task When_succeeded_to_end_training_should_return_ok_result()
         {
             // ARRANGE
-            const string jobId = "jobId";
+            Id jobId = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
             _hangfireBackgroundJobFacade.DeleteJob(jobId).Returns(Result.Ok());
             _azureDeviceCommunicationFacade.InvokeEndTrainingMethodAsync("rpi")
                 .Returns(Result.Ok());

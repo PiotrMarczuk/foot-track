@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using FootTrack.Api.Attributes;
 using FootTrack.Communication.Dtos;
 
-namespace FootTrack.Api.Dtos.Requests
+namespace FootTrack.Api.Dtos.Responses
 {
     public class TrainingDataDto
     {
-        [Id, Required]
+        public string Id { get; set; }
+        
+
+        public string Name { get; set; }
+        
         public string UserId { get; set; }
         
-        [Required]
+
         public List<TrainingRecordDto> TrainingRecords { get; set; }
     }
 }

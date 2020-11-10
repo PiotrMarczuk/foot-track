@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using FootTrack.Api.Dtos.Responses;
 using FootTrack.BusinessLogic.Models.Training;
 using FootTrack.Communication.Dtos;
+using TrainingData = FootTrack.BusinessLogic.Models.Training.TrainingData;
 
 namespace FootTrack.Api.Mappings
 {
@@ -10,7 +12,12 @@ namespace FootTrack.Api.Mappings
         {
             CreateMap<TrainingRecordDto, TrainingRecord>();
 
-            CreateMap<TrainingRecord, FootTrack.Database.Models.TrainingData>();
+            CreateMap<TrainingRecord, TrainingRecordDto>();
+
+            CreateMap<TrainingData, TrainingDataDto>()
+                .ForMember(
+                    dest => dest.Id,
+                    opt => opt.MapFrom(src => src.Id.Value));
         }
     }
 }

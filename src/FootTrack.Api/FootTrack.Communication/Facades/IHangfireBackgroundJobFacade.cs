@@ -1,11 +1,12 @@
-﻿using FootTrack.Shared;
+﻿using FootTrack.BusinessLogic.Models.ValueObjects;
+using FootTrack.Shared;
 
 namespace FootTrack.Communication.Facades
 {
     public interface IHangfireBackgroundJobFacade
     {
-        Result<string> EnqueueJob();
+        Result<Id> EnqueueJob();
 
-        Result DeleteJob(string jobId);
+        Result DeleteJob(Id jobId);
     }
 }

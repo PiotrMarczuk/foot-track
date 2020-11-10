@@ -40,7 +40,16 @@ namespace FootTrack.Shared.ExtensionMethods
                 ? Result.Fail(result.Error)
                 : await func(result.Value);
         }
+        
+        public static async Task<Result> OnSuccessAsync<T>(this Task<Result<T>> resultTask, Func<T, Task<Result<T>>> func)
+        {
+            Result<T> result = await resultTask;
 
+            return result.IsFailure
+                ? Result.Fail<T>(result.Error)
+                : await func(result.Value);
+        }
+        
         public static async Task<Result> OnSuccessAsync(this Task<Result> resultTask, Func<Result> func)
         {
             Result result = await resultTask;
