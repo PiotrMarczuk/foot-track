@@ -14,7 +14,7 @@ namespace FootTrack.BusinessLogic.Services
         
         Task<Result> AppendTrainingDataAsync(TrainingData trainingData);
         
-        Task<Result<IEnumerable<TrainingData>>> GetTrainings(GetTrainingsForUserParameters trainingsForUserParameters);
+        Task<Result<IEnumerable<Training>>> GetTrainings(GetTrainingsForUserParameters trainingsForUserParameters);
         
         Task <Result<TrainingData>> GetTraining(Id trainingId);
     }

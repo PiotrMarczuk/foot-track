@@ -16,7 +16,7 @@ namespace FootTrack.Repository
 
         Task<Result> AppendTrainingDataAsync(TrainingData trainingData);
         
-        Task<Result<IEnumerable<TrainingData>>> GetTrainingsForUser(GetTrainingsForUserParameters trainingsForUserParametersData);
+        Task<Result<IEnumerable<Training>>> GetTrainingsForUser(GetTrainingsForUserParameters trainingsForUserParametersData);
         
         Task<Result<TrainingData>> GetTraining(Id trainingId);
     }

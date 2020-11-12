@@ -27,7 +27,7 @@ namespace FootTrack.Repository
             var training = new Training
             {
                 Id = ObjectId.GenerateNewId(),
-                Name = "Training " + await _collection.EstimatedDocumentCountAsync(),
+                Name = "Training " + await _collection.EstimatedDocumentCountAsync() + 1,
                 JobId = jobId,
                 State = TrainingState.InProgress,
                 UserId = ObjectId.Parse(userId.Value),
@@ -35,7 +35,7 @@ namespace FootTrack.Repository
             };
 
             await _collection.InsertOneAsync(training);
-            
+
             Id trainingId = Id.Create(training.Id.ToString()).Value;
             return Result.Ok(trainingId);
         }
@@ -96,10 +96,10 @@ namespace FootTrack.Repository
         }
 
 
-        public async Task<Result<IEnumerable<BusinessModels.TrainingData>>> GetTrainingsForUser(
+        public async Task<Result<IEnumerable<BusinessModels.Training>>> GetTrainingsForUser(
             BusinessModels.GetTrainingsForUserParameters trainingsForUserParametersData)
         {
-            var trainings = new List<BusinessModels.TrainingData>();
+            var trainings = new List<BusinessModels.Training>();
 
             try
             {
@@ -113,11 +113,11 @@ namespace FootTrack.Repository
             }
             catch (MongoException)
             {
-                return Result.Fail<IEnumerable<BusinessModels.TrainingData>>(
+                return Result.Fail<IEnumerable<BusinessModels.Training>>(
                     Errors.Database.Failed("getting trainings"));
             }
 
-            return Result.Ok((IEnumerable<BusinessModels.TrainingData>) trainings);
+            return Result.Ok((IEnumerable<BusinessModels.Training>)trainings);
         }
 
         public async Task<Result<BusinessModels.TrainingData>> GetTraining(Id trainingId)

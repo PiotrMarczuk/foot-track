@@ -10,22 +10,6 @@ namespace FootTrack.Repository.Mappers
 {
     public static class TrainingMapper
     {
-        public static IEnumerable<TrainingData> Map(IEnumerable<DBModels.Training> dbTrainings) =>
-            from training in dbTrainings
-            let records =
-                training.TrainingData
-                    .Select(
-                        record =>
-                            new TrainingRecord(
-                                record.Latitude,
-                                record.Longitude,
-                                record.Speed,
-                                record.Timestamp))
-                    .ToList()
-            select new TrainingData(
-                Id.Create(training.Id.ToString()).Value,
-                records);
-
         public static IEnumerable<DBModels.TrainingData> Map(IEnumerable<TrainingRecord> trainingRecords) =>
             trainingRecords.Select(trainingRecord => new DBModels.TrainingData
             {
@@ -36,7 +20,7 @@ namespace FootTrack.Repository.Mappers
                 Timestamp = trainingRecord.Timestamp,
             });
 
-        public static TrainingData Map(DBModels.Training trainingRecord) => 
+        public static TrainingData Map(DBModels.Training trainingRecord) =>
             new TrainingData(
                 Id.Create(trainingRecord.Id.ToString()).Value,
                 Map(trainingRecord.TrainingData).ToList());
@@ -46,5 +30,8 @@ namespace FootTrack.Repository.Mappers
             return trainingData
                 .Select(x => new TrainingRecord(x.Latitude, x.Longitude, x.Speed, x.Timestamp));
         }
+
+        public static IEnumerable<Training> Map(IEnumerable<DBModels.Training> trainingRecords) =>
+            trainingRecords.Select(x => new Training(Id.Create(x.Id.ToString()).Value, x.Name, x.CreatedAt));
     }
 }

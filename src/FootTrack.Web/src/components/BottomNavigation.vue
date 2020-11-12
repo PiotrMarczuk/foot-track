@@ -6,17 +6,16 @@
         <v-icon>mdi-home-circle-outline</v-icon></v-btn
       >
 
+      <template v-if="isUserLoggedIn">
+        <v-btn to="/trainings-history">
+          <span>History</span>
+          <v-icon>mdi-soccer</v-icon>
+        </v-btn>
+      </template>
       <v-btn to="/about">
         <span>About</span>
         <v-icon>mdi-information-outline</v-icon></v-btn
-      >
-
-      <template v-if="isUserLoggedIn">
-        <v-btn to="/training">
-          <span>Training</span>
-          <v-icon>mdi-soccer</v-icon>
-        </v-btn>
-      </template></v-bottom-navigation
+      ></v-bottom-navigation
     >
   </div>
 </template>

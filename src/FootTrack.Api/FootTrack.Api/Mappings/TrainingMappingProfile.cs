@@ -14,7 +14,9 @@ namespace FootTrack.Api.Mappings
 
             CreateMap<TrainingRecord, TrainingRecordDto>();
 
-            CreateMap<TrainingData, TrainingDataDto>()
+            CreateMap<TrainingData, TrainingDataDto>();
+
+            CreateMap<Training, TrainingDto>()
                 .ForMember(
                     dest => dest.Id,
                     opt => opt.MapFrom(src => src.Id.Value));

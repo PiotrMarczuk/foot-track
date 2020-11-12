@@ -54,7 +54,7 @@ namespace FootTrack.Api.Controllers.V1
             return OkOrError(appendTrainingDataResult);
         }
 
-        [HttpGet(ApiRoutes.Trainings.UserTrainings)]
+        [HttpPost(ApiRoutes.Trainings.UserTrainings)]
         public async Task<IActionResult> GetTrainings([FromBody] GetTrainingsForUserParametersDto request)
         {
             Result<Id> idResult = Id.Create(request.UserId);
@@ -64,13 +64,13 @@ namespace FootTrack.Api.Controllers.V1
                 return Error(idResult);
             }
 
-            Result<IEnumerable<TrainingData>> trainingsResult = await _trainingService.GetTrainings(
+            Result<IEnumerable<Training>> trainingsResult = await _trainingService.GetTrainings(
                 new GetTrainingsForUserParameters(
                     idResult.Value,
                     request.PageNumber,
                     request.PageSize));
 
-            return OkOrError<IEnumerable<TrainingDataDto>, IEnumerable<TrainingData>>(trainingsResult);
+            return OkOrError<IEnumerable<TrainingDto>, IEnumerable<Training>>(trainingsResult);
         }
 
         [HttpGet(ApiRoutes.Trainings.GetTrainingData)]

@@ -42,7 +42,7 @@ namespace FootTrack.BusinessLogic.Services
         public async Task<Result> AppendTrainingDataAsync(TrainingData trainingData) =>
             await _trainingRepository.AppendTrainingDataAsync(trainingData);
 
-        public async Task<Result<IEnumerable<TrainingData>>> GetTrainings(
+        public async Task<Result<IEnumerable<Training>>> GetTrainings(
             GetTrainingsForUserParameters trainingsForUserParametersData) =>
             await _trainingRepository.GetTrainingsForUser(trainingsForUserParametersData);
 

@@ -31,7 +31,7 @@
 
             public const string UserTrainings = ControllerEndpoint;
 
-            public const string GetTrainingData = TrainingData + "/{id}";
+            public const string GetTrainingData = ControllerEndpoint + "/{id}";
         }
     }
 }

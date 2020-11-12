@@ -1,11 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FootTrack.BusinessLogic.Models.Training;
 using FootTrack.BusinessLogic.Models.ValueObjects;
-using FootTrack.Database.Models;
 using FootTrack.Database.Providers;
 using FootTrack.Shared;
 using FootTrack.TestUtils;
 using MongoDB.Bson;
 using NUnit.Framework;
+using Training = FootTrack.Database.Models.Training;
 
 namespace FootTrack.Repository.IntegrationTests
 {
@@ -96,6 +99,25 @@ namespace FootTrack.Repository.IntegrationTests
             // ASSERT
             Assert.That(result.IsSuccess);
             Assert.That(result.Value, Is.EqualTo(_jobId));
+        }
+
+        [Test]
+        public async Task Should_get_trainings_for_user()
+        {
+            // arrange
+            Id randomId = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
+            await _sut.BeginTrainingAsync(_userId, _jobId);
+            await _sut.BeginTrainingAsync(randomId, randomId);
+            await _sut.EndTrainingAsync(_userId);
+            await _sut.EndTrainingAsync(randomId);
+
+            var parameters = new GetTrainingsForUserParameters(_userId, 1, 10);
+
+            // act
+            Result<IEnumerable<BusinessLogic.Models.Training.Training>> result = await _sut.GetTrainingsForUser(parameters);
+
+            Assert.That(result.IsSuccess);
+            Assert.That(result.Value.Count(), Is.EqualTo(1));
         }
     }
 }
