@@ -12,7 +12,7 @@ const routes: Array<RouteConfig> = [
     component: Home
   },
   {
-    path: "/training",
+    path: "/training/:id",
     name: "Training",
     component: () =>
       import("@/views/Training.vue")
@@ -22,6 +22,18 @@ const routes: Array<RouteConfig> = [
     name: "About",
     component: () =>
       import("@/views/About.vue")
+  },
+  {
+    path: "/trainings-history",
+    name: "Trainings",
+    component: () =>
+      import("@/views/TrainingsList.vue")
+  },
+  {
+    path: "/training-history/:id",
+    name: "Training",
+    component: () =>
+      import("@/views/TrainingData.vue")
   }
 ];
 

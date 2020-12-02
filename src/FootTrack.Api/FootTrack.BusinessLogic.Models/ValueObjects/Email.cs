@@ -22,7 +22,8 @@ namespace FootTrack.BusinessLogic.Models.ValueObjects
                 .OnSuccess(email => email.Trim())
                 .Ensure(email => email != string.Empty, Errors.General.Empty(nameof(Email)))
                 .Ensure(email => email.Length <= MaxEmailLength, Errors.General.TooLong(MaxEmailLength, nameof(Email)))
-                .Ensure(email => Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"), Errors.General.Invalid(nameof(Email)))
+                .Ensure(email => Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"),
+                    Errors.General.Invalid(nameof(Email)))
                 .Map(email => new Email(email));
         }
 

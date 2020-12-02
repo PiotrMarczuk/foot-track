@@ -24,22 +24,18 @@ namespace FootTrack.BusinessLogic.Services
             _userRepository = userRepository;
         }
 
-        public async Task<Result<AuthenticatedUser>> AuthenticateAsync(UserCredentials userCredentials)
-        {
-            return await _userRepository.GetUserEmailAndHashedPasswordAsync(userCredentials.Email)
+        public async Task<Result<AuthenticatedUser>> AuthenticateAsync(UserCredentials userCredentials) =>
+            await _userRepository.GetUserEmailAndHashedPasswordAsync(userCredentials.Email)
                 .OnSuccessAsync(maybeUser => maybeUser.ToResult(Errors.User.IncorrectEmailOrPassword()))
                 .EnsureAsync(user =>
                         CheckIfPasswordMatch(user.HashedPassword, userCredentials.Password),
                     Errors.User.IncorrectEmailOrPassword())
                 .OnSuccessAsync(hashedUserCredentials => Result.Ok(CreateAuthenticatedUser(hashedUserCredentials)));
-        }
 
-        public async Task<Result<UserData>> GetByIdAsync(Id id)
-        {
-            return await _userRepository.GetUserDataAsync(id)
+        public async Task<Result<UserData>> GetByIdAsync(Id id) =>
+            await _userRepository.GetUserDataAsync(id)
                 .OnSuccessAsync(userDataOrNothing =>
                     userDataOrNothing.ToResult(Errors.General.NotFound("User", id.Value)));
-        }
 
         public async Task<Result<AuthenticatedUser>> RegisterAsync(UserToBeRegistered userToBeRegistered)
         {
@@ -59,13 +55,11 @@ namespace FootTrack.BusinessLogic.Services
             return AuthenticatedUser.Create(user.Id, user.Email, token).Value;
         }
 
-        private bool CheckIfPasswordMatch(string hashedPassword, Password actual)
-        {
-            return _passwordHasher
+        private bool CheckIfPasswordMatch(string hashedPassword, Password actual) =>
+            _passwordHasher
                 .VerifyHashedPassword(
                     default,
                     hashedPassword,
                     actual) == PasswordVerificationResult.Success;
-        }
     }
 }

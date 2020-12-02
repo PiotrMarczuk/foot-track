@@ -50,9 +50,9 @@ import { Getter } from 'vuex-class';
 export default class TrainingCard extends Vue {
   @Getter("profile/user") user!: User
 
-  startTraining() {
-    trainingService.startTraining(this.user.id);
-    this.$router.push('/training');
+  async startTraining() {
+    const trainingId = await trainingService.startTraining(this.user.id);
+    this.$router.push(`/training/${trainingId}`);
   }
 }
 </script>

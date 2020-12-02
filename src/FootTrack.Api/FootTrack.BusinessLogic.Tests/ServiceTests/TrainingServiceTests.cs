@@ -65,7 +65,7 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
             _userRepository.CheckIfUserExist(_userId).Returns(Result.Ok(true));
             _trainingRepository.CheckIfTrainingAlreadyStarted(_userId).Returns(Result.Ok(false));
             Error deviceUnreachableError = Errors.Device.DeviceUnreachable();
-            _azureDeviceConnectionService.StartTrainingSessionAsync().Returns(Result.Fail<string>(deviceUnreachableError));
+            _azureDeviceConnectionService.StartTrainingSessionAsync().Returns(Result.Fail<Id>(deviceUnreachableError));
 
             // ACT
             Result result = await _sut.StartTrainingAsync(_userId);
@@ -76,14 +76,15 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         }
 
         [Test]
-        public async Task When_starting_training_and_failed_to_write_state_to_database_should_invoke_end_training_on_remote_device()
+        public async Task
+            When_starting_training_and_failed_to_write_state_to_database_should_invoke_end_training_on_remote_device()
         {
             // ARRANGE
             _userRepository.CheckIfUserExist(_userId).Returns(Result.Ok(true));
             _trainingRepository.CheckIfTrainingAlreadyStarted(_userId).Returns(Result.Ok(false));
-            const string jobId = "randomJobId";
+            Id jobId = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
             _azureDeviceConnectionService.StartTrainingSessionAsync().Returns(Result.Ok(jobId));
-            _trainingRepository.BeginTrainingAsync(_userId, jobId).Returns(Result.Fail(Errors.Database.Failed()));
+            _trainingRepository.BeginTrainingAsync(_userId, jobId).Returns(Result.Fail<Id>(Errors.Database.Failed()));
             _azureDeviceConnectionService.EndTrainingSessionAsync(jobId).Returns(Result.Ok());
 
             // ACT
@@ -101,9 +102,10 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
             // ARRANGE
             _userRepository.CheckIfUserExist(_userId).Returns(Result.Ok(true));
             _trainingRepository.CheckIfTrainingAlreadyStarted(_userId).Returns(Result.Ok(false));
-            const string jobId = "randomJobId";
+            Id jobId = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
             _azureDeviceConnectionService.StartTrainingSessionAsync().Returns(Result.Ok(jobId));
-            _trainingRepository.BeginTrainingAsync(_userId, jobId).Returns(Result.Ok());
+            _trainingRepository.BeginTrainingAsync(_userId, jobId)
+                .Returns(Result.Ok(Id.Create(ObjectId.GenerateNewId().ToString()).Value));
 
             // ACT
             Result result = await _sut.StartTrainingAsync(_userId);
@@ -119,7 +121,7 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
             Error error = Errors.General.NotFound();
             _trainingRepository
                 .EndTrainingAsync(_userId)
-                .Returns(Result.Fail<string>(error));
+                .Returns(Result.Fail<Id>(error));
 
             // ACT
             Result result = await _sut.EndTrainingAsync(_userId);
@@ -130,14 +132,16 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         }
 
         [Test]
-        public async Task When_successfully_saved_state_to_database_but_failed_to_send_message_to_device_should_result_in_error()
+        public async Task
+            When_successfully_saved_state_to_database_but_failed_to_send_message_to_device_should_result_in_error()
         {
             // ARRANGE
-            const string jobId = "somejobId";
+            Id jobId = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
             _trainingRepository
                 .EndTrainingAsync(_userId)
                 .Returns(Result.Ok(jobId));
-            _azureDeviceConnectionService.EndTrainingSessionAsync(jobId).Returns(Result.Fail(Errors.Device.DeviceUnreachable()));
+            _azureDeviceConnectionService.EndTrainingSessionAsync(jobId)
+                .Returns(Result.Fail(Errors.Device.DeviceUnreachable()));
 
             // ACT
             Result result = await _sut.EndTrainingAsync(_userId);
@@ -148,10 +152,11 @@ namespace FootTrack.BusinessLogic.UnitTests.ServiceTests
         }
 
         [Test]
-        public async Task When_successfully_saved_state_to_database_and_sent_message_to_device_should_result_in_success()
+        public async Task
+            When_successfully_saved_state_to_database_and_sent_message_to_device_should_result_in_success()
         {
             // ARRANGE
-            const string jobId = "somejobId";
+            Id jobId = Id.Create(ObjectId.GenerateNewId().ToString()).Value;
             _trainingRepository
                 .EndTrainingAsync(_userId)
                 .Returns(Result.Ok(jobId));

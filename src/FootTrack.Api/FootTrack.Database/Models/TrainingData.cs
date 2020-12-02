@@ -9,7 +9,7 @@ namespace FootTrack.Database.Models
     {
         public double Latitude { get; set; }
         
-        public double Lontitude { get; set; }
+        public double Longitude { get; set; }
         
         public double Speed { get; set; }
         
